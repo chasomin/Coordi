@@ -29,6 +29,7 @@
 		79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4702BCACE2200C3C530 /* LogInModel.swift */; };
 		79EBA4732BCACF6500C3C530 /* AccessTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4722BCACF6500C3C530 /* AccessTokenModel.swift */; };
 		79EBA4752BCACFB700C3C530 /* WithdrawModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4742BCACFB700C3C530 /* WithdrawModel.swift */; };
+		79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4762BCAD04100C3C530 /* ImageUploadModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		79EBA4702BCACE2200C3C530 /* LogInModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInModel.swift; sourceTree = "<group>"; };
 		79EBA4722BCACF6500C3C530 /* AccessTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenModel.swift; sourceTree = "<group>"; };
 		79EBA4742BCACFB700C3C530 /* WithdrawModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawModel.swift; sourceTree = "<group>"; };
+		79EBA4762BCAD04100C3C530 /* ImageUploadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 				79EBA4702BCACE2200C3C530 /* LogInModel.swift */,
 				79EBA4722BCACF6500C3C530 /* AccessTokenModel.swift */,
 				79EBA4742BCACFB700C3C530 /* WithdrawModel.swift */,
+				79EBA4762BCAD04100C3C530 /* ImageUploadModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				79553B692BC93A51000B4E4B /* LogInQuery.swift in Sources */,
 				79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */,
 				79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */,
+				79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
 				79553B672BC93A25000B4E4B /* EmailValidationQuery.swift in Sources */,
 				79553B5E2BC935A8000B4E4B /* APIKey.swift in Sources */,

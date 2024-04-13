@@ -18,7 +18,7 @@ struct PostModel: Decodable {
     let content4: String
     let content5: String
     let createdAt: String
-    let creator: Creator
+    let creator: UserModel
     let files: [String]
     let likes: [String]
     let likes2: [String]
@@ -56,7 +56,7 @@ struct PostModel: Decodable {
         self.content4 = try container.decodeIfPresent(String.self, forKey: .content4) ?? ""
         self.content5 = try container.decodeIfPresent(String.self, forKey: .content5) ?? ""
         self.createdAt = try container.decode(String.self, forKey: .createdAt)
-        self.creator = try container.decode(Creator.self, forKey: .creator)
+        self.creator = try container.decode(UserModel.self, forKey: .creator)
         self.files = try container.decode([String].self, forKey: .files)
         self.likes = try container.decode([String].self, forKey: .likes)
         self.likes2 = try container.decode([String].self, forKey: .likes2)
@@ -66,7 +66,7 @@ struct PostModel: Decodable {
 }
 
 
-struct Creator: Decodable {
+struct UserModel: Decodable {
     let user_id: String
     let nick: String
     let profileImage: String

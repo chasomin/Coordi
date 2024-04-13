@@ -27,6 +27,7 @@
 		79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA46C2BCACC2F00C3C530 /* SignUpModel.swift */; };
 		79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA46E2BCACDE600C3C530 /* EmailValidationModel.swift */; };
 		79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4702BCACE2200C3C530 /* LogInModel.swift */; };
+		79EBA4732BCACF6500C3C530 /* AccessTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4722BCACF6500C3C530 /* AccessTokenModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		79EBA46C2BCACC2F00C3C530 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		79EBA46E2BCACDE600C3C530 /* EmailValidationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailValidationModel.swift; sourceTree = "<group>"; };
 		79EBA4702BCACE2200C3C530 /* LogInModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInModel.swift; sourceTree = "<group>"; };
+		79EBA4722BCACF6500C3C530 /* AccessTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 				79EBA46C2BCACC2F00C3C530 /* SignUpModel.swift */,
 				79EBA46E2BCACDE600C3C530 /* EmailValidationModel.swift */,
 				79EBA4702BCACE2200C3C530 /* LogInModel.swift */,
+				79EBA4722BCACF6500C3C530 /* AccessTokenModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
 				79EBA4692BC9566400C3C530 /* LikeQuery.swift in Sources */,
 				79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */,
+				79EBA4732BCACF6500C3C530 /* AccessTokenModel.swift in Sources */,
 				79EBA4672BC9563300C3C530 /* CommentQuery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

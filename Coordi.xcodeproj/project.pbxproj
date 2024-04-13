@@ -35,6 +35,7 @@
 		79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47C2BCAD4EC00C3C530 /* CommentModel.swift */; };
 		79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */; };
 		79EBA4812BCAE63C00C3C530 /* FollowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4802BCAE63C00C3C530 /* FollowModel.swift */; };
+		79EBA4832BCAE70400C3C530 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4822BCAE70400C3C530 /* ProfileModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		79EBA47C2BCAD4EC00C3C530 /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
 		79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeModel.swift; sourceTree = "<group>"; };
 		79EBA4802BCAE63C00C3C530 /* FollowModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowModel.swift; sourceTree = "<group>"; };
+		79EBA4822BCAE70400C3C530 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				79EBA47C2BCAD4EC00C3C530 /* CommentModel.swift */,
 				79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */,
 				79EBA4802BCAE63C00C3C530 /* FollowModel.swift */,
+				79EBA4822BCAE70400C3C530 /* ProfileModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 				79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */,
 				79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */,
 				79553B4C2BC9135C000B4E4B /* ViewController.swift in Sources */,
+				79EBA4832BCAE70400C3C530 /* ProfileModel.swift in Sources */,
 				79EBA4752BCACFB700C3C530 /* WithdrawModel.swift in Sources */,
 				79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */,
 				79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */,

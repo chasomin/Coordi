@@ -36,6 +36,7 @@
 		79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */; };
 		79EBA4812BCAE63C00C3C530 /* FollowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4802BCAE63C00C3C530 /* FollowModel.swift */; };
 		79EBA4832BCAE70400C3C530 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4822BCAE70400C3C530 /* ProfileModel.swift */; };
+		79EBA4852BCAEA3100C3C530 /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4842BCAEA3100C3C530 /* HTTPHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeModel.swift; sourceTree = "<group>"; };
 		79EBA4802BCAE63C00C3C530 /* FollowModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowModel.swift; sourceTree = "<group>"; };
 		79EBA4822BCAE70400C3C530 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		79EBA4842BCAEA3100C3C530 /* HTTPHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 			children = (
 				79553B5D2BC935A8000B4E4B /* APIKey.swift */,
 				79553B5F2BC935B6000B4E4B /* BaseURL.swift */,
+				79EBA4842BCAEA3100C3C530 /* HTTPHeader.swift */,
 				79553B632BC93961000B4E4B /* Model */,
 				79553B622BC9395B000B4E4B /* Query */,
 			);
@@ -248,6 +251,7 @@
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
 				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
 				79553B672BC93A25000B4E4B /* EmailValidationQuery.swift in Sources */,
+				79EBA4852BCAEA3100C3C530 /* HTTPHeader.swift in Sources */,
 				79553B5E2BC935A8000B4E4B /* APIKey.swift in Sources */,
 				79EBA4812BCAE63C00C3C530 /* FollowModel.swift in Sources */,
 				79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */,

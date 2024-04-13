@@ -33,6 +33,7 @@
 		79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4782BCAD09800C3C530 /* PostModel.swift */; };
 		79EBA47B2BCAD3F900C3C530 /* PostListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47A2BCAD3F900C3C530 /* PostListModel.swift */; };
 		79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47C2BCAD4EC00C3C530 /* CommentModel.swift */; };
+		79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		79EBA4782BCAD09800C3C530 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		79EBA47A2BCAD3F900C3C530 /* PostListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListModel.swift; sourceTree = "<group>"; };
 		79EBA47C2BCAD4EC00C3C530 /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
+		79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				79EBA4782BCAD09800C3C530 /* PostModel.swift */,
 				79EBA47A2BCAD3F900C3C530 /* PostListModel.swift */,
 				79EBA47C2BCAD4EC00C3C530 /* CommentModel.swift */,
+				79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -236,6 +239,7 @@
 				79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */,
 				79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
+				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
 				79553B672BC93A25000B4E4B /* EmailValidationQuery.swift in Sources */,
 				79553B5E2BC935A8000B4E4B /* APIKey.swift in Sources */,
 				79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */,

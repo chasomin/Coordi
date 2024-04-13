@@ -31,6 +31,7 @@
 		79EBA4752BCACFB700C3C530 /* WithdrawModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4742BCACFB700C3C530 /* WithdrawModel.swift */; };
 		79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4762BCAD04100C3C530 /* ImageUploadModel.swift */; };
 		79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4782BCAD09800C3C530 /* PostModel.swift */; };
+		79EBA47B2BCAD3F900C3C530 /* PostListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA47A2BCAD3F900C3C530 /* PostListModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		79EBA4742BCACFB700C3C530 /* WithdrawModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawModel.swift; sourceTree = "<group>"; };
 		79EBA4762BCAD04100C3C530 /* ImageUploadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadModel.swift; sourceTree = "<group>"; };
 		79EBA4782BCAD09800C3C530 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
+		79EBA47A2BCAD3F900C3C530 /* PostListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 				79EBA4742BCACFB700C3C530 /* WithdrawModel.swift */,
 				79EBA4762BCAD04100C3C530 /* ImageUploadModel.swift */,
 				79EBA4782BCAD09800C3C530 /* PostModel.swift */,
+				79EBA47A2BCAD3F900C3C530 /* PostListModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79EBA47B2BCAD3F900C3C530 /* PostListModel.swift in Sources */,
 				79553B652BC93984000B4E4B /* SignUpQuery.swift in Sources */,
 				79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */,
 				79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */,

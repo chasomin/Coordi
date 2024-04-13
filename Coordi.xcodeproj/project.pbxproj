@@ -25,6 +25,7 @@
 		79EBA4692BC9566400C3C530 /* LikeQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4682BC9566400C3C530 /* LikeQuery.swift */; };
 		79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */; };
 		79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA46C2BCACC2F00C3C530 /* SignUpModel.swift */; };
+		79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA46E2BCACDE600C3C530 /* EmailValidationModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		79EBA4682BC9566400C3C530 /* LikeQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeQuery.swift; sourceTree = "<group>"; };
 		79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileQuery.swift; sourceTree = "<group>"; };
 		79EBA46C2BCACC2F00C3C530 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
+		79EBA46E2BCACDE600C3C530 /* EmailValidationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailValidationModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				79EBA46C2BCACC2F00C3C530 /* SignUpModel.swift */,
+				79EBA46E2BCACDE600C3C530 /* EmailValidationModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				79553B672BC93A25000B4E4B /* EmailValidationQuery.swift in Sources */,
 				79553B5E2BC935A8000B4E4B /* APIKey.swift in Sources */,
 				79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */,
+				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
 				79EBA4692BC9566400C3C530 /* LikeQuery.swift in Sources */,
 				79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */,

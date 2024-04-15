@@ -39,6 +39,8 @@
 		79EBA4852BCAEA3100C3C530 /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4842BCAEA3100C3C530 /* HTTPHeader.swift */; };
 		79EBA4872BCAEA6400C3C530 /* TargetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4862BCAEA6400C3C530 /* TargetType.swift */; };
 		79EBA48A2BCAEA7B00C3C530 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 79EBA4892BCAEA7B00C3C530 /* Alamofire */; };
+		79EBA48C2BCAEBAF00C3C530 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA48B2BCAEBAF00C3C530 /* Router.swift */; };
+		79EBA48E2BCC27BE00C3C530 /* FetchPostQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA48D2BCC27BE00C3C530 /* FetchPostQuery.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +77,8 @@
 		79EBA4822BCAE70400C3C530 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		79EBA4842BCAEA3100C3C530 /* HTTPHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPHeader.swift; sourceTree = "<group>"; };
 		79EBA4862BCAEA6400C3C530 /* TargetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetType.swift; sourceTree = "<group>"; };
+		79EBA48B2BCAEBAF00C3C530 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		79EBA48D2BCC27BE00C3C530 /* FetchPostQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPostQuery.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +132,7 @@
 				79553B5F2BC935B6000B4E4B /* BaseURL.swift */,
 				79EBA4842BCAEA3100C3C530 /* HTTPHeader.swift */,
 				79EBA4862BCAEA6400C3C530 /* TargetType.swift */,
+				79EBA48B2BCAEBAF00C3C530 /* Router.swift */,
 				79553B632BC93961000B4E4B /* Model */,
 				79553B622BC9395B000B4E4B /* Query */,
 			);
@@ -142,6 +147,7 @@
 				79553B682BC93A51000B4E4B /* LogInQuery.swift */,
 				79553B6A2BC93AA7000B4E4B /* ImageUploadQuery.swift */,
 				79553B6C2BC93B27000B4E4B /* PostQuery.swift */,
+				79EBA48D2BCC27BE00C3C530 /* FetchPostQuery.swift */,
 				79EBA4662BC9563300C3C530 /* CommentQuery.swift */,
 				79EBA4682BC9566400C3C530 /* LikeQuery.swift */,
 				79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */,
@@ -252,6 +258,7 @@
 				79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */,
 				79553B4C2BC9135C000B4E4B /* ViewController.swift in Sources */,
 				79EBA4832BCAE70400C3C530 /* ProfileModel.swift in Sources */,
+				79EBA48E2BCC27BE00C3C530 /* FetchPostQuery.swift in Sources */,
 				79EBA4752BCACFB700C3C530 /* WithdrawModel.swift in Sources */,
 				79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */,
 				79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */,
@@ -270,6 +277,7 @@
 				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
 				79EBA4692BC9566400C3C530 /* LikeQuery.swift in Sources */,
+				79EBA48C2BCAEBAF00C3C530 /* Router.swift in Sources */,
 				79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */,
 				79EBA4732BCACF6500C3C530 /* AccessTokenModel.swift in Sources */,
 				79EBA4672BC9563300C3C530 /* CommentQuery.swift in Sources */,

@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct LikeQuery {
+struct LikeQuery: Encodable {
     let like_status: Bool
 }

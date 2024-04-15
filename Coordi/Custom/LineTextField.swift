@@ -15,6 +15,8 @@ final class LineTextField: BaseView {
     override func configureHierarchy() {
         addSubview(textField)
         addSubview(line)
+        
+        
     }
     
     override func configureLayout() {
@@ -28,5 +30,11 @@ final class LineTextField: BaseView {
             make.horizontalEdges.equalTo(textField)
             make.height.equalTo(1)
         }
+        textField.returnKeyType = .done
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
+        textField.spellCheckingType = .no
+        
+        line.backgroundColor = .pointColor
     }
 }

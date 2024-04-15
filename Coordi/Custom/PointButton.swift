@@ -19,7 +19,7 @@ final class PointButton: UIButton {
         config.baseBackgroundColor = .pointColor
         config.baseForegroundColor = .backgroundColor
         var attr = AttributedString.init(text)
-        attr.font = UIFont.boldSystemFont(ofSize: 18)
+        attr.font = UIFont.boldTitle
         config.attributedSubtitle = attr
         self.configuration = config
     }

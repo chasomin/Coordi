@@ -8,7 +8,7 @@
 import Foundation
 
 struct SignUpModel: Decodable {
+    let user_id: String
     let email: String
-    let password: String
     let nick: String
 }

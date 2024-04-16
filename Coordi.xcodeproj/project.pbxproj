@@ -21,6 +21,8 @@
 		79553B692BC93A51000B4E4B /* LogInQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B682BC93A51000B4E4B /* LogInQuery.swift */; };
 		79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B6A2BC93AA7000B4E4B /* ImageUploadQuery.swift */; };
 		79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B6C2BC93B27000B4E4B /* PostQuery.swift */; };
+		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
+		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79EBA4672BC9563300C3C530 /* CommentQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4662BC9563300C3C530 /* CommentQuery.swift */; };
 		79EBA4692BC9566400C3C530 /* LikeQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4682BC9566400C3C530 /* LikeQuery.swift */; };
 		79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */; };
@@ -55,6 +57,7 @@
 		79EBA4EB2BCD310000C3C530 /* UIFont+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4EA2BCD310000C3C530 /* UIFont+.swift */; };
 		79EBA4ED2BCD54A000C3C530 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4EC2BCD54A000C3C530 /* NetworkManager.swift */; };
 		79EBA4F02BCD5A8000C3C530 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 79EBA4EF2BCD5A8000C3C530 /* Toast */; };
+		79EBA4F32BCD8BC800C3C530 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79EBA4F22BCD8BC800C3C530 /* IQKeyboardManagerSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +77,8 @@
 		79553B682BC93A51000B4E4B /* LogInQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInQuery.swift; sourceTree = "<group>"; };
 		79553B6A2BC93AA7000B4E4B /* ImageUploadQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadQuery.swift; sourceTree = "<group>"; };
 		79553B6C2BC93B27000B4E4B /* PostQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostQuery.swift; sourceTree = "<group>"; };
+		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79EBA4662BC9563300C3C530 /* CommentQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentQuery.swift; sourceTree = "<group>"; };
 		79EBA4682BC9566400C3C530 /* LikeQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeQuery.swift; sourceTree = "<group>"; };
 		79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileQuery.swift; sourceTree = "<group>"; };
@@ -115,6 +120,7 @@
 				79EBA4D72BCD16B900C3C530 /* RxSwift in Frameworks */,
 				79EBA4F02BCD5A8000C3C530 /* Toast in Frameworks */,
 				79EBA4D22BCD16A300C3C530 /* SnapKit in Frameworks */,
+				79EBA4F32BCD8BC800C3C530 /* IQKeyboardManagerSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,11 +214,19 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		79B043E82BCE719E00407A1F /* Main */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		79EBA4C92BCD15F300C3C530 /* Present */ = {
 			isa = PBXGroup;
 			children = (
 				79EBA4CA2BCD162200C3C530 /* SignUp */,
 				79EBA4CB2BCD162C00C3C530 /* LogIn */,
+				79B043E82BCE719E00407A1F /* Main */,
 			);
 			path = Present;
 			sourceTree = "<group>";
@@ -229,6 +243,8 @@
 		79EBA4CB2BCD162C00C3C530 /* LogIn */ = {
 			isa = PBXGroup;
 			children = (
+				79B043E42BCE5BA100407A1F /* LogInViewController.swift */,
+				79B043E62BCE6B8900407A1F /* LogInViewModel.swift */,
 			);
 			path = LogIn;
 			sourceTree = "<group>";
@@ -290,6 +306,7 @@
 				79EBA4D42BCD16B900C3C530 /* RxCocoa */,
 				79EBA4D62BCD16B900C3C530 /* RxSwift */,
 				79EBA4EF2BCD5A8000C3C530 /* Toast */,
+				79EBA4F22BCD8BC800C3C530 /* IQKeyboardManagerSwift */,
 			);
 			productName = Coordi;
 			productReference = 79553B442BC9135C000B4E4B /* Coordi.app */;
@@ -324,6 +341,7 @@
 				79EBA4D02BCD16A300C3C530 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				79EBA4D32BCD16B900C3C530 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				79EBA4EE2BCD5A8000C3C530 /* XCRemoteSwiftPackageReference "Toast-Swift" */,
+				79EBA4F12BCD8BC700C3C530 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 			);
 			productRefGroup = 79553B452BC9135C000B4E4B /* Products */;
 			projectDirPath = "";
@@ -354,6 +372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79EBA47B2BCAD3F900C3C530 /* PostListModel.swift in Sources */,
+				79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */,
 				79553B652BC93984000B4E4B /* SignUpQuery.swift in Sources */,
 				79EBA4EB2BCD310000C3C530 /* UIFont+.swift in Sources */,
 				79EBA4ED2BCD54A000C3C530 /* NetworkManager.swift in Sources */,
@@ -381,6 +400,7 @@
 				79EBA4852BCAEA3100C3C530 /* HTTPHeader.swift in Sources */,
 				79553B5E2BC935A8000B4E4B /* APIKey.swift in Sources */,
 				79EBA4812BCAE63C00C3C530 /* FollowModel.swift in Sources */,
+				79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */,
 				79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */,
 				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
@@ -543,7 +563,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FQNUU3X32C;
+				DEVELOPMENT_TEAM = 696W38VQ47;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Coordi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -551,6 +571,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -575,7 +596,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FQNUU3X32C;
+				DEVELOPMENT_TEAM = 696W38VQ47;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Coordi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -583,6 +604,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -656,6 +678,14 @@
 				minimumVersion = 5.1.1;
 			};
 		};
+		79EBA4F12BCD8BC700C3C530 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -683,6 +713,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 79EBA4EE2BCD5A8000C3C530 /* XCRemoteSwiftPackageReference "Toast-Swift" */;
 			productName = Toast;
+		};
+		79EBA4F22BCD8BC800C3C530 /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 79EBA4F12BCD8BC700C3C530 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

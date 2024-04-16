@@ -16,7 +16,8 @@ final class SignUpViewModel: ViewModelType {
         let emailText: Observable<String>
         let passwordText: Observable<String>
         let nicknameText: Observable<String>
-        let signUpButtonTapped: Observable<Void>
+        let signUpButtonTap: Observable<Void>
+        let dismissButtonTap: Observable<Void>
     }
     
     struct Output {
@@ -26,6 +27,7 @@ final class SignUpViewModel: ViewModelType {
         let allValid: Driver<Bool>
         let successTrigger: Driver<Void>
         let failureTrigger: Driver<Void>
+        let dismissButtonTap: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -36,7 +38,6 @@ final class SignUpViewModel: ViewModelType {
         let successTrigger = PublishRelay<Void>()
         let failureTrigger = PublishRelay<Void>()
 
-        
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let passwordRegex = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,50}"
         
@@ -77,7 +78,7 @@ final class SignUpViewModel: ViewModelType {
                 return SignUpQuery(email: email, password: password, nick: nick)
             }
         
-        input.signUpButtonTapped
+        input.signUpButtonTap
             .throttle(.seconds(2), scheduler: MainScheduler.instance)
             .withLatestFrom(signUpQuery)
             .flatMap { signUpQuery in
@@ -92,7 +93,7 @@ final class SignUpViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
 
-        return Output.init(emailValid: emailValid.asDriver(onErrorJustReturn: false), passwordValid: passwordValid.asDriver(onErrorJustReturn: false), nicknameValid: nicknameValid.asDriver(onErrorJustReturn: false), allValid: allValid.asDriver(onErrorJustReturn: false), successTrigger: successTrigger.asDriver(onErrorJustReturn: ()), failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()))
+        return Output.init(emailValid: emailValid.asDriver(onErrorJustReturn: false), passwordValid: passwordValid.asDriver(onErrorJustReturn: false), nicknameValid: nicknameValid.asDriver(onErrorJustReturn: false), allValid: allValid.asDriver(onErrorJustReturn: false), successTrigger: successTrigger.asDriver(onErrorJustReturn: ()), failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()), dismissButtonTap: input.dismissButtonTap.asDriver(onErrorJustReturn: ()))
     }
 
 }

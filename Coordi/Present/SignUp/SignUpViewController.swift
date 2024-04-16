@@ -39,34 +39,23 @@ final class SignUpViewController: BaseViewController {
     }
     
     override func bind() {
-        let input = SignUpViewModel.Input(emailText: emailTextField.textField.rx.text.orEmpty.asObservable(), passwordText: passwordTextField.textField.rx.text.orEmpty.asObservable(), nicknameText: nicknameTextField.textField.rx.text.orEmpty.asObservable(), signUpButtonTapped: signUpButton.rx.tap.asObservable())
+        let input = SignUpViewModel.Input(emailText: emailTextField.textField.rx.text.orEmpty.asObservable(), passwordText: passwordTextField.textField.rx.text.orEmpty.asObservable(), nicknameText: nicknameTextField.textField.rx.text.orEmpty.asObservable(), signUpButtonTap: signUpButton.rx.tap.asObservable(), dismissButtonTap: dismissButton.rx.tap.asObservable())
         let output = viewModel.transform(input: input)
         
         output.emailValid
-            .drive(with: self) { owner, valid in
-                owner.emailTextField.line.backgroundColor = valid ? .LabelColor : .pointColor
-                owner.emailStatusLabel.isHidden = valid
-            }
+            .drive(emailStatusLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
         output.passwordValid
-            .drive(with: self) { owner, valid in
-                owner.passwordTextField.line.backgroundColor = valid ? .LabelColor : .pointColor
-                owner.passwordStatusLabel.isHidden = valid
-            }
+            .drive(passwordStatusLabel.rx.isHidden)
             .disposed(by: disposeBag)
 
         output.nicknameValid
-            .drive(with: self) { owner, valid in
-                owner.nicknameTextField.line.backgroundColor = valid ? .LabelColor : .pointColor
-                owner.nicknameStatusLabel.isHidden = valid
-            }
+            .drive(nicknameStatusLabel.rx.isHidden)
             .disposed(by: disposeBag)
 
         output.allValid
-            .drive(with: self) { owner, valid in
-                owner.signUpButton.isEnabled = valid
-            }
+            .drive(signUpButton.rx.isEnabled)
             .disposed(by: disposeBag)
         
         output.failureTrigger
@@ -76,6 +65,12 @@ final class SignUpViewController: BaseViewController {
             .disposed(by: disposeBag)
 
         output.successTrigger
+            .drive(with: self) { owner, valid in
+                owner.dismiss(animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.dismissButtonTap
             .drive(with: self) { owner, valid in
                 owner.dismiss(animated: true)
             }
@@ -161,7 +156,7 @@ final class SignUpViewController: BaseViewController {
         
         signUpButton.snp.makeConstraints { make in
             make.horizontalEdges.equalTo(view).inset(15)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.height.equalTo(50)
         }
     }
@@ -172,7 +167,6 @@ final class SignUpViewController: BaseViewController {
         config.buttonSize = .large
         config.baseForegroundColor = .pointColor
         dismissButton.configuration = config
-        dismissButton.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
         
         logoImageView.image = .coordi
         logoImageView.contentMode = .scaleAspectFit
@@ -204,9 +198,4 @@ extension SignUpViewController {
     @objc func tapGestureTapped() {
         view.endEditing(true)
     }
-    
-    @objc func dismissButtonTapped() {
-        self.dismiss(animated: true)
-    }
-
 }

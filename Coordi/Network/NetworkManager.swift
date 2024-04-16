@@ -15,7 +15,7 @@ struct NetworkManager {
             do {
                 let urlRequest = try api.asURLRequest()
                                 
-                AF.request(urlRequest)
+                AF.request(urlRequest, interceptor: TokenRefresh())
                     .responseDecodable(of: T.self) { response in
                         switch response.result {
                         case .success(let success):

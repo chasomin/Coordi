@@ -214,11 +214,11 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		79B043E82BCE719E00407A1F /* Main */ = {
+		79B043E82BCE719E00407A1F /* Feed */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Main;
+			path = Feed;
 			sourceTree = "<group>";
 		};
 		79EBA4C92BCD15F300C3C530 /* Present */ = {
@@ -226,7 +226,7 @@
 			children = (
 				79EBA4CA2BCD162200C3C530 /* SignUp */,
 				79EBA4CB2BCD162C00C3C530 /* LogIn */,
-				79B043E82BCE719E00407A1F /* Main */,
+				79B043E82BCE719E00407A1F /* Feed */,
 			);
 			path = Present;
 			sourceTree = "<group>";

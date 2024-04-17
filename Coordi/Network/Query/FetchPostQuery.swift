@@ -8,8 +8,8 @@
 import Foundation
 
 struct FetchPostQuery {
-    let next: String = ""
-    let limit: String = ""
-    let product_id: String = ""
-    let hashTag: String
+    let next: String
+    let limit: String
+    let product_id: String
+    let hashTag: String?
 }

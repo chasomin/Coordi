@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct PostModel: Decodable {
+struct PostModel: Decodable, Hashable {
+
     let post_id: String
     let product_id: String
     let title: String
@@ -66,7 +67,7 @@ struct PostModel: Decodable {
 }
 
 
-struct UserModel: Decodable {
+struct UserModel: Decodable, Hashable {
     let user_id: String
     let nick: String
     let profileImage: String

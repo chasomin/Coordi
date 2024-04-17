@@ -7,17 +7,21 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MyProfileView: UICollectionReusableView {
     static let id = MyProfileView.description()
-    
+    private let viewModel = MyProfileViewModel()
+    private let disposeBag = DisposeBag()
+        
     let profileImageView = CirCleImageView()
-    let infoStack = UIStackView()
+    private let infoStack = UIStackView()
     let nicknameLabel = UILabel()
-    let followStack = UIStackView()
-    let followerLabel = UILabel()
+    private let followStack = UIStackView()
+    private let followerLabel = UILabel()
     let followerCount = UILabel()
-    let followingLabel = UILabel()
+    private let followingLabel = UILabel()
     let followingCount = UILabel()
     let editButton = CapsuleButton(text: "프로필 관리", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
 
@@ -26,14 +30,29 @@ final class MyProfileView: UICollectionReusableView {
         configureHierarchy()
         configureLayout()
         configureView()
+        bind()
+    }
+    
+    private func bind() {
+        let input = MyProfileViewModel.Input(editButtonTap: editButton.rx.tap.asObservable())
+        let output = viewModel.transform(input: input)
+        
+        output.editButtonTap
+            .drive(with: self, onNext: { owner, _ in
+                NotificationCenter.default.post(name: NSNotification.Name("EditButtonTapReceived"), object: nil, userInfo: ["editButtonTap": ()])
+            })
+            .disposed(by: disposeBag)
     }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func configureHierarchy() {
+}
+
+// MARK: - Layout
+extension MyProfileView {
+    private func configureHierarchy() {
         addSubview(profileImageView)
         addSubview(infoStack)
         infoStack.addArrangedSubview(nicknameLabel)
@@ -45,7 +64,7 @@ final class MyProfileView: UICollectionReusableView {
         addSubview(editButton)
     }
     
-    func configureLayout() {
+    private func configureLayout() {
         profileImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(15)
             make.leading.equalToSuperview().inset(5)
@@ -65,7 +84,7 @@ final class MyProfileView: UICollectionReusableView {
         }
     }
     
-    func configureView() {
+    private func configureView() {
         infoStack.axis = .vertical
         infoStack.spacing = 10
         

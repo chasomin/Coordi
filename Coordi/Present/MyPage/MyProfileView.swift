@@ -8,7 +8,9 @@
 import UIKit
 import SnapKit
 
-final class MyProfileView: BaseView {
+final class MyProfileView: UICollectionReusableView {
+    static let id = MyProfileView.description()
+    
     let profileImageView = CirCleImageView()
     let infoStack = UIStackView()
     let nicknameLabel = UILabel()
@@ -19,7 +21,19 @@ final class MyProfileView: BaseView {
     let followingCount = UILabel()
     let editButton = CapsuleButton(text: "프로필 관리", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
 
-    override func configureHierarchy() {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureHierarchy()
+        configureLayout()
+        configureView()
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureHierarchy() {
         addSubview(profileImageView)
         addSubview(infoStack)
         infoStack.addArrangedSubview(nicknameLabel)
@@ -31,25 +45,27 @@ final class MyProfileView: BaseView {
         addSubview(editButton)
     }
     
-    override func configureLayout() {
+    func configureLayout() {
         profileImageView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(15)
+            make.top.equalToSuperview().inset(15)
+            make.leading.equalToSuperview().inset(5)
             make.size.equalTo(70)
         }
         infoStack.snp.makeConstraints { make in
             make.centerY.equalTo(profileImageView)
             make.height.equalTo(40)
             make.leading.equalTo(profileImageView.snp.trailing).offset(10)
-            make.trailing.lessThanOrEqualToSuperview().inset(15)
+            make.trailing.lessThanOrEqualToSuperview().inset(5)
         }
         editButton.snp.makeConstraints { make in
             make.top.equalTo(profileImageView.snp.bottom).offset(15)
-            make.horizontalEdges.bottom.equalToSuperview().inset(15)
+            make.horizontalEdges.equalToSuperview().inset(5)
+            make.bottom.equalToSuperview().inset(15)
             make.height.equalTo(30)
         }
     }
     
-    override func configureView() {
+    func configureView() {
         infoStack.axis = .vertical
         infoStack.spacing = 10
         

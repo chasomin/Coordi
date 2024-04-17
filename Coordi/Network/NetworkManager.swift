@@ -20,7 +20,7 @@ struct NetworkManager {
                         switch response.result {
                         case .success(let success):
                             single(.success(success))
-                            print(success)
+                            dump(success)
                         case .failure(let error):
                             single(.failure(error))
                             print(error, response.response?.statusCode)

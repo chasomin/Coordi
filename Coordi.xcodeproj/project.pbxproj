@@ -24,6 +24,7 @@
 		798604052BD10EB0003E721E /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604042BD10EB0003E721E /* EditProfileViewModel.swift */; };
 		798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604072BD12AA6003E721E /* CoordiUserDefaults.swift */; };
 		7986040A2BD12AB5003E721E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604092BD12AB5003E721E /* UserDefaultsManager.swift */; };
+		7986040D2BD134DA003E721E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 7986040C2BD134DA003E721E /* Kingfisher */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -147,6 +148,7 @@
 			files = (
 				79EBA4D52BCD16B900C3C530 /* RxCocoa in Frameworks */,
 				79EBA48A2BCAEA7B00C3C530 /* Alamofire in Frameworks */,
+				7986040D2BD134DA003E721E /* Kingfisher in Frameworks */,
 				79EBA4D72BCD16B900C3C530 /* RxSwift in Frameworks */,
 				79EBA4F02BCD5A8000C3C530 /* Toast in Frameworks */,
 				79EBA4D22BCD16A300C3C530 /* SnapKit in Frameworks */,
@@ -408,6 +410,7 @@
 				79EBA4D62BCD16B900C3C530 /* RxSwift */,
 				79EBA4EF2BCD5A8000C3C530 /* Toast */,
 				79EBA4F22BCD8BC800C3C530 /* IQKeyboardManagerSwift */,
+				7986040C2BD134DA003E721E /* Kingfisher */,
 			);
 			productName = Coordi;
 			productReference = 79553B442BC9135C000B4E4B /* Coordi.app */;
@@ -443,6 +446,7 @@
 				79EBA4D32BCD16B900C3C530 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				79EBA4EE2BCD5A8000C3C530 /* XCRemoteSwiftPackageReference "Toast-Swift" */,
 				79EBA4F12BCD8BC700C3C530 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
+				7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 79553B452BC9135C000B4E4B /* Products */;
 			projectDirPath = "";
@@ -762,6 +766,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.11.0;
+			};
+		};
 		79EBA4882BCAEA7B00C3C530 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -805,6 +817,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7986040C2BD134DA003E721E /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		79EBA4892BCAEA7B00C3C530 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 79EBA4882BCAEA7B00C3C530 /* XCRemoteSwiftPackageReference "Alamofire" */;

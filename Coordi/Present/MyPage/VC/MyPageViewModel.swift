@@ -35,22 +35,27 @@ final class MyPageViewModel: ViewModelType {
         input.viewDidLoad
             .withLatestFrom(postQuery)
             .flatMap { postQuery in
-                Single.zip( //FIXME: 두개 같이 요청해서 accessToken 만료 시 두 번 갱신함
-                    NetworkManager.request(api: .fetchMyProfile)
-                        .catch { _ in
-                            return Single<ProfileModel>.never()
-                        },
-                    NetworkManager.request(api: .fetchPostByUser(userId: userId, query: postQuery))
-                        .catch { _ in
-                            return Single<PostListModel>.never()
-                        }
-                )
+                NetworkManager.request(api: .fetchPostByUser(userId: userId, query: postQuery))
+                    .catch { _ in
+                        return Single<PostListModel>.never()
+                    }
             }
-            .subscribe { profile, posts in
+            .flatMap { postListModel in
+                let profileModel = NetworkManager.request(api: .fetchMyProfile)
+                    .catch { _ in
+                        return Single<ProfileModel>.never()
+                    }
+                let postListModel = Observable.just(postListModel).asSingle()
+                
+                return Single.zip(postListModel, profileModel)
+            }
+            .subscribe(with: self) { owner, response in
+                let (post, profile) = response
                 myProfile.accept(profile)
-                myPosts.accept(posts)
+                myPosts.accept(post)
             }
             .disposed(by: disposeBag)
+            
         
         
         input.editButtonTap

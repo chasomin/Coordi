@@ -14,7 +14,6 @@ protocol TargetType: URLRequestConvertible {
     var path: String { get }
     var header: [String:String] { get }
     var parameters: [String:Any]? { get }
-    var queryItems: [URLQueryItem]? { get }
     var body: Data? { get }
 }
 

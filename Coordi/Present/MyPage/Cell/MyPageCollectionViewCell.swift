@@ -24,12 +24,12 @@ class MyPageCollectionViewCell: BaseCollectionViewCell {
         }
         image.snp.makeConstraints { make in
             make.top.equalTo(tempLabel.snp.bottom).offset(10)
-            make.bottom.horizontalEdges.equalToSuperview().inset(15)
+            make.bottom.horizontalEdges.equalToSuperview()
         }
     }
     
     override func configureView() {
-        image.contentMode = .scaleAspectFit
+        image.contentMode = .scaleAspectFill
         layer.cornerRadius = 20
         clipsToBounds = true
         layer.borderWidth = 1

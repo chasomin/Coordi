@@ -32,6 +32,7 @@ enum Router {
     case editProfile(query: ProfileQuery)
     case fetchUserProfile(userId: String)
     case hashtag(query: FetchPostQuery)
+    case fetchImage(query: String)
 }
 
 extension Router: TargetType {
@@ -87,6 +88,8 @@ extension Router: TargetType {
             return .get
         case .hashtag:
             return .get
+        case .fetchImage:
+            return .get
         }
     }
     
@@ -138,131 +141,34 @@ extension Router: TargetType {
             "/users/\(id)/profile"
         case .hashtag:
             "/posts/hashtags"
+        case .fetchImage(let query):
+            "/\(query)"
         }
     }
     
     var header: [String: String] {
         switch self {
-        case .logIn:
-            [
-                HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .signUp:
-            [
-                HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .emailValidation:
-            [
+        case .logIn, .signUp, .emailValidation:
+            return [
                 HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
         case .refreshToken:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
+            return [
+                HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue,
-                HTTPHeader.refresh.rawValue: UserDefaults.standard.string(forKey: "refreshToken") ?? ""
+                HTTPHeader.refresh.rawValue: UserDefaultsManager.refreshToken
             ]
-        case .withdraw:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
+        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .like, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage:
+            return [
+                HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
-        case .uploadImage:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
+            
+        case .uploadImage, .uploadPost, .editPost, .uploadComment, .editComment, .editProfile:
+            return [
+                HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .uploadPost:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .fetchPost:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .fetchParticularPost:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .editPost:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .deletePost:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .fetchPostByUser:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .uploadComment:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .editComment:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .deleteComment:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .like:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .fetchLikePost:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .follow:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .deleteFollow:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .fetchMyProfile:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .editProfile:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .fetchUserProfile:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
-                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
-            ]
-        case .hashtag:
-            [
-                HTTPHeader.authorization.rawValue: UserDefaults.standard.string(forKey: "accessToken") ?? "",
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
         }
@@ -292,84 +198,39 @@ extension Router: TargetType {
                 "next": query.next,
                 "limit": query.limit,
                 "product_id": query.product_id,
-                "hashTag": query.hashTag
+                "hashTag": query.hashTag ?? ""
             ]
         default:
             nil
         }
     }
     
-    var queryItems: [URLQueryItem]? {
-        nil
-    }
-    
     var body: Data? {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+
         switch self {
         case .logIn(let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
         case .signUp(let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
         case .emailValidation(let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
-        case .refreshToken:
-            return nil
-        case .withdraw:
-            return nil
         case .uploadImage(let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
         case .uploadPost(let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
-        case .fetchPost:
-            return nil
-        case .fetchParticularPost:
-            return nil
         case .editPost(_, let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
-        case .deletePost:
-            return nil
-        case .fetchPostByUser:
-            return nil
         case .uploadComment(_, let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
         case .editComment(_, _, let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
-        case .deleteComment:
-            return nil
         case .like(_, let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
-        case .fetchLikePost:
-            return nil
-        case .follow:
-            return nil
-        case .deleteFollow:
-            return nil
-        case .fetchMyProfile:
-            return nil
         case .editProfile(let query):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
             return try? encoder.encode(query)
-        case .fetchUserProfile:
-            return nil
-        case .hashtag:
+        case .refreshToken, .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage:
             return nil
         }
     }

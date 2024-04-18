@@ -42,4 +42,20 @@ struct ProfileModel: Decodable, Hashable {
         self.following = try container.decode([UserModel].self, forKey: .following)
         self.posts = try container.decode([String].self, forKey: .posts)
     }
+    
+    init(user_id: String, email: String, nick: String, phoneNum: String, birthDay: String, profileImage: String, followers: [UserModel], following: [UserModel], posts: [String]) {
+        self.user_id = user_id
+        self.email = email
+        self.nick = nick
+        self.phoneNum = phoneNum
+        self.birthDay = birthDay
+        self.profileImage = profileImage
+        self.followers = followers
+        self.following = following
+        self.posts = posts
+    }
+    
+    static var dummy: ProfileModel {
+        return .init(user_id: "String", email: "", nick: "", phoneNum: "", birthDay: "", profileImage: "", followers: [], following: [], posts: [])
+    }
 }

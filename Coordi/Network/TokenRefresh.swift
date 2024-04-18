@@ -12,8 +12,8 @@ final class TokenRefresh: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         
         guard urlRequest.url?.absoluteString.hasPrefix(BaseURL.baseURL.rawValue) == true,
-              UserDefaultsManager.accessToken == "",
-              UserDefaultsManager.refreshToken == ""
+              UserDefaultsManager.accessToken != "",
+              UserDefaultsManager.refreshToken != ""
         else {
             completion(.success(urlRequest))
             return
@@ -28,6 +28,7 @@ final class TokenRefresh: RequestInterceptor {
     
     func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping (RetryResult) -> Void) {
         do {
+            print("!!!retry")
             let urlRequest = try Router.refreshToken.asURLRequest()
             
             AF.request(urlRequest)
@@ -36,11 +37,13 @@ final class TokenRefresh: RequestInterceptor {
                     case .success(let success):
                         print("토큰 갱신 성공 \(success)")
                         UserDefaults.standard.set(success.accessToken, forKey: "accessToken")
+                        UserDefaultsManager.accessToken = success.accessToken
                         completion(.retry)
                     case .failure(_):
                         if let code = response.response?.statusCode {
                             print("❌토큰 갱신 실패: \(code)")
                             // TODO: 418이면 최초 로그인 화면으로 돌려주기 (refreshToken도 만료)
+//                            completion(.doNotRetryWithError(<#T##any Error#>))
                             completion(.doNotRetry)
                         } else {
                             print("❌토큰 갱신 실패")
@@ -54,3 +57,9 @@ final class TokenRefresh: RequestInterceptor {
     }
     
 }
+
+//enum CoordiError: Int {
+//    case expiredRefreshToken = 419
+//    case expiredAccessToken = 418
+//    case 
+//}

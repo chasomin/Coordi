@@ -16,10 +16,12 @@ final class MyPageViewController: BaseViewController {
     
     private let viewModel = MyPageViewModel()
     
+    private let editButtonTap = PublishRelay<Void>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         makeCellRegistration()
-        NotificationCenter.default.addObserver(self, selector: #selector(categoryReceivedNotification), name: NSNotification.Name("EditButtonTapReceived"), object: nil)
+        navigationItem.title = "내 피드 모아보기"
     }
     
     override func configureHierarchy() {
@@ -33,7 +35,7 @@ final class MyPageViewController: BaseViewController {
     }
     
     override func bind() {
-        let input = MyPageViewModel.Input(viewDidLoad: Observable.just(Void()))
+        let input = MyPageViewModel.Input(viewDidLoad: Observable.just(Void()), editButtonTap: editButtonTap)
         let output = viewModel.transform(input: input)
         
         var snapshot = NSDiffableDataSourceSnapshot<ProfileModel, PostModel>()
@@ -51,6 +53,13 @@ final class MyPageViewController: BaseViewController {
                 owner.dataSource.apply(snapshot)
             })
             .disposed(by: disposeBag)
+        
+        output.editButtonTap
+            .bind(with: self) { owner, profile in
+                print("!!클릭")
+                owner.navigationController?.pushViewController(EditProfileViewController(nick: profile.nick, profileImage: profile.profileImage), animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func makeCellRegistration() {
@@ -65,14 +74,6 @@ final class MyPageViewController: BaseViewController {
         dataSource.supplementaryViewProvider = { view, kind, index in
             return self.collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: index)
         }
-    }
-}
-
-//MARK: - @objc
-extension MyPageViewController {
-    @objc func categoryReceivedNotification(notification: NSNotification) {
-        navigationController?.pushViewController(EditProfileViewController(), animated: true)
-        // FIXME: 이러면 profile모델 어떻게 넘기지
     }
 }
 
@@ -111,12 +112,16 @@ extension MyPageViewController {
     private func headerRegistration() -> UICollectionView.SupplementaryRegistration<MyProfileView> {
         return UICollectionView.SupplementaryRegistration(elementKind: MyProfileView.id, handler: { [weak self] profileView, elementKind, indexPath in
             guard let self else { return }
-            guard let model = dataSource.itemIdentifier(for: indexPath), let section = dataSource.snapshot().sectionIdentifier(containingItem: model) else { return }
+            guard let model = dataSource.itemIdentifier(for: indexPath), let profileData = dataSource.snapshot().sectionIdentifier(containingItem: model) else { return }
             profileView.profileImageView//
             
-            profileView.nicknameLabel.text = section.nick
-            profileView.followerCount.text = section.followers.count.description
-            profileView.followingCount.text = section.following.count.description
+            profileView.nicknameLabel.text = profileData.nick
+            profileView.followerCount.text = profileData.followers.count.description
+            profileView.followingCount.text = profileData.following.count.description
+            
+            profileView.editButton.rx.tap
+                .bind(to: editButtonTap)
+                .disposed(by: profileView.disposeBag)
         })
     }
 }

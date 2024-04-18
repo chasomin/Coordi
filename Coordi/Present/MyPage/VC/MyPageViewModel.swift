@@ -14,11 +14,14 @@ final class MyPageViewModel: ViewModelType {
     
     struct Input {
         let viewDidLoad: Observable<Void>
+        let editButtonTap: PublishRelay<Void>
     }
     
     struct Output {
         let profile: PublishRelay<ProfileModel>
         let posts: PublishRelay<PostListModel>
+        let editButtonTap: PublishRelay<ProfileModel>
+
     }
     
     func transform(input: Input) -> Output {
@@ -27,6 +30,7 @@ final class MyPageViewModel: ViewModelType {
 
         let myProfile = PublishRelay<ProfileModel>()
         let myPosts = PublishRelay<PostListModel>()
+        let editButtonTap = PublishRelay<ProfileModel>()
         
         input.viewDidLoad
             .withLatestFrom(postQuery)
@@ -48,6 +52,14 @@ final class MyPageViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
+        
+        input.editButtonTap
+            .withLatestFrom(myProfile)
+            .subscribe { profileModel in
+                editButtonTap.accept(profileModel)
+            }
+            .disposed(by: disposeBag)
+        
 //        myProfile
 //            .flatMap({ profileModel in
 //                NetworkManager.request(api: .fetchImage(query: profileModel.profileImage))
@@ -60,6 +72,6 @@ final class MyPageViewModel: ViewModelType {
 //            }
 //            .disposed(by: disposeBag)
             
-        return Output.init(profile: myProfile, posts: myPosts)
+        return Output.init(profile: myProfile, posts: myPosts, editButtonTap: editButtonTap)
     }
 }

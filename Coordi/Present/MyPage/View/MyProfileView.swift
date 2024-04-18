@@ -12,9 +12,7 @@ import RxCocoa
 
 final class MyProfileView: UICollectionReusableView {
     static let id = MyProfileView.description()
-    private let viewModel = MyProfileViewModel()
-    private let disposeBag = DisposeBag()
-        
+
     let profileImageView = CirCleImageView()
     private let infoStack = UIStackView()
     let nicknameLabel = UILabel()
@@ -24,26 +22,21 @@ final class MyProfileView: UICollectionReusableView {
     private let followingLabel = UILabel()
     let followingCount = UILabel()
     let editButton = CapsuleButton(text: "프로필 관리", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
+    
+    var disposeBag = DisposeBag()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureHierarchy()
         configureLayout()
         configureView()
-        bind()
     }
     
-    private func bind() {
-        let input = MyProfileViewModel.Input(editButtonTap: editButton.rx.tap.asObservable())
-        let output = viewModel.transform(input: input)
-        
-        output.editButtonTap
-            .drive(with: self, onNext: { owner, _ in
-                NotificationCenter.default.post(name: NSNotification.Name("EditButtonTapReceived"), object: nil, userInfo: ["editButtonTap": ()])
-            })
-            .disposed(by: disposeBag)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

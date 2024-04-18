@@ -12,16 +12,16 @@ final class TokenRefresh: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         
         guard urlRequest.url?.absoluteString.hasPrefix(BaseURL.baseURL.rawValue) == true,
-              let accessToken = UserDefaults.standard.string(forKey: "accessToken"),
-              let refreshToken = UserDefaults.standard.string(forKey: "refreshToken")
+              UserDefaultsManager.accessToken == "",
+              UserDefaultsManager.refreshToken == ""
         else {
             completion(.success(urlRequest))
             return
         }
         
         var urlRequest = urlRequest
-        urlRequest.setValue(accessToken, forHTTPHeaderField: HTTPHeader.authorization.rawValue)
-        urlRequest.setValue(refreshToken, forHTTPHeaderField: HTTPHeader.refresh.rawValue)
+        urlRequest.setValue(UserDefaultsManager.accessToken, forHTTPHeaderField: HTTPHeader.authorization.rawValue)
+        urlRequest.setValue(UserDefaultsManager.refreshToken, forHTTPHeaderField: HTTPHeader.refresh.rawValue)
         print("adator 적용 \(urlRequest.headers)")
         completion(.success(urlRequest))
     }

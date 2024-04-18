@@ -57,9 +57,9 @@ final class LogInViewModel: ViewModelType {
             }
             .subscribe { loginModel in
                 successTrigger.accept(())
-                UserDefaults.standard.set(loginModel.element?.accessToken, forKey: "accessToken")
-                UserDefaults.standard.set(loginModel.element?.refreshToken, forKey: "refreshToken")
-                UserDefaults.standard.set(loginModel.element?.user_id, forKey: "user_id")
+                UserDefaultsManager.accessToken = loginModel.element?.accessToken ?? ""
+                UserDefaultsManager.refreshToken = loginModel.element?.refreshToken ?? ""
+                UserDefaultsManager.userId = loginModel.element?.user_id ?? ""
             }
             .disposed(by: disposeBag)
 

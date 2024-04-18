@@ -25,7 +25,7 @@ final class MyPageViewModel: ViewModelType {
     }
     
     func transform(input: Input) -> Output {
-        let userId = UserDefaults.standard.string(forKey: "user_id") ?? ""
+        let userId = UserDefaultsManager.userId
         let postQuery = Observable.just(FetchPostQuery(next: "", limit: "7", product_id: "", hashTag: nil))//test
 
         let myProfile = PublishRelay<ProfileModel>()

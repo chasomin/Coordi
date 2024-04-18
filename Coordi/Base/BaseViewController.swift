@@ -21,6 +21,8 @@ class BaseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.backgroundColor
+        navigationController?.navigationBar.topItem?.backButtonDisplayMode = .minimal
+        
         bind()
         configureHierarchy()
         configureLayout()

@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 final class MyPageViewController: BaseViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -104,7 +105,8 @@ extension MyPageViewController {
     
     private func cellRegistration() -> UICollectionView.CellRegistration<MyPageCollectionViewCell, PostModel> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-//            cell.image.image = itemIdentifier.files.first!
+            guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + (itemIdentifier.files.first ?? "")) else { return }
+            cell.image.loadImage(from: url, placeHolderImage: UIImage(systemName: "star"))
             cell.tempLabel.text = itemIdentifier.content
         }
     }
@@ -113,8 +115,9 @@ extension MyPageViewController {
         return UICollectionView.SupplementaryRegistration(elementKind: MyProfileView.id, handler: { [weak self] profileView, elementKind, indexPath in
             guard let self else { return }
             guard let model = dataSource.itemIdentifier(for: indexPath), let profileData = dataSource.snapshot().sectionIdentifier(containingItem: model) else { return }
-            profileView.profileImageView//
-            
+            guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + profileData.profileImage) else { return }
+            profileView.profileImageView.loadImage(from: url, placeHolderImage: UIImage(systemName: "star"))
+            print(url)
             profileView.nicknameLabel.text = profileData.nick
             profileView.followerCount.text = profileData.followers.count.description
             profileView.followingCount.text = profileData.following.count.description
@@ -125,3 +128,6 @@ extension MyPageViewController {
         })
     }
 }
+
+
+

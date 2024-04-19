@@ -14,7 +14,7 @@ enum Router {
     case logIn(query: LogInQuery)
     case refreshToken
     case withdraw
-    case uploadImage(query: ImageUploadQuery)
+    case uploadImage
     case uploadPost(query: PostQuery)
     case fetchPost(query: FetchPostQuery)
     case fetchParticularPost(postId: String)
@@ -165,10 +165,17 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
             
-        case .uploadImage, .uploadPost, .editPost, .uploadComment, .editComment, .editProfile:
+        case .uploadImage, .editProfile:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
+                HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
+            ]
+            
+        case .editPost, .uploadComment, .editComment, .uploadPost:
+            return [
+                HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
+                HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
         }
@@ -216,8 +223,6 @@ extension Router: TargetType {
             return try? encoder.encode(query)
         case .emailValidation(let query):
             return try? encoder.encode(query)
-        case .uploadImage(let query):
-            return try? encoder.encode(query)
         case .uploadPost(let query):
             return try? encoder.encode(query)
         case .editPost(_, let query):
@@ -230,7 +235,7 @@ extension Router: TargetType {
             return try? encoder.encode(query)
         case .editProfile(let query):
             return try? encoder.encode(query)
-        case .refreshToken, .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage:
+        case .refreshToken, .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .uploadImage:
             return nil
         }
     }

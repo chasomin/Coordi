@@ -64,6 +64,30 @@ struct PostModel: Decodable, Hashable {
         self.hashTags = try container.decode([String].self, forKey: .hashTags)
         self.comments = try container.decode([String].self, forKey: .comments)
     }
+    
+    init(post_id: String, product_id: String, title: String, content: String, content1: String, content2: String, content3: String, content4: String, content5: String, createdAt: String, creator: UserModel, files: [String], likes: [String], likes2: [String], hashTags: [String], comments: [String]) {
+        self.post_id = post_id
+        self.product_id = product_id
+        self.title = title
+        self.content = content
+        self.content1 = content1
+        self.content2 = content2
+        self.content3 = content3
+        self.content4 = content4
+        self.content5 = content5
+        self.createdAt = createdAt
+        self.creator = creator
+        self.files = files
+        self.likes = likes
+        self.likes2 = likes2
+        self.hashTags = hashTags
+        self.comments = comments
+    }
+    
+    static var dummy: PostModel {
+        return .init(post_id: "", product_id: "", title: "", content: "", content1: "", content2: "", content3: "", content4: "", content5: "", createdAt: "", creator: UserModel.dummy, files: [], likes: [], likes2: [], hashTags: [], comments: [])
+    }
+
 }
 
 
@@ -71,6 +95,12 @@ struct UserModel: Decodable, Hashable {
     let user_id: String
     let nick: String
     let profileImage: String
+    
+    init(user_id: String, nick: String, profileImage: String) {
+        self.user_id = user_id
+        self.nick = nick
+        self.profileImage = profileImage
+    }
     
     enum CodingKeys: CodingKey {
         case user_id
@@ -83,5 +113,9 @@ struct UserModel: Decodable, Hashable {
         self.user_id = try container.decode(String.self, forKey: .user_id)
         self.nick = try container.decode(String.self, forKey: .nick)
         self.profileImage = try container.decodeIfPresent(String.self, forKey: .profileImage) ?? ""
+    }
+    
+    static var dummy: UserModel {
+        return .init(user_id: "", nick: "", profileImage: "")
     }
 }

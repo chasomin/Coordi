@@ -7,8 +7,23 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
+import PhotosUI
 
 final class CreatePostViewController: BaseViewController {
+    
+    private let viewModel = CreatePostViewModel()
+    private var imageContainer: [UIImage] = [] {
+        didSet {
+            images.accept(imageContainer)
+        }
+    }
+    private var images: BehaviorRelay<[UIImage]> = .init(value: [])
+    private var imageSelectedButtonTap = PublishRelay<Void>()
+    private var textViewDidBeginEditing = PublishRelay<Void>()
+    private var textViewDidEndEditing = PublishRelay<Void>()
+    
     private let imagePlusButton = UIButton()
     private lazy var imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     private let tempTitleLabel = UILabel()
@@ -17,15 +32,113 @@ final class CreatePostViewController: BaseViewController {
     private let contentTextView = UITextView()
     private let saveButton = PointButton(text: "등록하기")
     
-    private var dataSource: UICollectionViewDiffableDataSource<String, String>!
+    private var dataSource: UICollectionViewDiffableDataSource<String, UIImage>!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         makeCellRegistration()
-        updateSnapshot()
+        
         navigationItem.title = "코디 올리기"
+        contentTextView.delegate = self
+    }
+    
+    override func bind() {
+        let imageData = images.map { $0.compactMap { image in
+            image.compressedJPEGData
+        }}
+        
+        let data = PublishRelay<[Data]>()
+        
+        saveButton.rx.tap
+            .withLatestFrom(imageData)
+            .bind(with: self) { owner, value in
+                owner.saveButton.configuration?.showsActivityIndicator = true
+                data.accept(value)
+            }
+            .disposed(by: disposeBag)
+        
+        let input = CreatePostViewModel.Input(imagePlusButtonTap: imagePlusButton.rx.tap.asObservable(),
+                                              saveButtonTap: data,
+                                              imageSelectedButtonTap: imageSelectedButtonTap.asObservable(),
+                                              temp: .init(value: ""),
+                                              content: .init(value: ""),
+                                              imageData: imageData,
+                                              textViewDidBeginEditing: textViewDidBeginEditing,
+                                              textViewDidEndEditing: textViewDidEndEditing)
+        let output = viewModel.transform(input: input)
+        
+        tempTextField.textField.rx.text.orEmpty
+            .bind(to: input.temp)
+            .disposed(by: disposeBag)
+        
+        contentTextView.rx.text.orEmpty
+            .bind(to: input.content)
+            .disposed(by: disposeBag)
+            
+
+        output.imagePlusButtonTap
+            .drive(with: self) { owner, _ in
+                owner.imageContainer.removeAll()
+                
+                var configuration = PHPickerConfiguration()
+                configuration.selectionLimit = 5
+                configuration.filter = .any(of: [.images, .livePhotos, .videos])
+                let picker = PHPickerViewController(configuration: configuration)
+                picker.delegate = self
+                owner.present(picker, animated:  true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.imageSelectedButtonTap
+            .drive(with: self) { owner, _ in
+                owner.dismiss(animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.saveButtonTap
+            .drive(with: self) { owner, _ in
+                owner.showDoneToast()
+                owner.saveButton.configuration?.showsActivityIndicator = false
+                Observable.just(())
+                    .delay(.seconds(1), scheduler: MainScheduler.instance)
+                    .subscribe(onNext: { _ in
+                        owner.navigationController?.popViewController(animated: true)
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+            .disposed(by: disposeBag)
+        
+        output.buttonEnable
+            .drive(saveButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+
+        output.failureTrigger
+            .drive(with: self) { owner, _ in
+                owner.showErrorToast()
+            }
+            .disposed(by: disposeBag)
+        
+        output.textViewDidBeginEditing
+            .drive(with: self) { owner, _ in
+                owner.imagePlusButton.isHidden = true
+                owner.imageCollectionView.isHidden = true
+                owner.tempTitleLabel.isHidden = true
+                owner.tempTextField.isHidden = true
+                owner.tempLabel.isHidden = true
+            }
+            .disposed(by: disposeBag)
+        
+        output.textViewDidEndEditing
+            .drive(with: self) { owner, _ in
+                owner.imagePlusButton.isHidden = false
+                owner.imageCollectionView.isHidden = false
+                owner.tempTitleLabel.isHidden = false
+                owner.tempTextField.isHidden = false
+                owner.tempLabel.isHidden = false
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureHierarchy() {
@@ -84,13 +197,14 @@ final class CreatePostViewController: BaseViewController {
     }
     
     override func configureView() {
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.tinted()
         config.image = UIImage(systemName: "plus")
         config.imagePlacement = .top
-        config.baseForegroundColor = .LabelColor
-        config.baseBackgroundColor = .pointColor
+        config.baseForegroundColor = .backgroundColor
+        config.baseBackgroundColor = .LabelColor
+        config.background.cornerRadius = 15
         var attr = AttributedString.init("사진 추가")
-        attr.font = UIFont.body
+        attr.font = UIFont.caption
         config.attributedSubtitle = attr
         imagePlusButton.configuration = config
         
@@ -122,11 +236,41 @@ final class CreatePostViewController: BaseViewController {
         })
     }
     
-    private func updateSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<String, String>()
+    private func updateSnapshot(data: [UIImage]) {
+        var snapshot = NSDiffableDataSourceSnapshot<String, UIImage>()
         snapshot.appendSections([""])
-        snapshot.appendItems(ImageUploadModel.init(files: ["1","2","3","4","5"]).files, toSection: "")
+        snapshot.appendItems(data, toSection: "")
         dataSource.apply(snapshot)
+    }
+}
+
+extension CreatePostViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textViewDidBeginEditing.accept(())
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        textViewDidEndEditing.accept(())
+    }
+}
+
+extension CreatePostViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        
+        results.forEach { results in
+            let itemProvider = results.itemProvider
+            if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                itemProvider.loadObject(ofClass: UIImage.self) { [weak self] result, error in
+                    guard let self else { return }
+                    guard let image = result as? UIImage else { return }
+                    imageContainer.append(image)
+                    DispatchQueue.main.async {
+                        self.updateSnapshot(data: self.imageContainer)
+                    }
+                }
+            }
+        }
+        imageSelectedButtonTap.accept(())
     }
 }
 
@@ -148,9 +292,9 @@ extension CreatePostViewController {
         return UICollectionViewCompositionalLayout(section: section, configuration: config)
     }
     
-    private func cellRegistration() -> UICollectionView.CellRegistration<CreateImageCollectionViewCell, String> {
+    private func cellRegistration() -> UICollectionView.CellRegistration<CreateImageCollectionViewCell, UIImage> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-            cell.imageView.image = .coordi
+            cell.imageView.image = itemIdentifier
         }
     }
 }

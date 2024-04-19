@@ -60,7 +60,7 @@ final class SignUpViewController: BaseViewController {
         
         output.failureTrigger
             .drive(with: self) { owner, valid in
-                owner.showToast()
+                owner.showErrorToast()
             }
             .disposed(by: disposeBag)
 

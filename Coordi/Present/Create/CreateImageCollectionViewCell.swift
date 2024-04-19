@@ -23,8 +23,6 @@ final class CreateImageCollectionViewCell: BaseCollectionViewCell {
     
     override func configureView() {
         imageView.layer.cornerRadius = 15
-        imageView.layer.borderColor = UIColor.pointColor.cgColor
-        imageView.layer.borderWidth = 1
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
     }

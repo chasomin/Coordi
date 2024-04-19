@@ -30,7 +30,7 @@
 		798604312BD2539F003E721E /* CreatePostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604302BD2539F003E721E /* CreatePostViewModel.swift */; };
 		798604332BD26041003E721E /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604322BD26041003E721E /* UIImage+.swift */; };
 		798604352BD293FA003E721E /* APIMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604342BD293FA003E721E /* APIMonitor.swift */; };
-		798604382BD29DBA003E721E /* Constans.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604372BD29DBA003E721E /* Constans.swift */; };
+		798604382BD29DBA003E721E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604372BD29DBA003E721E /* Constants.swift */; };
 		7986043A2BD2BCF3003E721E /* Toast+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604392BD2BCF3003E721E /* Toast+.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
@@ -108,7 +108,7 @@
 		798604302BD2539F003E721E /* CreatePostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewModel.swift; sourceTree = "<group>"; };
 		798604322BD26041003E721E /* UIImage+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+.swift"; sourceTree = "<group>"; };
 		798604342BD293FA003E721E /* APIMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIMonitor.swift; sourceTree = "<group>"; };
-		798604372BD29DBA003E721E /* Constans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constans.swift; sourceTree = "<group>"; };
+		798604372BD29DBA003E721E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		798604392BD2BCF3003E721E /* Toast+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Toast+.swift"; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
@@ -195,7 +195,7 @@
 				79553B472BC9135C000B4E4B /* AppDelegate.swift */,
 				79553B492BC9135C000B4E4B /* SceneDelegate.swift */,
 				79553B4B2BC9135C000B4E4B /* ViewController.swift */,
-				798604362BD29D87003E721E /* Constans */,
+				798604362BD29D87003E721E /* Constants */,
 				79EBA4DE2BCD1B8200C3C530 /* Protocol */,
 				79EBA4DB2BCD199300C3C530 /* Extension */,
 				79EBA4D82BCD173900C3C530 /* Base */,
@@ -273,12 +273,12 @@
 			path = UserDefaults;
 			sourceTree = "<group>";
 		};
-		798604362BD29D87003E721E /* Constans */ = {
+		798604362BD29D87003E721E /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				798604372BD29DBA003E721E /* Constans.swift */,
+				798604372BD29DBA003E721E /* Constants.swift */,
 			);
-			path = Constans;
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		79B043E82BCE719E00407A1F /* Feed */ = {
@@ -534,7 +534,7 @@
 				79553B692BC93A51000B4E4B /* LogInQuery.swift in Sources */,
 				79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */,
 				798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */,
-				798604382BD29DBA003E721E /* Constans.swift in Sources */,
+				798604382BD29DBA003E721E /* Constants.swift in Sources */,
 				79EBA4DA2BCD174500C3C530 /* BaseViewController.swift in Sources */,
 				798604312BD2539F003E721E /* CreatePostViewModel.swift in Sources */,
 				798604112BD17366003E721E /* CreateImageCollectionViewCell.swift in Sources */,

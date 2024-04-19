@@ -8,7 +8,6 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import Toast
 
 class BaseViewController: UIViewController {
     
@@ -33,13 +32,6 @@ class BaseViewController: UIViewController {
     func configureHierarchy() { }
     func configureLayout() { }
     func configureView() { }
-    
-    func showToast() {
-        var style = ToastStyle.init()
-        style.backgroundColor = .pointColor
-        style.titleColor = .backgroundColor
-        view.makeToast(nil, duration: 2, position: .top, title: "⚠️오류가 발생했습니다\n잠시후에 다시 시도해주세요", style: style) //TODO: 오류 처리
-    }
 
     @available (*, unavailable)
     required init?(coder: NSCoder) {

@@ -41,8 +41,8 @@ struct NetworkManager {
         }
     }
     
-    static func upload(api: Router, images: [Data]) -> Single<ImageUploadModel> {
-        return Single<ImageUploadModel>.create { single in
+    static func upload<T: Decodable>(api: Router) -> Single<T> {
+        return Single<T>.create { single in
             guard let url = URL(string: api.baseURL + api.path) else { return Disposables.create() }
             let accessToken = UserDefaultsManager.accessToken
             print(url)
@@ -51,17 +51,30 @@ struct NetworkManager {
                 HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
                 HTTPHeader.authorization.rawValue: accessToken
             ]
+            guard let parameters = api.parameters else { return Disposables.create() }
             
-            AF.upload(multipartFormData: { multipartFormData in
-                for image in images {
-                    multipartFormData.append(image,
-                                             withName: "files",
-                                             fileName: "Coordi.jpg",
-                                             mimeType: "image/jpeg")
+            API.session.upload(multipartFormData: { multipartFormData in
+                
+                for (key, value) in parameters {
+                    if value is [Data] {
+                        for image in value as! [Data] {
+                            multipartFormData.append(image,
+                                                     withName: key,
+                                                     fileName: "Coordi.jpg",
+                                                     mimeType: "image/jpeg")
+                        }
+                    } else if value is Data {
+                        multipartFormData.append(value as! Data,
+                                                 withName: key,
+                                                 fileName: "Coordi.jpg",
+                                                 mimeType: "image/jpeg")
+                    } else {
+                        multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+                    }
                 }
                 
-            }, to: url, method: .post, headers: headers)
-            .responseDecodable(of: ImageUploadModel.self) { response in
+            }, to: url, method: api.method, headers: headers)
+            .responseDecodable(of: T.self) { response in
                 switch response.result {
                 case .success(let success):
                     single(.success(success))

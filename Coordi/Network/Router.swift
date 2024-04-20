@@ -14,7 +14,7 @@ enum Router {
     case logIn(query: LogInQuery)
     case refreshToken
     case withdraw
-    case uploadImage
+    case uploadImage(query: ImageUploadQuery)
     case uploadPost(query: PostQuery)
     case fetchPost(query: FetchPostQuery)
     case fetchParticularPost(postId: String)
@@ -29,7 +29,8 @@ enum Router {
     case follow(userId: String)
     case deleteFollow(userId: String)
     case fetchMyProfile
-    case editProfile(query: ProfileQuery)
+    case editProfileNick(query: ProfileNickQuery)
+    case editProfileImage(query: ProfileImageQuery)
     case fetchUserProfile(userId: String)
     case hashtag(query: FetchPostQuery)
     case fetchImage(query: String)
@@ -82,7 +83,9 @@ extension Router: TargetType {
             return .delete
         case .fetchMyProfile:
             return .get
-        case .editProfile:
+        case .editProfileNick:
+            return .put
+        case .editProfileImage:
             return .put
         case .fetchUserProfile:
             return .get
@@ -135,7 +138,9 @@ extension Router: TargetType {
             "/follow/\(id)"
         case .fetchMyProfile:
             "/users/me/profile"
-        case .editProfile:
+        case .editProfileNick:
+            "/users/me/profile"
+        case .editProfileImage:
             "/users/me/profile"
         case .fetchUserProfile(let id):
             "/users/\(id)/profile"
@@ -165,7 +170,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
             
-        case .uploadImage, .editProfile:
+        case .uploadImage, .editProfileNick, .editProfileImage:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.contentType.rawValue: HTTPHeader.multi.rawValue,
@@ -207,6 +212,18 @@ extension Router: TargetType {
                 "product_id": query.product_id,
                 "hashTag": query.hashTag ?? ""
             ]
+        case .editProfileNick(let query):
+            [
+                "nick": query.nick
+            ]
+        case .editProfileImage(let query):
+            [
+                "profile": query.profile
+            ]
+        case .uploadImage(let query):
+            [
+                "files":query.files
+            ]
         default:
             nil
         }
@@ -215,7 +232,7 @@ extension Router: TargetType {
     var body: Data? {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-
+        
         switch self {
         case .logIn(let query):
             return try? encoder.encode(query)
@@ -233,9 +250,7 @@ extension Router: TargetType {
             return try? encoder.encode(query)
         case .like(_, let query):
             return try? encoder.encode(query)
-        case .editProfile(let query):
-            return try? encoder.encode(query)
-        case .refreshToken, .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .uploadImage:
+        case .refreshToken, .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .uploadImage, .editProfileNick, .editProfileImage:
             return nil
         }
     }

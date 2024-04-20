@@ -12,6 +12,8 @@ import RxCocoa
 
 final class EditProfileViewController: BaseViewController {
     private let viewModel = EditProfileViewModel()
+    private let imagePickerCancel = PublishRelay<Void>()
+    private let imagePickerFinishPicking = PublishRelay<Data>()
     
     var nick: String
     var profileImage: String
@@ -72,18 +74,22 @@ final class EditProfileViewController: BaseViewController {
         nickname.label.font = .body
         profileImageView.backgroundColor = .pointColor
         profileImageView.isUserInteractionEnabled = true
-        //TODO: Image 표시
+        profileImageView.loadImage(from: profileImage)
     }
     
     override func bind() {
         let input = EditProfileViewModel.Input(imageTap: imageTapGesture.rx.event.map { _ in () },
-                                               labelTap: nicknameTapGesture.rx.event.map { _ in () })
+                                               labelTap: nicknameTapGesture.rx.event.map { _ in () },
+                                               imagePickerCancel: imagePickerCancel,
+                                               imagePickerFinishPicking: imagePickerFinishPicking)
         let output = viewModel.transform(input: input)
         
         output.imageTap
             .drive(with: self) { owner, _ in
-                print("이미지 탭")
-                //TODO: 이미지피커
+                let vc = UIImagePickerController()
+                vc.allowsEditing = true
+                vc.delegate = self
+                owner.present(vc, animated: true)
             }
             .disposed(by: disposeBag)
         
@@ -94,5 +100,30 @@ final class EditProfileViewController: BaseViewController {
 //                owner.navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
             }
             .disposed(by: disposeBag)
+        
+        output.imagePickerCancel
+            .drive(with: self) { owner, _ in
+                owner.dismiss(animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.imagePickerFinishPicking
+            .drive(with: self) { owner, image in
+                owner.profileImageView.loadImage(from: image)
+                owner.dismiss(animated: true)
+            }
+            .disposed(by: disposeBag)
+    }
+}
+
+extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        imagePickerCancel.accept(())
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
+        guard let image = pickedImage.compressedJPEGData else { return }
+        imagePickerFinishPicking.accept(image)
+        
     }
 }

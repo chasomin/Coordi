@@ -15,10 +15,15 @@ final class EditProfileViewController: BaseViewController {
     private let imagePickerCancel = PublishRelay<Void>()
     private let imagePickerFinishPicking = PublishRelay<Data>()
     
-    var nick: String
+    var nick: String {
+        didSet {
+            nickname.label.text = nick
+        }
+    }
     var profileImage: String
     
     private let profileImageView = CirCleImageView()
+    private let imageEditLabel = UILabel()
     private let nicknameTitleLabel = UILabel()
     private let nickname = UnderlineLabel()
     private let imageTapGesture = UITapGestureRecognizer()
@@ -34,11 +39,12 @@ final class EditProfileViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = "프로필 관리"
+        navigationItem.title = Constants.NavigationTitle.editProfile.title
     }
     
     override func configureHierarchy() {
         view.addSubview(profileImageView)
+        profileImageView.addSubview(imageEditLabel)
         view.addSubview(nicknameTitleLabel)
         view.addSubview(nickname)
         profileImageView.addGestureRecognizer(imageTapGesture)
@@ -51,6 +57,11 @@ final class EditProfileViewController: BaseViewController {
             make.top.equalTo(view.safeAreaLayoutGuide).inset(15)
             make.centerX.equalTo(view)
             make.size.equalTo(100)
+        }
+        
+        imageEditLabel.snp.makeConstraints { make in
+            make.horizontalEdges.bottom.equalToSuperview()
+            make.height.equalTo(profileImageView).dividedBy(4)
         }
         
         nicknameTitleLabel.snp.makeConstraints { make in
@@ -73,8 +84,14 @@ final class EditProfileViewController: BaseViewController {
         nickname.label.text = nick
         nickname.label.font = .body
         profileImageView.backgroundColor = .pointColor
-        profileImageView.isUserInteractionEnabled = true
         profileImageView.loadImage(from: profileImage)
+        profileImageView.isUserInteractionEnabled = true
+        imageEditLabel.text = "변경"
+        imageEditLabel.textColor = .white
+        imageEditLabel.textAlignment = .center
+        imageEditLabel.font = .caption
+        imageEditLabel.backgroundColor = .black
+        imageEditLabel.alpha = 0.5
     }
     
     override func bind() {
@@ -97,7 +114,11 @@ final class EditProfileViewController: BaseViewController {
             .drive(with: self) { owner, _ in
                 print("label 탭")
                 //TODO: 닉네임 텍스트필드 + 확인 버튼 수정뷰
-//                owner.navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
+                let vc = EditNicknameViewController(currentNickname: owner.nick)
+                vc.changeNickname = { nick in
+                    owner.nick = nick
+                }
+                owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
         
@@ -120,10 +141,10 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         imagePickerCancel.accept(())
     }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
         guard let image = pickedImage.compressedJPEGData else { return }
         imagePickerFinishPicking.accept(image)
-        
     }
 }

@@ -38,8 +38,11 @@ final class CreatePostViewModel: ViewModelType {
         let failureTrigger = PublishRelay<Void>()
 
         input.saveButtonTap
+            .map { data in
+                return ImageUploadQuery(files: data)
+            }
             .flatMap { data in
-                NetworkManager.upload(api: .uploadImage, images: data)
+                NetworkManager.upload(api: .uploadImage(query: data))
                     .catch { _ in
                         failureTrigger.accept(())
                         return Single<ImageUploadModel>.never()

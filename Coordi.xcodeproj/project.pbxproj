@@ -32,6 +32,8 @@
 		798604352BD293FA003E721E /* APIMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604342BD293FA003E721E /* APIMonitor.swift */; };
 		798604382BD29DBA003E721E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604372BD29DBA003E721E /* Constants.swift */; };
 		7986043A2BD2BCF3003E721E /* Toast+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604392BD2BCF3003E721E /* Toast+.swift */; };
+		7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7986043D2BD42EBC003E721E /* EditNicknameViewController.swift */; };
+		798604402BD43194003E721E /* EditNicknameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7986043F2BD43194003E721E /* EditNicknameViewModel.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -110,6 +112,8 @@
 		798604342BD293FA003E721E /* APIMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIMonitor.swift; sourceTree = "<group>"; };
 		798604372BD29DBA003E721E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		798604392BD2BCF3003E721E /* Toast+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Toast+.swift"; sourceTree = "<group>"; };
+		7986043D2BD42EBC003E721E /* EditNicknameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameViewController.swift; sourceTree = "<group>"; };
+		7986043F2BD43194003E721E /* EditNicknameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameViewModel.swift; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79B043E92BCE8C9300407A1F /* TokenRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresh.swift; sourceTree = "<group>"; };
@@ -303,6 +307,8 @@
 			children = (
 				79B043ED2BCE8FC800407A1F /* EditProfileViewController.swift */,
 				798604042BD10EB0003E721E /* EditProfileViewModel.swift */,
+				7986043D2BD42EBC003E721E /* EditNicknameViewController.swift */,
+				7986043F2BD43194003E721E /* EditNicknameViewModel.swift */,
 			);
 			path = EditProfile;
 			sourceTree = "<group>";
@@ -508,6 +514,7 @@
 				79EBA47B2BCAD3F900C3C530 /* PostListModel.swift in Sources */,
 				79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */,
 				79553B652BC93984000B4E4B /* SignUpQuery.swift in Sources */,
+				798604402BD43194003E721E /* EditNicknameViewModel.swift in Sources */,
 				79EBA4EB2BCD310000C3C530 /* UIFont+.swift in Sources */,
 				79EBA4ED2BCD54A000C3C530 /* NetworkManager.swift in Sources */,
 				79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */,
@@ -517,6 +524,7 @@
 				79EBA4832BCAE70400C3C530 /* ProfileModel.swift in Sources */,
 				79EBA48E2BCC27BE00C3C530 /* FetchPostQuery.swift in Sources */,
 				7986043A2BD2BCF3003E721E /* Toast+.swift in Sources */,
+				7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */,
 				79B043F22BCE9DB100407A1F /* MyPageViewController.swift in Sources */,
 				79EBA4E92BCD297900C3C530 /* PointButton.swift in Sources */,
 				798604352BD293FA003E721E /* APIMonitor.swift in Sources */,

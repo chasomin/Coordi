@@ -9,7 +9,8 @@ import UIKit
 import Kingfisher
 
 extension UIImageView {
-    func loadImage(from url: URL, placeHolderImage: UIImage? = nil) {
+    func loadImage(from path: String, placeHolderImage: UIImage? = nil) {
+        guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + path) else { return }
         let modifier = AnyModifier { request in
             var request = request
             request.setValue(UserDefaultsManager.accessToken, forHTTPHeaderField: HTTPHeader.authorization.rawValue)

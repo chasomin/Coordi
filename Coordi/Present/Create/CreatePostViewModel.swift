@@ -16,11 +16,11 @@ final class CreatePostViewModel: ViewModelType {
         let imagePlusButtonTap: Observable<Void>
         let saveButtonTap: PublishRelay<[Data]>
         let imageSelectedButtonTap: Observable<Void>
-        let temp: BehaviorRelay<String>
+        let temp: BehaviorRelay<Int>
         let content: BehaviorRelay<String>
         let imageData: Observable<[Data]>
-        let textViewDidBeginEditing: PublishRelay<Void>
-        let textViewDidEndEditing: PublishRelay<Void>
+        let textViewDidBeginEditing: PublishRelay<String>
+        let textViewDidEndEditing: PublishRelay<String>
     }
     
     struct Output {
@@ -29,14 +29,17 @@ final class CreatePostViewModel: ViewModelType {
         let imageSelectedButtonTap: Driver<Void>
         let buttonEnable: Driver<Bool>
         let failureTrigger: Driver<Void>
-        let textViewDidBeginEditing: Driver<Void>
-        let textViewDidEndEditing: Driver<Void>
+        let textViewDidBeginEditing: Driver<Bool>
+        let textViewDidEndEditing: Driver<Bool>
+        let textViewPlaceholder: Driver<String>
     }
     
     func transform(input: Input) -> Output {
         let saveButtonTap = PublishRelay<Void>()
         let failureTrigger = PublishRelay<Void>()
 
+        let textViewPlaceholder = PublishRelay<String>()
+        
         input.saveButtonTap
             .map { data in
                 return ImageUploadQuery(files: data)
@@ -69,20 +72,60 @@ final class CreatePostViewModel: ViewModelType {
         Observable.combineLatest(input.imageData, input.temp, input.content)
             .map { value in
                 let (image, temp, content) = value
-                return !image.isEmpty && !temp.isEmpty && !content.isEmpty
+                return !image.isEmpty && !content.isEmpty
             }
             .subscribe { value in
                 saveButtonEnable.accept(value)
             }
             .disposed(by: disposeBag)
+        
+        let textViewDidBeginEditing = input.textViewDidBeginEditing
+            .map { _ in
+                return true
+            }
+        let textViewDidEndEditing = input.textViewDidEndEditing
+            .map { _ in
+                return false
+            }
 
+        input.textViewDidBeginEditing
+            .map { text in
+                if text == Constants.TextViewPlaceholder.createPost.rawValue {
+                    return ""
+                } else {
+                    return text
+                }
+            }
+            .bind { text in
+                textViewPlaceholder.accept(text)
+            }
+            .disposed(by: disposeBag)
+
+            
+        
+        input.textViewDidEndEditing
+            .map { text in
+                if text.isEmpty {
+                    return Constants.TextViewPlaceholder.createPost.rawValue
+                } else {
+                    return text
+                }
+            }
+            .bind { text in
+                textViewPlaceholder.accept(text)
+            }
+            .disposed(by: disposeBag)
+
+        
+            
         
         return Output.init(imagePlusButtonTap: input.imagePlusButtonTap.asDriver(onErrorJustReturn: ()),
                            saveButtonTap: saveButtonTap.asDriver(onErrorJustReturn: ()),
                            imageSelectedButtonTap: input.imageSelectedButtonTap.asDriver(onErrorJustReturn: ()),
                            buttonEnable: saveButtonEnable.asDriver(onErrorJustReturn: false),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()),
-                           textViewDidBeginEditing: input.textViewDidBeginEditing.asDriver(onErrorJustReturn: ()),
-                           textViewDidEndEditing: input.textViewDidEndEditing.asDriver(onErrorJustReturn: ()))
+                           textViewDidBeginEditing: textViewDidBeginEditing.asDriver(onErrorJustReturn: true),
+                           textViewDidEndEditing: textViewDidEndEditing.asDriver(onErrorJustReturn: false),
+                           textViewPlaceholder: textViewPlaceholder.asDriver(onErrorJustReturn: ""))
     }
 }

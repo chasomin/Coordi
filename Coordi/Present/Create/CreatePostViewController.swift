@@ -12,25 +12,28 @@ import RxCocoa
 import PhotosUI
 
 final class CreatePostViewController: BaseViewController {
-    
     private let viewModel = CreatePostViewModel()
     private var imageContainer: [UIImage] = [] {
         didSet {
             images.accept(imageContainer)
         }
     }
+    private let selectTemp = PublishRelay<Int>()
+    
     private var images: BehaviorRelay<[UIImage]> = .init(value: [])
     private var imageSelectedButtonTap = PublishRelay<Void>()
-    private var textViewDidBeginEditing = PublishRelay<Void>()
-    private var textViewDidEndEditing = PublishRelay<Void>()
+    private var textViewDidBeginEditing = PublishRelay<String>()
+    private var textViewDidEndEditing = PublishRelay<String>()
     
     private let imagePlusButton = UIButton()
     private lazy var imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     private let tempTitleLabel = UILabel()
-    private let tempTextField = LineTextField()
+    private let tempPicker = UIPickerView()
     private let tempLabel = UILabel()
     private let contentTextView = UITextView()
     private let saveButton = PointButton(text: "등록하기")
+    
+    private var temp: [Int] = Array(-20...30)
     
     private var dataSource: UICollectionViewDiffableDataSource<String, UIImage>!
     
@@ -40,8 +43,7 @@ final class CreatePostViewController: BaseViewController {
         
         makeCellRegistration()
         
-        navigationItem.title = "코디 올리기"
-        contentTextView.delegate = self
+        navigationItem.title = Constants.NavigationTitle.create.title
     }
     
     override func bind() {
@@ -62,21 +64,21 @@ final class CreatePostViewController: BaseViewController {
         let input = CreatePostViewModel.Input(imagePlusButtonTap: imagePlusButton.rx.tap.asObservable(),
                                               saveButtonTap: data,
                                               imageSelectedButtonTap: imageSelectedButtonTap.asObservable(),
-                                              temp: .init(value: ""),
+                                              temp: .init(value: 0),
                                               content: .init(value: ""),
                                               imageData: imageData,
                                               textViewDidBeginEditing: textViewDidBeginEditing,
                                               textViewDidEndEditing: textViewDidEndEditing)
         let output = viewModel.transform(input: input)
         
-        tempTextField.textField.rx.text.orEmpty
+        selectTemp
             .bind(to: input.temp)
             .disposed(by: disposeBag)
         
         contentTextView.rx.text.orEmpty
             .bind(to: input.content)
             .disposed(by: disposeBag)
-            
+        
 
         output.imagePlusButtonTap
             .drive(with: self) { owner, _ in
@@ -121,23 +123,25 @@ final class CreatePostViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         output.textViewDidBeginEditing
-            .drive(with: self) { owner, _ in
-                owner.imagePlusButton.isHidden = true
-                owner.imageCollectionView.isHidden = true
-                owner.tempTitleLabel.isHidden = true
-                owner.tempTextField.isHidden = true
-                owner.tempLabel.isHidden = true
-            }
+            .drive(imagePlusButton.rx.isHidden, imageCollectionView.rx.isHidden, tempTitleLabel.rx.isHidden, tempPicker.rx.isHidden, tempLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
         output.textViewDidEndEditing
-            .drive(with: self) { owner, _ in
-                owner.imagePlusButton.isHidden = false
-                owner.imageCollectionView.isHidden = false
-                owner.tempTitleLabel.isHidden = false
-                owner.tempTextField.isHidden = false
-                owner.tempLabel.isHidden = false
-            }
+            .drive(imagePlusButton.rx.isHidden, imageCollectionView.rx.isHidden, tempTitleLabel.rx.isHidden, tempPicker.rx.isHidden, tempLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        output.textViewPlaceholder
+            .drive(contentTextView.rx.text)
+            .disposed(by: disposeBag)
+        
+        output.textViewPlaceholder
+            .drive(with: self, onNext: { owner, text in
+                if text == Constants.TextViewPlaceholder.createPost.rawValue {
+                    owner.contentTextView.textColor = .gray
+                } else {
+                    owner.contentTextView.textColor = .LabelColor
+                }
+            })
             .disposed(by: disposeBag)
     }
     
@@ -145,7 +149,7 @@ final class CreatePostViewController: BaseViewController {
         view.addSubview(imagePlusButton)
         view.addSubview(imageCollectionView)
         view.addSubview(tempTitleLabel)
-        view.addSubview(tempTextField)
+        view.addSubview(tempPicker)
         view.addSubview(tempLabel)
         view.addSubview(contentTextView)
         view.addSubview(saveButton)
@@ -170,22 +174,23 @@ final class CreatePostViewController: BaseViewController {
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(15)
         }
         
-        tempTextField.snp.makeConstraints { make in
+        tempPicker.snp.makeConstraints { make in
             make.top.equalTo(tempTitleLabel.snp.bottom)
             make.leading.equalTo(view.safeAreaLayoutGuide).inset(15)
-            make.height.equalTo(28)
-            make.width.equalTo(50)
+            make.height.equalTo(100)
+            make.width.equalTo(80)
         }
+        
         
         tempLabel.snp.makeConstraints { make in
             make.top.equalTo(tempTitleLabel.snp.bottom)
-            make.leading.equalTo(tempTextField.snp.trailing).offset(5)
-            make.height.equalTo(tempTextField)
+            make.leading.equalTo(tempPicker.snp.trailing).offset(5)
+            make.height.equalTo(tempPicker)
             make.trailing.equalTo(view.safeAreaLayoutGuide).inset(15)
         }
         
         contentTextView.snp.makeConstraints { make in
-            make.top.equalTo(tempTextField.snp.bottom).offset(20)
+            make.top.equalTo(tempPicker.snp.bottom).offset(10)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(15)
         }
         
@@ -212,14 +217,18 @@ final class CreatePostViewController: BaseViewController {
                 
         tempTitleLabel.text = "이 코디와 함께 한 날의 온도는 어땠나요?"
         tempTitleLabel.font = .boldBody
-        tempTextField.textField.placeholder = "ex) 25"
-        tempTextField.textField.font = .body
-        tempTextField.textField.keyboardType = .numberPad
+
         tempLabel.text = "℃"
         tempLabel.font = .body
         
-        contentTextView.text = "텍스트뷰"
+        tempPicker.delegate = self
+        tempPicker.dataSource = self
+        tempPicker.selectRow(temp.firstIndex(of: 0) ?? 0, inComponent: 0, animated: true)
+        
+        contentTextView.delegate = self
+        contentTextView.text = Constants.TextViewPlaceholder.createPost.rawValue
         contentTextView.font = .body
+        contentTextView.textColor = .gray
         contentTextView.layer.cornerRadius = 15
         contentTextView.layer.borderColor = UIColor.pointColor.cgColor
         contentTextView.layer.borderWidth = 1
@@ -246,11 +255,33 @@ final class CreatePostViewController: BaseViewController {
 
 extension CreatePostViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        textViewDidBeginEditing.accept(())
+        textViewDidBeginEditing.accept(textView.text)
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        textViewDidEndEditing.accept(())
+        textViewDidEndEditing.accept(textView.text)
+    }
+}
+
+extension CreatePostViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        temp.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectTemp.accept(temp[row])
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label = UILabel()
+        label.text = temp[row].description
+        label.font = .body
+        label.textAlignment = .center
+        return label
     }
 }
 

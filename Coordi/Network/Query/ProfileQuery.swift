@@ -7,7 +7,10 @@
 
 import Foundation
 
-struct ProfileQuery: Encodable {
-    let nick: String
+struct ProfileImageQuery: Encodable {
     let profile: Data
+}
+
+struct ProfileNickQuery: Encodable {
+    let nick: String
 }

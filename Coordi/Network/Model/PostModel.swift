@@ -24,7 +24,7 @@ struct PostModel: Decodable, Hashable {
     let likes: [String]
     let likes2: [String]
     let hashTags: [String]
-    let comments: [String]
+    let comments: [CommentModel]
     
     enum CodingKeys: CodingKey {
         case post_id
@@ -62,10 +62,10 @@ struct PostModel: Decodable, Hashable {
         self.likes = try container.decode([String].self, forKey: .likes)
         self.likes2 = try container.decode([String].self, forKey: .likes2)
         self.hashTags = try container.decode([String].self, forKey: .hashTags)
-        self.comments = try container.decode([String].self, forKey: .comments)
+        self.comments = try container.decode([CommentModel].self, forKey: .comments)
     }
     
-    init(post_id: String, product_id: String, title: String, content: String, content1: String, content2: String, content3: String, content4: String, content5: String, createdAt: String, creator: UserModel, files: [String], likes: [String], likes2: [String], hashTags: [String], comments: [String]) {
+    init(post_id: String, product_id: String, title: String, content: String, content1: String, content2: String, content3: String, content4: String, content5: String, createdAt: String, creator: UserModel, files: [String], likes: [String], likes2: [String], hashTags: [String], comments: [CommentModel]) {
         self.post_id = post_id
         self.product_id = product_id
         self.title = title

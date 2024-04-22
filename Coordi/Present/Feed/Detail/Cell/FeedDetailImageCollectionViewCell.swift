@@ -18,8 +18,8 @@ final class FeedDetailImageCollectionViewCell: BaseCollectionViewCell {
     override func configureLayout() {
         imageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.equalTo(400)
-            make.width.equalTo(300)
+            make.width.equalTo(frame.width).multipliedBy(0.8)
+            make.height.equalTo(imageView.snp.width).multipliedBy(1.33)
         }
     }
     

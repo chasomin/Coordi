@@ -39,6 +39,7 @@
 		7986044E2BD53747003E721E /* ProfileNavigationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7986044D2BD53747003E721E /* ProfileNavigationCollectionViewCell.swift */; };
 		798604502BD53BA8003E721E /* FeedContentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7986044F2BD53BA8003E721E /* FeedContentCollectionViewCell.swift */; };
 		798604542BD54167003E721E /* CommentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604532BD54167003E721E /* CommentCollectionViewCell.swift */; };
+		799379FC2BD6CEDC0063A2CE /* RoundedTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -124,6 +125,7 @@
 		7986044D2BD53747003E721E /* ProfileNavigationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNavigationCollectionViewCell.swift; sourceTree = "<group>"; };
 		7986044F2BD53BA8003E721E /* FeedContentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedContentCollectionViewCell.swift; sourceTree = "<group>"; };
 		798604532BD54167003E721E /* CommentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCollectionViewCell.swift; sourceTree = "<group>"; };
+		799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldView.swift; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79B043E92BCE8C9300407A1F /* TokenRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresh.swift; sourceTree = "<group>"; };
@@ -473,6 +475,7 @@
 				79EBA4E82BCD297900C3C530 /* PointButton.swift */,
 				79B043F52BCEA1F100407A1F /* CapsuleButton.swift */,
 				79B043F72BCEA32800407A1F /* CirCleImageView.swift */,
+				799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -613,6 +616,7 @@
 				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
 				79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */,
 				79B043F42BCEA02A00407A1F /* MyProfileView.swift in Sources */,
+				799379FC2BD6CEDC0063A2CE /* RoundedTextFieldView.swift in Sources */,
 				79553B672BC93A25000B4E4B /* EmailValidationQuery.swift in Sources */,
 				79B043EE2BCE8FC800407A1F /* EditProfileViewController.swift in Sources */,
 				7986040A2BD12AB5003E721E /* UserDefaultsManager.swift in Sources */,

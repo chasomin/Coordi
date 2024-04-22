@@ -19,7 +19,9 @@ enum Section: Int, CaseIterable {
 
 final class FeedDetailViewController: BaseViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-    
+    private let commentTextfield = RoundedTextFieldView()
+    private let commentButton = UIButton()
+
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     
     var postModel: PostModel
@@ -28,15 +30,14 @@ final class FeedDetailViewController: BaseViewController {
     
     init(postModel: PostModel) {
         self.postModel = postModel
-        
         super.init()
     }
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
         makeCellRegistration()
         updateSnapshot()
+        
     }
     override func bind() {
         backButtonTap
@@ -60,18 +61,36 @@ final class FeedDetailViewController: BaseViewController {
         tabBarController?.tabBar.isHidden = false
     }
     
+
     override func configureHierarchy() {
         view.addSubview(collectionView)
+        view.addSubview(commentTextfield)
+        view.addSubview(commentButton)
     }
     
     override func configureLayout() {
         collectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        commentTextfield.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(15)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(40)
+        }
+        commentButton.snp.makeConstraints { make in
+            make.leading.equalTo(commentTextfield.snp.trailing).offset(5)
+            make.trailing.equalToSuperview().inset(15)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.size.equalTo(40)
+        }
     }
     
     override func configureView() {
-        
+        commentTextfield.textField.placeholder = "댓글"
+        let config = UIImage.SymbolConfiguration(font: .boldSystemFont(ofSize: 30))
+        let image = UIImage(systemName: "arrow.up.circle.fill", withConfiguration: config)
+        commentButton.setImage(image, for: .normal)
     }
     
     private func makeCellRegistration() {

@@ -23,18 +23,11 @@ final class MyProfileView: UICollectionReusableView {
     let followingCount = UILabel()
     let editButton = CapsuleButton(text: "프로필 관리", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
     
-    var disposeBag = DisposeBag()
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureHierarchy()
         configureLayout()
         configureView()
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        disposeBag = DisposeBag()
     }
 
     @available(*, unavailable)
@@ -59,8 +52,8 @@ extension MyProfileView {
     
     private func configureLayout() {
         profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(15)
-            make.leading.equalToSuperview().inset(5)
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
             make.size.equalTo(70)
         }
         infoStack.snp.makeConstraints { make in
@@ -71,8 +64,8 @@ extension MyProfileView {
         }
         editButton.snp.makeConstraints { make in
             make.top.equalTo(profileImageView.snp.bottom).offset(15)
-            make.horizontalEdges.equalToSuperview().inset(5)
-            make.bottom.equalToSuperview().inset(15)
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview()
             make.height.equalTo(30)
         }
     }

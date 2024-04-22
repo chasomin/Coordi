@@ -14,6 +14,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
         configureHierarchy()
         configureLayout()
         configureView()
+        contentView.backgroundColor = .backgroundColor
     }
     
     @available(*, unavailable)

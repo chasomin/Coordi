@@ -15,13 +15,19 @@ final class MyPageViewModel: ViewModelType {
     struct Input {
         let viewDidLoad: Observable<Void>
         let editButtonTap: PublishRelay<Void>
+        let barButtonTap: Observable<Void>
+        let itemSelected: Observable<PostModel>
     }
     
     struct Output {
         let profile: PublishRelay<ProfileModel>
         let posts: PublishRelay<PostListModel>
         let editButtonTap: PublishRelay<ProfileModel>
-
+        let barButtonTap: Driver<Void>
+        let itemSelected: Driver<PostModel>
+        let profileFetchFailureTrigger: Driver<Void>
+        let postsFetchFailureTrigger: Driver<Void>
+        let itemFetchFailureTrigger: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -31,18 +37,25 @@ final class MyPageViewModel: ViewModelType {
         let myProfile = PublishRelay<ProfileModel>()
         let myPosts = PublishRelay<PostListModel>()
         let editButtonTap = PublishRelay<ProfileModel>()
-        
+        let itemSelected = PublishRelay<PostModel>()
+
+        let profileFetchFailureTrigger = PublishRelay<Void>()
+        let postsFetchFailureTrigger = PublishRelay<Void>()
+        let itemFetchFailureTrigger = PublishRelay<Void>()
+
         input.viewDidLoad
             .withLatestFrom(postQuery)
             .flatMap { postQuery in
                 NetworkManager.request(api: .fetchPostByUser(userId: userId, query: postQuery))
                     .catch { _ in
+                        postsFetchFailureTrigger.accept(())
                         return Single<PostListModel>.never()
                     }
             }
             .flatMap { postListModel in
                 let profileModel = NetworkManager.request(api: .fetchMyProfile)
                     .catch { _ in
+                        profileFetchFailureTrigger.accept(())
                         return Single<ProfileModel>.never()
                     }
                 let postListModel = Observable.just(postListModel).asSingle()
@@ -55,28 +68,38 @@ final class MyPageViewModel: ViewModelType {
                 myPosts.accept(post)
             }
             .disposed(by: disposeBag)
-            
-        
-        
+                    
         input.editButtonTap
+            .throttle(.seconds(2), scheduler: MainScheduler.instance)
             .withLatestFrom(myProfile)
             .subscribe { profileModel in
                 editButtonTap.accept(profileModel)
             }
             .disposed(by: disposeBag)
         
-//        myProfile
-//            .flatMap({ profileModel in
-//                NetworkManager.request(api: .fetchImage(query: profileModel.profileImage))
-//                    .catch { _ in
-//                        return Single<Data>.never()
-//                    }
-//            })
-//            .bind { data in
-//                print("!!",data)
-//            }
-//            .disposed(by: disposeBag)
-            
-        return Output.init(profile: myProfile, posts: myPosts, editButtonTap: editButtonTap)
+
+        
+        input.itemSelected
+            .flatMap { postModel in
+                NetworkManager.request(api: .fetchParticularPost(postId: postModel.post_id))
+                    .catch { _ in
+                        itemFetchFailureTrigger.accept(())
+                        return Single<PostModel>.never()
+                    }
+            }
+            .subscribe { postModel in
+                itemSelected.accept(postModel)
+            }
+            .disposed(by: disposeBag)
+
+        
+        return Output.init(profile: myProfile,
+                           posts: myPosts,
+                           editButtonTap: editButtonTap,
+                           barButtonTap: input.barButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()),
+                           itemSelected:  itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
+                           profileFetchFailureTrigger: profileFetchFailureTrigger.asDriver(onErrorJustReturn: ()),
+                           postsFetchFailureTrigger: postsFetchFailureTrigger.asDriver(onErrorJustReturn: ()),
+                           itemFetchFailureTrigger: itemFetchFailureTrigger.asDriver(onErrorJustReturn: ()))
     }
 }

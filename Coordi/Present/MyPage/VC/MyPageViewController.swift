@@ -12,122 +12,117 @@ import RxCocoa
 import Kingfisher
 
 final class MyPageViewController: BaseViewController {
+    private let profileView = MyProfileView()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-    private var dataSource: UICollectionViewDiffableDataSource<ProfileModel, PostModel>!
-    
     private let viewModel = MyPageViewModel()
     
     private let editButtonTap = PublishRelay<Void>()
+    private let barButton = UIBarButtonItem()
     
+    private var posts: [PostModel] = []
+    
+    func createLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let spacing: CGFloat = 15
+        layout.itemSize = CGSize(width: (view.frame.width - spacing * 3) / 2 , height: ((view.frame.width - spacing * 3) / 2) * 1.33)
+        layout.minimumLineSpacing = spacing
+        layout.minimumInteritemSpacing = spacing
+        layout.sectionInset = UIEdgeInsets(top: 0, left: spacing, bottom: spacing, right: spacing)
+        layout.scrollDirection = .vertical
+        return layout
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        makeCellRegistration()
-        navigationItem.title = "내 피드 모아보기"
+
+        navigationItem.title = Constants.NavigationTitle.myPage.title
+        navigationItem.rightBarButtonItem = barButton
     }
     
     override func configureHierarchy() {
+        view.addSubview(profileView)
         view.addSubview(collectionView)
     }
     
     override func configureLayout() {
+        profileView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(15)
+        }
         collectionView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(profileView.snp.bottom).offset(15)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
+    override func configureView() {
+        barButton.image = UIImage(systemName: "plus")
+        collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.id)
+
+        collectionView.showsVerticalScrollIndicator = false
+
+    }
+
     override func bind() {
-        let input = MyPageViewModel.Input(viewDidLoad: Observable.just(Void()), editButtonTap: editButtonTap)
+        let input = MyPageViewModel.Input(viewDidLoad: Observable.just(Void()), editButtonTap: editButtonTap, barButtonTap: barButton.rx.tap.asObservable(), itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable())
         let output = viewModel.transform(input: input)
         
-        var snapshot = NSDiffableDataSourceSnapshot<ProfileModel, PostModel>()
-                
+        profileView.editButton.rx.tap
+            .subscribe(with: self) { owner, _ in
+                owner.editButtonTap.accept(())
+            }
+            .disposed(by: disposeBag)
+        
         output.profile
             .bind(with: self, onNext: { owner, profile in
-                snapshot.appendSections([profile])
-                owner.dataSource.apply(snapshot)
+                owner.profileView.profileImageView.loadImage(from: profile.profileImage)
+                owner.profileView.nicknameLabel.text = profile.nick
             })
             .disposed(by: disposeBag)
         
         output.posts
-            .bind(with: self, onNext: { owner, posts in
-                snapshot.appendItems(posts.data)
-                owner.dataSource.apply(snapshot)
-            })
+            .map { $0.data }
+            .bind(to: collectionView.rx.items(cellIdentifier: FeedCollectionViewCell.id, cellType: FeedCollectionViewCell.self)) { index, post, cell in
+                cell.image.loadImage(from: post.files.first!)
+                cell.tempLabel.text = post.content
+            }
             .disposed(by: disposeBag)
+
         
         output.editButtonTap
             .bind(with: self) { owner, profile in
-                print("!!클릭")
                 owner.navigationController?.pushViewController(EditProfileViewController(nick: profile.nick, profileImage: profile.profileImage), animated: true)
             }
             .disposed(by: disposeBag)
-    }
-    
-    private func makeCellRegistration() {
-        let cellRegistration = cellRegistration()
-        let headerRegistration = headerRegistration()
         
-        dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
-            let cell = collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
-            return cell
-        })
+        output.barButtonTap
+            .drive(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(CreatePostViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
+
+        output.itemSelected
+            .drive(with: self) { owner, postModel in
+                owner.navigationController?.pushViewController(FeedDetailViewController(postModel: postModel), animated: true)
+            }
+            .disposed(by: disposeBag)
         
-        dataSource.supplementaryViewProvider = { view, kind, index in
-            return self.collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: index)
-        }
-    }
+        output.itemFetchFailureTrigger
+            .drive(with: self) { owner, _ in
+                owner.showErrorToast()
+            }
+            .disposed(by: disposeBag)
+        
+        output.profileFetchFailureTrigger
+            .drive(with: self) { owner, _ in
+                owner.showErrorToast()
+            }
+            .disposed(by: disposeBag)
+
+        output.postsFetchFailureTrigger
+            .drive(with: self) { owner, _ in
+                owner.showErrorToast()
+            }
+            .disposed(by: disposeBag)
+    }    
 }
-
-// MARK: - Layout
-extension MyPageViewController {
-    private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(100))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .estimated(100))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 2)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-
-        let section = NSCollectionLayoutSection(group: group)
-        
-        section.contentInsets = .init(top: 0, leading: 10, bottom: 15, trailing: 10)
-        section.interGroupSpacing = 20
-
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .estimated(100))
-        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: MyProfileView.id, alignment: .topLeading)
-        
-        section.boundarySupplementaryItems = [sectionHeader]
-        
-        return UICollectionViewCompositionalLayout(section: section)
-    }
-    
-    private func cellRegistration() -> UICollectionView.CellRegistration<MyPageCollectionViewCell, PostModel> {
-        return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-            guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + (itemIdentifier.files.first ?? "")) else { return }
-            cell.image.loadImage(from: url, placeHolderImage: UIImage(systemName: "star"))
-            cell.tempLabel.text = itemIdentifier.content
-        }
-    }
-    
-    private func headerRegistration() -> UICollectionView.SupplementaryRegistration<MyProfileView> {
-        return UICollectionView.SupplementaryRegistration(elementKind: MyProfileView.id, handler: { [weak self] profileView, elementKind, indexPath in
-            guard let self else { return }
-            guard let model = dataSource.itemIdentifier(for: indexPath), let profileData = dataSource.snapshot().sectionIdentifier(containingItem: model) else { return }
-            guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + profileData.profileImage) else { return }
-            profileView.profileImageView.loadImage(from: url, placeHolderImage: UIImage(systemName: "star"))
-            print(url)
-            profileView.nicknameLabel.text = profileData.nick
-            profileView.followerCount.text = profileData.followers.count.description
-            profileView.followingCount.text = profileData.following.count.description
-            
-            profileView.editButton.rx.tap
-                .bind(to: editButtonTap)
-                .disposed(by: profileView.disposeBag)
-        })
-    }
-}
-
-
-

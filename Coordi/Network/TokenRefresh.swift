@@ -31,12 +31,11 @@ final class TokenRefresh: RequestInterceptor {
             print("!!!retry")
             let urlRequest = try Router.refreshToken.asURLRequest()
             
-            AF.request(urlRequest)
+            API.session.request(urlRequest)
                 .responseDecodable(of: AccessTokenModel.self) { response in
                     switch response.result {
                     case .success(let success):
                         print("토큰 갱신 성공 \(success)")
-                        UserDefaults.standard.set(success.accessToken, forKey: "accessToken")
                         UserDefaultsManager.accessToken = success.accessToken
                         completion(.retry)
                     case .failure(_):

@@ -32,3 +32,11 @@ extension UIImage {
         return compressedData
     }
 }
+
+extension UIImage {
+    func setConfiguration(font: UIFont) -> UIImage {
+        let config = Self.SymbolConfiguration(font: font)
+        return self.withConfiguration(config)
+    }
+}
+

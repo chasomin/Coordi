@@ -26,6 +26,10 @@ struct PostModel: Decodable, Hashable {
     let hashTags: [String]
     let comments: [CommentModel]
     
+    var temp: String {
+        content.dropFirst().description + "℃"
+    }
+    
     enum CodingKeys: CodingKey {
         case post_id
         case product_id

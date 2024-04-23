@@ -84,7 +84,7 @@ final class MyPageViewController: BaseViewController {
             .map { $0.data }
             .bind(to: collectionView.rx.items(cellIdentifier: FeedCollectionViewCell.id, cellType: FeedCollectionViewCell.self)) { index, post, cell in
                 cell.image.loadImage(from: post.files.first!)
-                cell.tempLabel.text = post.content
+                cell.tempLabel.text = post.temp
             }
             .disposed(by: disposeBag)
 

@@ -129,4 +129,12 @@ final class FeedCollectionViewCell: BaseCollectionViewCell {
         
         clipsToBounds = true
     }
+    
+    func configureCell(item: PostModel) {
+        image.loadImage(from: item.files.first!)
+        tempLabel.text = item.temp
+        heartCountLabel.text = item.likes.count.description
+        heartImageView.image = item.likes.contains(UserDefaultsManager.userId) ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
+        commentCountLabel.text = item.comments.count.description
+    }
 }

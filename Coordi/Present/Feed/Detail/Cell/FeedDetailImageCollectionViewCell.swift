@@ -7,12 +7,22 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class FeedDetailImageCollectionViewCell: BaseCollectionViewCell {
+    var disposeBag = DisposeBag()
+
     let imageView = UIImageView()
+    let tapGesture = UITapGestureRecognizer()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
     
     override func configureHierarchy() {
         contentView.addSubview(imageView)
+        imageView.addGestureRecognizer(tapGesture)
     }
     
     override func configureLayout() {
@@ -27,6 +37,9 @@ final class FeedDetailImageCollectionViewCell: BaseCollectionViewCell {
         imageView.layer.cornerRadius = 15
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        
+        tapGesture.numberOfTapsRequired = 2
     }
     
     func configureCell(item: String) {

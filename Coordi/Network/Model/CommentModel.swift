@@ -12,4 +12,6 @@ struct CommentModel: Decodable, Hashable {
     let content: String
     let createdAt: String
     let creator: UserModel
+    
+    static let dummy = CommentModel(comment_id: "", content: "", createdAt: "", creator: .dummy)
 }

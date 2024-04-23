@@ -34,6 +34,8 @@ final class FeedDetailViewController: BaseViewController {
     private let backButtonTap = PublishRelay<Void>()
     private let commentButtonTap = PublishRelay<String>()
     private let popGesture = PublishRelay<Void>()
+    private let imageDoubleTapGesture = PublishRelay<PostModel>()
+    private let heartButtonTap = PublishRelay<PostModel>()
 
     init(postModel: PostModel) {
         self.postModel = postModel
@@ -70,7 +72,7 @@ final class FeedDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        let input = FeedDetailViewModel.Input(postId: Observable.just(postModel.post_id), backButtonTap: backButtonTap, commentButtonTap: commentButtonTap, popGesture: popGesture)
+        let input = FeedDetailViewModel.Input(postId: Observable.just(postModel.post_id), backButtonTap: backButtonTap, commentButtonTap: commentButtonTap, popGesture: popGesture, heartButtonTap: heartButtonTap, imageDoubleTap: imageDoubleTapGesture)
         let output = viewModel.transform(input: input)
         
         output.backButtonTap
@@ -83,6 +85,7 @@ final class FeedDetailViewController: BaseViewController {
             .drive(with: self) { owner, commentModel in
                 owner.snapshot.appendItems([commentModel], toSection: .comment)
                 owner.dataSource.apply(owner.snapshot)
+
                 let indexPath = IndexPath(item: owner.collectionView.numberOfItems(inSection: owner.collectionView.numberOfSections - 1) - 1, section: owner.collectionView.numberOfSections - 1)
                 owner.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
             }
@@ -99,7 +102,28 @@ final class FeedDetailViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
-                
+        
+        output.heartButtonTap
+            .drive(with: self) { owner, postModel in
+                owner.postModel = postModel
+                owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()  //???: cell 추가하지 않고 cell 내부만 변경된다면 snapshot 초기화 방법밖에 없는지
+                owner.updateSnapshot()
+            }
+            .disposed(by: disposeBag)
+        
+        output.imageDoubleTap
+            .drive(with: self) { owner, postModel in
+                owner.postModel = postModel
+                owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
+                owner.updateSnapshot()
+            }
+            .disposed(by: disposeBag)
+        
+        output.heartFailureTrigger
+            .drive(with: self) { owner, _ in
+                owner.showErrorToast()
+            }
+            .disposed(by: disposeBag)
     }
     // TODO: 내 댓글만 밀어서 삭제
     
@@ -151,8 +175,7 @@ final class FeedDetailViewController: BaseViewController {
     override func configureView() {
         bottomView.backgroundColor = .backgroundColor
         commentTextfield.textField.placeholder = "댓글"
-        let config = UIImage.SymbolConfiguration(font: .boldSystemFont(ofSize: 30))
-        let image = UIImage(systemName: "arrow.up.circle.fill", withConfiguration: config)
+        let image = UIImage(systemName: "arrow.up.circle.fill")?.setConfiguration(font: .boldSystemFont(ofSize: 30))
         commentButton.setImage(image, for: .normal)
     }
     
@@ -185,7 +208,6 @@ final class FeedDetailViewController: BaseViewController {
     }
     
     private func updateSnapshot() {
-        print("@@@", postModel)
         snapshot.appendSections(Section.allCases)
         snapshot.appendItems([postModel.creator], toSection: .profile)
         snapshot.appendItems(postModel.files, toSection: .image)
@@ -198,6 +220,7 @@ final class FeedDetailViewController: BaseViewController {
 
 extension FeedDetailViewController {
     private func createLayout() -> UICollectionViewLayout {
+        
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
             
             guard let self else { return nil }
@@ -256,24 +279,38 @@ extension FeedDetailViewController {
     }
     
     private func profileCellRegistration() -> UICollectionView.CellRegistration<ProfileNavigationCollectionViewCell, UserModel> {
-        return UICollectionView.CellRegistration { [weak self] cell, indexPath, itemIdentifier in
-            guard let self else { return }
-            cell.backButton.rx.tap.bind(to: backButtonTap).disposed(by: disposeBag)
+        return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
+            cell.backButton.rx.tap
+                .bind(with: self) { owner, _ in
+                    owner.backButtonTap.accept(())
+                }
+                .disposed(by: cell.disposeBag)
             cell.configureCell(item: itemIdentifier)
         }
     }
     
     private func imageCellRegistration() -> UICollectionView.CellRegistration<FeedDetailImageCollectionViewCell, String> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
+            cell.tapGesture.rx.event
+                .bind(with: self) { owner, _ in
+                    owner.imageDoubleTapGesture.accept(owner.postModel)
+                }
+                .disposed(by: cell.disposeBag)
             cell.configureCell(item: itemIdentifier)
 
         }
     }
     
     private func contentCellRegistration() -> UICollectionView.CellRegistration<FeedContentCollectionViewCell, PostModel> {
-        return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-            cell.configureCell(item: itemIdentifier)
+        return UICollectionView.CellRegistration { [weak self] cell, indexPath, itemIdentifier in
+            guard let self else { return }
+            cell.heartButton.rx.tap
+                .bind(with: self) { owner, _ in
+                    owner.heartButtonTap.accept(owner.postModel)
+                }
+                .disposed(by: cell.disposeBag)
 
+            cell.configureCell(item: itemIdentifier)
         }
     }
     

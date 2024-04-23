@@ -18,16 +18,22 @@ enum Section: Int, CaseIterable {
 }
 
 final class FeedDetailViewController: BaseViewController {
+    private let viewModel = FeedDetailViewModel()
+    
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     private let commentTextfield = RoundedTextFieldView()
     private let commentButton = UIButton()
+    private let panGesture = UIPanGestureRecognizer()
 
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
-    
+    var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
+
     var postModel: PostModel
     
     private let backButtonTap = PublishRelay<Void>()
-    
+    private let commentButtonTap = PublishRelay<String>()
+    private let popGesture = PublishRelay<Void>()
+
     init(postModel: PostModel) {
         self.postModel = postModel
         super.init()
@@ -39,15 +45,62 @@ final class FeedDetailViewController: BaseViewController {
         updateSnapshot()
         
     }
+    
     override func bind() {
-        backButtonTap
-            .subscribe(with: self) { owner, _ in
+        commentButton.rx.tap
+            .withLatestFrom(commentTextfield.textField.rx.text.orEmpty)
+            .subscribe(with: self) { owner, comment in
+                owner.commentButtonTap.accept(comment)
+            }
+            .disposed(by: disposeBag)
+
+        panGesture.rx.event
+            .withUnretained(self)
+            .map { owner, gesture in
+                let velocity = gesture.velocity(in: owner.view)
+                let x = velocity.x
+                let y = velocity.y
+                return (x > 0.0 && y == 0.0)
+            }
+            .bind(with: self) { owner, value in
+                if value {
+                    owner.popGesture.accept(())
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        let input = FeedDetailViewModel.Input(postId: Observable.just(postModel.post_id), backButtonTap: backButtonTap, commentButtonTap: commentButtonTap, popGesture: popGesture)
+        let output = viewModel.transform(input: input)
+        
+        output.backButtonTap
+            .drive(with: self) { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
+        
+        output.commentUploadSuccessTrigger
+            .drive(with: self) { owner, commentModel in
+                owner.snapshot.appendItems([commentModel], toSection: .comment)
+                owner.dataSource.apply(owner.snapshot)
+                let indexPath = IndexPath(item: owner.collectionView.numberOfItems(inSection: owner.collectionView.numberOfSections - 1) - 1, section: owner.collectionView.numberOfSections - 1)
+                owner.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.commentUploadFailureTrigger
+            .drive(with: self) { owner, _ in
+                owner.showErrorToast()
+            }
+            .disposed(by: disposeBag)
+        
+        output.popGesture
+            .drive(with: self) { owner, _ in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .disposed(by: disposeBag)
+                
     }
-    //TODO: toolbar 로 댓글 작성창, 제스처 왼->오른 pop, ViewModel
-    
+    // TODO: 내 댓글만 밀어서 삭제
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -66,6 +119,7 @@ final class FeedDetailViewController: BaseViewController {
         view.addSubview(collectionView)
         view.addSubview(commentTextfield)
         view.addSubview(commentButton)
+        view.addGestureRecognizer(panGesture)
     }
     
     override func configureLayout() {
@@ -123,12 +177,11 @@ final class FeedDetailViewController: BaseViewController {
     
     private func updateSnapshot() {
         print("@@@", postModel)
-        var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
         snapshot.appendSections(Section.allCases)
         snapshot.appendItems([postModel.creator], toSection: .profile)
         snapshot.appendItems(postModel.files, toSection: .image)
         snapshot.appendItems([postModel], toSection: .content)
-        snapshot.appendItems(postModel.comments, toSection: .comment)
+        snapshot.appendItems(postModel.comments.reversed(), toSection: .comment)
         dataSource.apply(snapshot)
     }
 
@@ -176,14 +229,15 @@ extension FeedDetailViewController {
 
                 return layoutSection
             case .comment:
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(100))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(100))
-                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])//
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))//
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
-                layoutSection.contentInsets = .init(top: 0, leading: 15, bottom: 15, trailing: 15)
+                layoutSection.interGroupSpacing = 10
+                layoutSection.contentInsets = .init(top: 0, leading: 15, bottom: 60, trailing: 15)
 
                 return layoutSection
             }
@@ -192,24 +246,23 @@ extension FeedDetailViewController {
         return layout
     }
     
-    private func profileCellRegistration() -> UICollectionView.CellRegistration<ProfileNavigationCollectionViewCell, UserModel> {//
+    private func profileCellRegistration() -> UICollectionView.CellRegistration<ProfileNavigationCollectionViewCell, UserModel> {
         return UICollectionView.CellRegistration { [weak self] cell, indexPath, itemIdentifier in
             guard let self else { return }
             cell.backButton.rx.tap.bind(to: backButtonTap).disposed(by: disposeBag)
             cell.nicknameLabel.text = itemIdentifier.nick
             cell.profileImage.loadImage(from: itemIdentifier.profileImage)
-            print("@@@", itemIdentifier.nick)
         }
     }
     
-    private func imageCellRegistration() -> UICollectionView.CellRegistration<FeedDetailImageCollectionViewCell, String> {//
+    private func imageCellRegistration() -> UICollectionView.CellRegistration<FeedDetailImageCollectionViewCell, String> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
             cell.imageView.loadImage(from: itemIdentifier)
             
         }
     }
     
-    private func contentCellRegistration() -> UICollectionView.CellRegistration<FeedContentCollectionViewCell, PostModel> {//
+    private func contentCellRegistration() -> UICollectionView.CellRegistration<FeedContentCollectionViewCell, PostModel> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
             cell.contentLabel.text = itemIdentifier.content1
             cell.dateLabel.text = itemIdentifier.createdAt
@@ -218,7 +271,7 @@ extension FeedDetailViewController {
         }
     }
     
-    private func commentCellRegistration() -> UICollectionView.CellRegistration<CommentCollectionViewCell, CommentModel> {//
+    private func commentCellRegistration() -> UICollectionView.CellRegistration<CommentCollectionViewCell, CommentModel> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
             cell.commentLabel.text = itemIdentifier.content
             cell.nicknameLabel.text = itemIdentifier.creator.nick
@@ -227,7 +280,14 @@ extension FeedDetailViewController {
     }
 
     
-    
 }
 
 
+extension UICollectionView {
+    func scrollToBottom() {
+        let bottomOffset = CGPoint(x: 0, y: self.frame.height)
+        if(bottomOffset.y > 0) {
+            setContentOffset(bottomOffset, animated: true)
+        }
+    }
+}

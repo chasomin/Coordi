@@ -11,6 +11,18 @@ import SnapKit
 final class FeedCollectionViewCell: BaseCollectionViewCell {
     let image = UIImageView()
     let tempLabel = UILabel()
+    let heartCountLabel = UILabel()
+    let heartImageView = UIImageView()
+    let commentCountLabel = UILabel()
+    let commentImageView = UIImageView()
+
+    let colors: [CGColor] = [
+        .init(red: 0, green: 0, blue: 0, alpha: 0.9),
+        .init(red: 0, green: 0, blue: 0, alpha: 0.7),
+        .init(red: 0, green: 0, blue: 0, alpha: 0.5),
+        .init(red: 0, green: 0, blue: 0, alpha: 0)
+    ]
+    let gradientLayer = CAGradientLayer()
 
 //    override func prepareForReuse() {
 //        super.prepareForReuse()
@@ -30,8 +42,14 @@ final class FeedCollectionViewCell: BaseCollectionViewCell {
 //
 //    }
     override func configureHierarchy() {
-        contentView.addSubview(tempLabel)
         contentView.addSubview(image)
+        image.layer.addSublayer(gradientLayer)
+        image.addSubview(tempLabel)
+        image.addSubview(heartCountLabel)
+        image.addSubview(heartImageView)
+        image.addSubview(commentCountLabel)
+        image.addSubview(commentImageView)
+
     }
     
 //    func setImageHeight(height: CGFloat) {
@@ -44,26 +62,70 @@ final class FeedCollectionViewCell: BaseCollectionViewCell {
 //    }
     
     override func configureLayout() {
-        tempLabel.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()//.inset(15)
-//            make.height.equalTo(24)
-        }
+
         image.snp.makeConstraints { make in
-            make.top.equalTo(tempLabel.snp.bottom)//.offset(10)
-            make.bottom.width.equalToSuperview()
+            make.verticalEdges.width.equalToSuperview()
 //            make.height.greaterThanOrEqualTo(200)
 //            make.height.equalTo(226)
         }
+        
+        tempLabel.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(10)
+            make.leading.equalToSuperview().inset(10)
+//            make.height.equalTo(24)
+        }
+        
+        commentImageView.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(10)
+            make.leading.equalTo(tempLabel.snp.trailing).offset(10)
+            make.size.equalTo(17)
+        }
+        
+        commentCountLabel.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(10)
+            make.leading.equalTo(commentImageView.snp.trailing)
+            make.height.equalTo(17)
+        }
+        
+        heartImageView.snp.makeConstraints { make in
+            make.leading.equalTo(commentCountLabel.snp.trailing).offset(5)
+            make.bottom.equalToSuperview().inset(10)
+            make.size.equalTo(17)
+        }
+        heartCountLabel.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().inset(10)
+            make.leading.equalTo(heartImageView.snp.trailing)
+            make.height.equalTo(17)
+        }
+        
     }
     
     override func configureView() {
-        tempLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        gradientLayer.colors = colors
+        gradientLayer.frame = bounds
+//        gradientLayer.locations = [0.1,0.2,0.3]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 1)
+        gradientLayer.endPoint = CGPoint(x: 0.0, y: 0.8)
+//        tempLabel.backgroundColor = .white
+        
+        tempLabel.font = .boldBody
+        tempLabel.textColor = .white
         
         image.contentMode = .scaleAspectFill
         image.layer.cornerRadius = 20
         image.clipsToBounds = true
         image.layer.borderWidth = 1
         image.layer.borderColor = UIColor.systemGray5.cgColor
+        
+        heartCountLabel.font = .caption
+        heartCountLabel.textColor = .white
+        heartImageView.tintColor = .white
+        
+        commentCountLabel.font = .caption
+        commentCountLabel.textColor = .white
+        commentImageView.tintColor = .white
+        commentImageView.image = UIImage(systemName: "ellipses.bubble")
         
         clipsToBounds = true
     }

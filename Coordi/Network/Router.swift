@@ -164,7 +164,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue,
                 HTTPHeader.refresh.rawValue: UserDefaultsManager.refreshToken
             ]
-        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .like, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage:
+        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
@@ -177,7 +177,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
             
-        case .editPost, .uploadComment, .editComment, .uploadPost:
+        case .editPost, .uploadComment, .editComment, .uploadPost, .like:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,

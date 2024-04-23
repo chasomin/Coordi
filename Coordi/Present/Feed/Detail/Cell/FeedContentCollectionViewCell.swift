@@ -49,4 +49,11 @@ final class FeedContentCollectionViewCell: BaseCollectionViewCell {
         dateLabel.textColor = .gray
         dateLabel.font = .caption
     }
+    
+    func configureCell(item: PostModel) {
+        contentLabel.text = item.content1
+        dateLabel.text = item.createdAt
+        heartButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        tempLabel.text = item.content
+    }
 }

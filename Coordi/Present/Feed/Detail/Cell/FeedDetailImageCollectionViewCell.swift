@@ -28,4 +28,8 @@ final class FeedDetailImageCollectionViewCell: BaseCollectionViewCell {
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
     }
+    
+    func configureCell(item: String) {
+        imageView.loadImage(from: item)
+    }
 }

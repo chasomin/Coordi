@@ -43,4 +43,9 @@ final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
         profileImage.backgroundColor = .pointColor
         nicknameLabel.font = .caption
     }
+    
+    func configureCell(item: UserModel) {
+        nicknameLabel.text = item.nick
+        profileImage.loadImage(from: item.profileImage)
+    }
 }

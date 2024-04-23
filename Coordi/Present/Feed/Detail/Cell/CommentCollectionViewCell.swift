@@ -43,4 +43,10 @@ final class CommentCollectionViewCell: BaseCollectionViewCell {
         commentLabel.numberOfLines = 0
         commentLabel.font = .caption
     }
+    
+    func configureCell(item: CommentModel) {
+        commentLabel.text = item.content
+        nicknameLabel.text = item.creator.nick
+        profileImageView.loadImage(from: item.creator.profileImage)
+    }
 }

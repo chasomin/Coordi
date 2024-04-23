@@ -250,36 +250,29 @@ extension FeedDetailViewController {
         return UICollectionView.CellRegistration { [weak self] cell, indexPath, itemIdentifier in
             guard let self else { return }
             cell.backButton.rx.tap.bind(to: backButtonTap).disposed(by: disposeBag)
-            cell.nicknameLabel.text = itemIdentifier.nick
-            cell.profileImage.loadImage(from: itemIdentifier.profileImage)
+            cell.configureCell(item: itemIdentifier)
         }
     }
     
     private func imageCellRegistration() -> UICollectionView.CellRegistration<FeedDetailImageCollectionViewCell, String> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-            cell.imageView.loadImage(from: itemIdentifier)
-            
+            cell.configureCell(item: itemIdentifier)
+
         }
     }
     
     private func contentCellRegistration() -> UICollectionView.CellRegistration<FeedContentCollectionViewCell, PostModel> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-            cell.contentLabel.text = itemIdentifier.content1
-            cell.dateLabel.text = itemIdentifier.createdAt
-            cell.heartButton.setImage(UIImage(systemName: "heart"), for: .normal)
-            cell.tempLabel.text = itemIdentifier.content
+            cell.configureCell(item: itemIdentifier)
+
         }
     }
     
     private func commentCellRegistration() -> UICollectionView.CellRegistration<CommentCollectionViewCell, CommentModel> {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-            cell.commentLabel.text = itemIdentifier.content
-            cell.nicknameLabel.text = itemIdentifier.creator.nick
-            cell.profileImageView.loadImage(from: itemIdentifier.creator.profileImage)
+            cell.configureCell(item: itemIdentifier)
         }
     }
-
-    
 }
 
 

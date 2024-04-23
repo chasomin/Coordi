@@ -7,10 +7,19 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+
 final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
+    var disposeBag = DisposeBag()
+    
     let profileImage = CirCleImageView()
     let nicknameLabel = UILabel()
     let backButton = UIButton()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
     
     override func configureHierarchy() {
         contentView.addSubview(profileImage)
@@ -35,8 +44,7 @@ final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureView() {
-        let config = UIImage.SymbolConfiguration(font: .boldSystemFont(ofSize: 22))
-        let image = UIImage(systemName: "chevron.left", withConfiguration: config)
+        let image = UIImage(systemName: "chevron.left")?.setConfiguration(font: .boldSystemFont(ofSize: 22))
         backButton.setImage(image,for: .normal)
         backButton.scalesLargeContentImage = true
         

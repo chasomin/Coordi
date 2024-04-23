@@ -23,6 +23,7 @@ final class RoundedTextFieldView: BaseView {
     }
     
     override func configureView() {
+        backgroundColor = .backgroundColor
         layer.cornerRadius = 20
         layer.borderWidth = 1
         layer.borderColor = UIColor.pointColor.cgColor

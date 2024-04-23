@@ -21,6 +21,7 @@ final class FeedDetailViewController: BaseViewController {
     private let viewModel = FeedDetailViewModel()
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    private let bottomView = UIView()
     private let commentTextfield = RoundedTextFieldView()
     private let commentButton = UIButton()
     private let panGesture = UIPanGestureRecognizer()
@@ -117,8 +118,9 @@ final class FeedDetailViewController: BaseViewController {
 
     override func configureHierarchy() {
         view.addSubview(collectionView)
-        view.addSubview(commentTextfield)
-        view.addSubview(commentButton)
+        view.addSubview(bottomView)
+        bottomView.addSubview(commentTextfield)
+        bottomView.addSubview(commentButton)
         view.addGestureRecognizer(panGesture)
     }
     
@@ -127,20 +129,27 @@ final class FeedDetailViewController: BaseViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
+        bottomView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(40)
+        }
+        
         commentTextfield.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(15)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.verticalEdges.equalToSuperview()
             make.height.equalTo(40)
         }
         commentButton.snp.makeConstraints { make in
             make.leading.equalTo(commentTextfield.snp.trailing).offset(5)
             make.trailing.equalToSuperview().inset(15)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.verticalEdges.equalToSuperview()
             make.size.equalTo(40)
         }
     }
     
     override func configureView() {
+        bottomView.backgroundColor = .backgroundColor
         commentTextfield.textField.placeholder = "댓글"
         let config = UIImage.SymbolConfiguration(font: .boldSystemFont(ofSize: 30))
         let image = UIImage(systemName: "arrow.up.circle.fill", withConfiguration: config)

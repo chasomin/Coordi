@@ -10,7 +10,6 @@ import UIKit
 class CirCleImageView: UIImageView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        print(#function)
         self.layer.cornerRadius = self.frame.width / 2
         self.clipsToBounds = true
     }

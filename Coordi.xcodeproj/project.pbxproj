@@ -42,7 +42,6 @@
 		799379FC2BD6CEDC0063A2CE /* RoundedTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */; };
 		79937A102BD79A1F0063A2CE /* FeedDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A0F2BD79A1F0063A2CE /* FeedDetailViewModel.swift */; };
 		79937A142BD7E0120063A2CE /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A132BD7E0120063A2CE /* String+.swift */; };
-		79937A162BD94C000063A2CE /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A152BD94C000063A2CE /* FeedViewController.swift */; };
 		79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A192BD94D660063A2CE /* SearchViewController.swift */; };
 		79937A1C2BD94F830063A2CE /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A1B2BD94F830063A2CE /* SearchViewModel.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
@@ -133,7 +132,6 @@
 		799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldView.swift; sourceTree = "<group>"; };
 		79937A0F2BD79A1F0063A2CE /* FeedDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailViewModel.swift; sourceTree = "<group>"; };
 		79937A132BD7E0120063A2CE /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
-		79937A152BD94C000063A2CE /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		79937A192BD94D660063A2CE /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		79937A1B2BD94F830063A2CE /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
@@ -348,7 +346,6 @@
 		7986046A2BD6A686003E721E /* VC */ = {
 			isa = PBXGroup;
 			children = (
-				79937A152BD94C000063A2CE /* FeedViewController.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -664,7 +661,6 @@
 				7986040F2BD15016003E721E /* UIImageView+.swift in Sources */,
 				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
 				79B043F62BCEA1F100407A1F /* CapsuleButton.swift in Sources */,
-				79937A162BD94C000063A2CE /* FeedViewController.swift in Sources */,
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
 				79EBA4DD2BCD19A700C3C530 /* UIColor+.swift in Sources */,
 				79EBA4CD2BCD164800C3C530 /* SignUpViewController.swift in Sources */,

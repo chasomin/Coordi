@@ -8,9 +8,7 @@
 import Foundation
 
 enum Constants {
-    enum productId: String {
-        case id = "CoordiFeed"
-    }
+    static var productId = "CoordiFeed"
     
     enum NavigationTitle {
         case feed

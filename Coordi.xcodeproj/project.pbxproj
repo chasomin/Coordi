@@ -42,6 +42,9 @@
 		799379FC2BD6CEDC0063A2CE /* RoundedTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */; };
 		79937A102BD79A1F0063A2CE /* FeedDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A0F2BD79A1F0063A2CE /* FeedDetailViewModel.swift */; };
 		79937A142BD7E0120063A2CE /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A132BD7E0120063A2CE /* String+.swift */; };
+		79937A162BD94C000063A2CE /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A152BD94C000063A2CE /* FeedViewController.swift */; };
+		79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A192BD94D660063A2CE /* SearchViewController.swift */; };
+		79937A1C2BD94F830063A2CE /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A1B2BD94F830063A2CE /* SearchViewModel.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -130,6 +133,9 @@
 		799379FB2BD6CEDC0063A2CE /* RoundedTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldView.swift; sourceTree = "<group>"; };
 		79937A0F2BD79A1F0063A2CE /* FeedDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailViewModel.swift; sourceTree = "<group>"; };
 		79937A132BD7E0120063A2CE /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		79937A152BD94C000063A2CE /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
+		79937A192BD94D660063A2CE /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		79937A1B2BD94F830063A2CE /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79B043E92BCE8C9300407A1F /* TokenRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresh.swift; sourceTree = "<group>"; };
@@ -342,6 +348,24 @@
 		7986046A2BD6A686003E721E /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				79937A152BD94C000063A2CE /* FeedViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		79937A172BD94D370063A2CE /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				79937A182BD94D5C0063A2CE /* VC */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		79937A182BD94D5C0063A2CE /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				79937A192BD94D660063A2CE /* SearchViewController.swift */,
+				79937A1B2BD94F830063A2CE /* SearchViewModel.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -417,6 +441,7 @@
 				79EBA4CA2BCD162200C3C530 /* SignUp */,
 				79EBA4CB2BCD162C00C3C530 /* LogIn */,
 				79B043E82BCE719E00407A1F /* Feed */,
+				79937A172BD94D370063A2CE /* Search */,
 				79B044152BCFF3FC00407A1F /* Create */,
 				79B043EB2BCE8F6A00407A1F /* MyPage */,
 			);
@@ -590,6 +615,7 @@
 				79EBA48E2BCC27BE00C3C530 /* FetchPostQuery.swift in Sources */,
 				7986043A2BD2BCF3003E721E /* Toast+.swift in Sources */,
 				7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */,
+				79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */,
 				79B043F22BCE9DB100407A1F /* MyPageViewController.swift in Sources */,
 				79EBA4E92BCD297900C3C530 /* PointButton.swift in Sources */,
 				798604352BD293FA003E721E /* APIMonitor.swift in Sources */,
@@ -616,6 +642,7 @@
 				79EBA4E72BCD287B00C3C530 /* BaseView.swift in Sources */,
 				79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */,
 				7986044E2BD53747003E721E /* ProfileNavigationCollectionViewCell.swift in Sources */,
+				79937A1C2BD94F830063A2CE /* SearchViewModel.swift in Sources */,
 				79EBA4872BCAEA6400C3C530 /* TargetType.swift in Sources */,
 				79937A142BD7E0120063A2CE /* String+.swift in Sources */,
 				79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */,
@@ -637,6 +664,7 @@
 				7986040F2BD15016003E721E /* UIImageView+.swift in Sources */,
 				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
 				79B043F62BCEA1F100407A1F /* CapsuleButton.swift in Sources */,
+				79937A162BD94C000063A2CE /* FeedViewController.swift in Sources */,
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
 				79EBA4DD2BCD19A700C3C530 /* UIColor+.swift in Sources */,
 				79EBA4CD2BCD164800C3C530 /* SignUpViewController.swift in Sources */,

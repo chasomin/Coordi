@@ -32,7 +32,7 @@ final class MyPageViewModel: ViewModelType {
     
     func transform(input: Input) -> Output {
         let userId = UserDefaultsManager.userId
-        let postQuery = Observable.just(FetchPostQuery(next: "", limit: "7", product_id: "", hashTag: nil))//test
+        let postQuery = Observable.just(FetchPostQuery(next: "", limit: "7", product_id: ""))//test
 
         let myProfile = PublishRelay<ProfileModel>()
         let myPosts = PublishRelay<PostListModel>()
@@ -76,28 +76,12 @@ final class MyPageViewModel: ViewModelType {
                 editButtonTap.accept(profileModel)
             }
             .disposed(by: disposeBag)
-        
 
-        
-        input.itemSelected
-            .flatMap { postModel in
-                NetworkManager.request(api: .fetchParticularPost(postId: postModel.post_id))
-                    .catch { _ in
-                        itemFetchFailureTrigger.accept(())
-                        return Single<PostModel>.never()
-                    }
-            }
-            .subscribe { postModel in
-                itemSelected.accept(postModel)
-            }
-            .disposed(by: disposeBag)
-
-        
         return Output.init(profile: myProfile,
                            posts: myPosts,
                            editButtonTap: editButtonTap,
                            barButtonTap: input.barButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()),
-                           itemSelected:  itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
+                           itemSelected:  input.itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
                            profileFetchFailureTrigger: profileFetchFailureTrigger.asDriver(onErrorJustReturn: ()),
                            postsFetchFailureTrigger: postsFetchFailureTrigger.asDriver(onErrorJustReturn: ()),
                            itemFetchFailureTrigger: itemFetchFailureTrigger.asDriver(onErrorJustReturn: ()))

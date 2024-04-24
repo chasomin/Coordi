@@ -52,7 +52,7 @@ final class CreatePostViewModel: ViewModelType {
                     }
             }
             .map { imageModel in
-                return PostQuery(title: "", content: "#\(input.temp.value)", content1: input.content.value, content2: "", product_id: Constants.productId.id.rawValue, files: imageModel.files)
+                return PostQuery(title: "", content: "#\(input.temp.value)", content1: input.content.value, content2: "", product_id: Constants.productId, files: imageModel.files)
             }
             .flatMap { postQuery in
                 return NetworkManager.request(api: .uploadPost(query: postQuery))

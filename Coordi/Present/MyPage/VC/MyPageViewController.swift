@@ -108,19 +108,19 @@ final class MyPageViewController: BaseViewController {
         
         output.itemFetchFailureTrigger
             .drive(with: self) { owner, _ in
-                owner.showErrorToast()
+                owner.showErrorToast("⚠️")
             }
             .disposed(by: disposeBag)
         
         output.profileFetchFailureTrigger
             .drive(with: self) { owner, _ in
-                owner.showErrorToast()
+                owner.showErrorToast("⚠️")
             }
             .disposed(by: disposeBag)
 
         output.postsFetchFailureTrigger
             .drive(with: self) { owner, _ in
-                owner.showErrorToast()
+                owner.showErrorToast("⚠️")
             }
             .disposed(by: disposeBag)
     }    

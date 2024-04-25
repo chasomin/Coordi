@@ -9,11 +9,11 @@ import UIKit
 import Toast
 
 extension BaseViewController {
-    func showErrorToast() {
+    func showErrorToast(_ text: String) {
         var style = ToastStyle.init()
         style.backgroundColor = .pointColor
         style.titleColor = .backgroundColor
-        view.makeToast(nil, duration: 2, position: .top, title: "⚠️오류가 발생했습니다\n잠시후에 다시 시도해주세요", style: style) //TODO: 오류 처리
+        view.makeToast(nil, duration: 2, position: .top, title: text, style: style) //TODO: 오류 처리
     }
     
     func showDoneToast() {

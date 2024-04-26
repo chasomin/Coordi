@@ -19,6 +19,7 @@ final class FeedDetailViewModel: ViewModelType {
         let popGesture: PublishRelay<Void>
         let heartButtonTap: PublishRelay<PostModel>
         let imageDoubleTap: PublishRelay<PostModel>
+        let profileTap: PublishRelay<Void>
     }
     
     struct Output {
@@ -29,6 +30,7 @@ final class FeedDetailViewModel: ViewModelType {
         let imageDoubleTap: Driver<PostModel>
         let requestFailureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
+        let profileTap: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -152,8 +154,6 @@ final class FeedDetailViewModel: ViewModelType {
                 imageDoubleTap.accept(postModel)
             }
             .disposed(by: disposeBag)
-
-        
         
         return Output.init(backButtonTap: input.backButtonTap.asDriver(onErrorJustReturn: ()),
                            commentUploadSuccessTrigger: commentUploadSuccessTrigger.asDriver(onErrorJustReturn: CommentModel.dummy),
@@ -161,6 +161,7 @@ final class FeedDetailViewModel: ViewModelType {
                            heartButtonTap: heartButtonTap.asDriver(onErrorJustReturn: .dummy),
                            imageDoubleTap: imageDoubleTap.asDriver(onErrorJustReturn: .dummy),
                            requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""),
-                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()))
+                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
+                           profileTap: input.profileTap.asDriver(onErrorJustReturn: ()))
     }
 }

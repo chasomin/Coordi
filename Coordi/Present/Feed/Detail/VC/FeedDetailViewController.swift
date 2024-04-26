@@ -36,6 +36,7 @@ final class FeedDetailViewController: BaseViewController {
     private let popGesture = PublishRelay<Void>()
     private let imageDoubleTapGesture = PublishRelay<PostModel>()
     private let heartButtonTap = PublishRelay<PostModel>()
+    private let profileTap = PublishRelay<Void>()
 
     init(postModel: PostModel) {
         self.postModel = postModel
@@ -72,7 +73,8 @@ final class FeedDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        let input = FeedDetailViewModel.Input(postId: Observable.just(postModel.post_id), backButtonTap: backButtonTap, commentButtonTap: commentButtonTap, popGesture: popGesture, heartButtonTap: heartButtonTap, imageDoubleTap: imageDoubleTapGesture)
+        
+        let input = FeedDetailViewModel.Input(postId: Observable.just(postModel.post_id), backButtonTap: backButtonTap, commentButtonTap: commentButtonTap, popGesture: popGesture, heartButtonTap: heartButtonTap, imageDoubleTap: imageDoubleTapGesture, profileTap: profileTap)
         let output = viewModel.transform(input: input)
         
         output.backButtonTap
@@ -133,6 +135,13 @@ final class FeedDetailViewController: BaseViewController {
                 sceneDelegate?.window?.makeKeyAndVisible()
             }
             .disposed(by: disposeBag)
+        
+        output.profileTap
+            .drive(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(MyPageViewController(userId: owner.postModel.creator.user_id), animated: true)
+            }
+            .disposed(by: disposeBag)
+            
 
 //        output.heartFailureTrigger
 //            .drive(with: self) { owner, _ in
@@ -299,6 +308,11 @@ extension FeedDetailViewController {
             cell.backButton.rx.tap
                 .bind(with: self) { owner, _ in
                     owner.backButtonTap.accept(())
+                }
+                .disposed(by: cell.disposeBag)
+            cell.tapGesture.rx.event
+                .bind(with: self) { owner, _ in
+                    owner.profileTap.accept(())
                 }
                 .disposed(by: cell.disposeBag)
             cell.configureCell(item: itemIdentifier)

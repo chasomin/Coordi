@@ -15,6 +15,7 @@ final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
     let profileImage = CirCleImageView()
     let nicknameLabel = UILabel()
     let backButton = UIButton()
+    let tapGesture = UITapGestureRecognizer()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -25,6 +26,7 @@ final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
         contentView.addSubview(profileImage)
         contentView.addSubview(nicknameLabel)
         contentView.addSubview(backButton)
+        profileImage.addGestureRecognizer(tapGesture)
     }
     
     override func configureLayout() {
@@ -49,6 +51,7 @@ final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
         backButton.scalesLargeContentImage = true
         
         profileImage.backgroundColor = .pointColor
+        profileImage.isUserInteractionEnabled = true
         nicknameLabel.font = .caption
     }
     

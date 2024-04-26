@@ -8,10 +8,11 @@
 import UIKit
 
 final class CapsuleButton: UIButton {
-    let text: String
-    let textColor: UIColor
-    let backColor: UIColor
-    
+    private let text: String
+    private let textColor: UIColor
+    private let backColor: UIColor
+    private var config = UIButton.Configuration.filled()
+
     init(text: String, textColor: UIColor, backColor: UIColor, font: UIFont) {
         self.text = text
         self.textColor = textColor
@@ -19,7 +20,6 @@ final class CapsuleButton: UIButton {
         
         super.init(frame: .zero)
         
-        var config = UIButton.Configuration.filled()
         config.cornerStyle = .capsule
         config.baseBackgroundColor = backColor
         config.baseForegroundColor = textColor
@@ -31,5 +31,12 @@ final class CapsuleButton: UIButton {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setTitle(text: String, font: UIFont) {
+        var attr = AttributedString.init(text)
+        attr.font = font
+        config.attributedSubtitle = attr
+        self.configuration = config
     }
 }

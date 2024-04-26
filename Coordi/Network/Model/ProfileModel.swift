@@ -33,7 +33,7 @@ struct ProfileModel: Decodable, Hashable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.user_id = try container.decode(String.self, forKey: .user_id)
-        self.email = try container.decode(String.self, forKey: .email)
+        self.email = try container.decodeIfPresent(String.self, forKey: .email) ?? ""
         self.nick = try container.decode(String.self, forKey: .nick)
         self.phoneNum = try container.decodeIfPresent(String.self, forKey: .phoneNum) ?? ""
         self.birthDay = try container.decodeIfPresent(String.self, forKey: .birthDay) ?? ""

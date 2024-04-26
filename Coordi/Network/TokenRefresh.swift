@@ -43,15 +43,22 @@ final class TokenRefresh: RequestInterceptor {
                         case .failure(_):
                             if let code = response.response?.statusCode {
                                 print("❌토큰 갱신 실패: \(code)")
+                                
                                 // TODO: 418이면 최초 로그인 화면으로 돌려주기 (refreshToken도 만료)
                                 //                            completion(.doNotRetryWithError(<#T##any Error#>))
-                                completion(.doNotRetry)
+                                if code == 418 {
+                                    completion(.doNotRetryWithError(CoordiError.refreshTokenExpired))
+                                } else {
+                                    completion(.doNotRetry)
+                                }
                             } else {
                                 print("❌토큰 갱신 실패")
                                 completion(.doNotRetry)
                             }
                         }
                     }
+            } else {
+                completion(.doNotRetry)
             }
         } catch {
             
@@ -59,9 +66,3 @@ final class TokenRefresh: RequestInterceptor {
     }
     
 }
-
-//enum CoordiError: Int {
-//    case expiredRefreshToken = 419
-//    case expiredAccessToken = 418
-//    case 
-//}

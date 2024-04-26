@@ -24,26 +24,32 @@ final class FeedDetailViewModel: ViewModelType {
     struct Output {
         let backButtonTap: Driver<Void>
         let commentUploadSuccessTrigger: Driver<CommentModel>
-        let commentUploadFailureTrigger: Driver<Void>
         let popGesture: Driver<Void>
         let heartButtonTap: Driver<PostModel>
-        let heartFailureTrigger: Driver<Void>
         let imageDoubleTap: Driver<PostModel>
+        let requestFailureTrigger: Driver<String>
+        let refreshTokenFailure: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
         let commentUploadSuccessTrigger = PublishRelay<CommentModel>()
-        let commentUploadFailureTrigger = PublishRelay<Void>()
         let heartButtonTap = PublishRelay<PostModel>()
         let imageDoubleTap = PublishRelay<PostModel>()
-        let heartFailureTrigger = PublishRelay<Void>()
+        let refreshTokenFailure = PublishRelay<Void>()
+        let requestFailureTrigger = PublishRelay<String>()
 
         Observable.combineLatest(input.postId, input.commentButtonTap)
             .flatMap { value in
                 let (postId, comment) = value
                 return NetworkManager.request(api: .uploadComment(postId: postId, query: CommentQuery(content: comment)))
-                    .catch { _ in
-                        commentUploadFailureTrigger.accept(())
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            requestFailureTrigger.accept(coordiError.errorMessage)
+                        }
                         return Single<CommentModel>.never()
                     }
             }
@@ -56,14 +62,26 @@ final class FeedDetailViewModel: ViewModelType {
             .flatMap { postModel in
                 if postModel.likes.contains(UserDefaultsManager.userId) {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: false)))
-                        .catch { _ in
-                            heartFailureTrigger.accept(())
+                        .catch { error in
+                            let coordiError = error as! CoordiError
+                            switch coordiError {
+                            case .refreshTokenExpired:
+                                refreshTokenFailure.accept(())
+                            default:
+                                requestFailureTrigger.accept(coordiError.errorMessage)
+                            }
                             return Single<LikeModel>.never()
                         }
                 } else {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: true)))
-                        .catch { _ in
-                            heartFailureTrigger.accept(())
+                        .catch { error in
+                            let coordiError = error as! CoordiError
+                            switch coordiError {
+                            case .refreshTokenExpired:
+                                refreshTokenFailure.accept(())
+                            default:
+                                requestFailureTrigger.accept(coordiError.errorMessage)
+                            }
                             return Single<LikeModel>.never()
                         }
                 }
@@ -71,8 +89,14 @@ final class FeedDetailViewModel: ViewModelType {
             .withLatestFrom(input.postId)
             .flatMap { postId in
                 return NetworkManager.request(api: .fetchParticularPost(postId: postId))
-                    .catch { _ in
-                        //
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            requestFailureTrigger.accept(coordiError.errorMessage)
+                        }
                         return Single<PostModel>.never()
                     }
             }
@@ -86,14 +110,26 @@ final class FeedDetailViewModel: ViewModelType {
             .flatMap { postModel in
                 if postModel.likes.contains(UserDefaultsManager.userId) {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: false)))
-                        .catch { _ in
-                            heartFailureTrigger.accept(())
+                        .catch { error in
+                            let coordiError = error as! CoordiError
+                            switch coordiError {
+                            case .refreshTokenExpired:
+                                refreshTokenFailure.accept(())
+                            default:
+                                requestFailureTrigger.accept(coordiError.errorMessage)
+                            }
                             return Single<LikeModel>.never()
                         }
                 } else {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: true)))
-                        .catch { _ in
-                            heartFailureTrigger.accept(())
+                        .catch { error in
+                            let coordiError = error as! CoordiError
+                            switch coordiError {
+                            case .refreshTokenExpired:
+                                refreshTokenFailure.accept(())
+                            default:
+                                requestFailureTrigger.accept(coordiError.errorMessage)
+                            }
                             return Single<LikeModel>.never()
                         }
                 }
@@ -101,8 +137,14 @@ final class FeedDetailViewModel: ViewModelType {
             .withLatestFrom(input.postId)
             .flatMap { postId in
                 return NetworkManager.request(api: .fetchParticularPost(postId: postId))
-                    .catch { _ in
-                        //
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            requestFailureTrigger.accept(coordiError.errorMessage)
+                        }
                         return Single<PostModel>.never()
                     }
             }
@@ -115,10 +157,10 @@ final class FeedDetailViewModel: ViewModelType {
         
         return Output.init(backButtonTap: input.backButtonTap.asDriver(onErrorJustReturn: ()),
                            commentUploadSuccessTrigger: commentUploadSuccessTrigger.asDriver(onErrorJustReturn: CommentModel.dummy),
-                           commentUploadFailureTrigger: commentUploadFailureTrigger.asDriver(onErrorJustReturn: ()),
                            popGesture: input.popGesture.asDriver(onErrorJustReturn: ()),
                            heartButtonTap: heartButtonTap.asDriver(onErrorJustReturn: .dummy),
-                           heartFailureTrigger: heartFailureTrigger.asDriver(onErrorJustReturn: ()),
-                           imageDoubleTap: imageDoubleTap.asDriver(onErrorJustReturn: .dummy))
+                           imageDoubleTap: imageDoubleTap.asDriver(onErrorJustReturn: .dummy),
+                           requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""),
+                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()))
     }
 }

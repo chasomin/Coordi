@@ -91,12 +91,12 @@ final class FeedDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        output.commentUploadFailureTrigger
-            .drive(with: self) { owner, _ in
-                owner.showErrorToast()
-            }
-            .disposed(by: disposeBag)
-        
+//        output.commentUploadFailureTrigger
+//            .drive(with: self) { owner, _ in
+//                owner.showErrorToast()
+//            }
+//            .disposed(by: disposeBag)
+//        
         output.popGesture
             .drive(with: self) { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
@@ -119,11 +119,26 @@ final class FeedDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        output.heartFailureTrigger
-            .drive(with: self) { owner, _ in
-                owner.showErrorToast()
+        output.requestFailureTrigger
+            .drive(with: self) { owner, errorText in
+                owner.showErrorToast(errorText)
             }
             .disposed(by: disposeBag)
+        
+        output.refreshTokenFailure
+            .drive(with: self) { owner, _ in
+                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+                let sceneDelegate = windowScene?.delegate as? SceneDelegate
+                sceneDelegate?.window?.rootViewController = LogInViewController()
+                sceneDelegate?.window?.makeKeyAndVisible()
+            }
+            .disposed(by: disposeBag)
+
+//        output.heartFailureTrigger
+//            .drive(with: self) { owner, _ in
+//                owner.showErrorToast()
+//            }
+//            .disposed(by: disposeBag)
     }
     // TODO: 내 댓글만 밀어서 삭제
     
@@ -150,13 +165,14 @@ final class FeedDetailViewController: BaseViewController {
     
     override func configureLayout() {
         collectionView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
         
         bottomView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(40)
+            make.top.equalTo(collectionView.snp.bottom)
         }
         
         commentTextfield.snp.makeConstraints { make in
@@ -269,7 +285,7 @@ extension FeedDetailViewController {
                 
                 let layoutSection = NSCollectionLayoutSection(group: group)
                 layoutSection.interGroupSpacing = 10
-                layoutSection.contentInsets = .init(top: 0, leading: 15, bottom: 60, trailing: 15)
+                layoutSection.contentInsets = .init(top: 0, leading: 15, bottom: 15, trailing: 15)
 
                 return layoutSection
             }

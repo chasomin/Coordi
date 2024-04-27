@@ -13,8 +13,9 @@ final class MyPageViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
     struct Input {
-        let viewDidLoad: Observable<Void>
-        let editButtonTap: PublishRelay<Void>
+        let viewDidLoad: Observable<String>
+        let editButtonTap: Observable<Void>
+        let followButtonTap: Observable<Void>
         let barButtonTap: Observable<Void>
         let itemSelected: Observable<PostModel>
     }
@@ -25,47 +26,62 @@ final class MyPageViewModel: ViewModelType {
         let editButtonTap: PublishRelay<ProfileModel>
         let barButtonTap: Driver<Void>
         let itemSelected: Driver<PostModel>
-        let profileFetchFailureTrigger: Driver<Void>
-        let postsFetchFailureTrigger: Driver<Void>
-        let itemFetchFailureTrigger: Driver<Void>
+        let failureTrigger: Driver<String>
+        let refreshTokenFailure: Driver<Void>
+        let isMyFeed: Driver<Bool>
+        let followValue: Driver<FollowModel>
     }
     
     func transform(input: Input) -> Output {
-        let userId = UserDefaultsManager.userId
-        let postQuery = Observable.just(FetchPostQuery(next: "", limit: "7", product_id: ""))//test
-
         let myProfile = PublishRelay<ProfileModel>()
         let myPosts = PublishRelay<PostListModel>()
         let editButtonTap = PublishRelay<ProfileModel>()
-        let itemSelected = PublishRelay<PostModel>()
+        let failureTrigger = PublishRelay<String>()
+        let refreshTokenFailure = PublishRelay<Void>()
+        
+        let isMyFeed = PublishRelay<Bool>()
+        let followValue = PublishRelay<FollowModel>()
 
-        let profileFetchFailureTrigger = PublishRelay<Void>()
-        let postsFetchFailureTrigger = PublishRelay<Void>()
-        let itemFetchFailureTrigger = PublishRelay<Void>()
 
         input.viewDidLoad
-            .withLatestFrom(postQuery)
-            .flatMap { postQuery in
-                NetworkManager.request(api: .fetchPostByUser(userId: userId, query: postQuery))
-                    .catch { _ in
-                        postsFetchFailureTrigger.accept(())
-                        return Single<PostListModel>.never()
-                    }
-            }
-            .flatMap { postListModel in
-                let profileModel = NetworkManager.request(api: .fetchMyProfile)
-                    .catch { _ in
-                        profileFetchFailureTrigger.accept(())
+            .flatMap { userId in
+                NetworkManager.request(api: .fetchUserProfile(userId: userId))
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            failureTrigger.accept(coordiError.errorMessage)
+                        }
                         return Single<ProfileModel>.never()
                     }
-                let postListModel = Observable.just(postListModel).asSingle()
-                
-                return Single.zip(postListModel, profileModel)
             }
-            .subscribe(with: self) { owner, response in
-                let (post, profile) = response
+            .flatMap { profile in
+               let posts = NetworkManager.request(api: .fetchPostByUser(userId: profile.user_id, query: FetchPostQuery.init(next: "", limit: "", product_id: Constants.productId)))
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            failureTrigger.accept(coordiError.errorMessage)
+                        }
+                        return Single<PostListModel>.never()
+                    }
+                let userProfile = Observable.just(profile).asSingle()
+                return Single.zip(userProfile, posts)
+            
+            }
+            .subscribe { response in
+                let (profile, posts) = response
                 myProfile.accept(profile)
-                myPosts.accept(post)
+                myPosts.accept(posts)
+                if profile.user_id == UserDefaultsManager.userId {
+                    isMyFeed.accept(true)
+                } else {
+                    isMyFeed.accept(false)
+                }
             }
             .disposed(by: disposeBag)
                     
@@ -77,13 +93,62 @@ final class MyPageViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
 
+        input.followButtonTap
+            .throttle(.seconds(2), scheduler: MainScheduler.instance)
+            .withLatestFrom(input.viewDidLoad)
+            .flatMap { userId in
+                NetworkManager.request(api: .fetchUserProfile(userId: userId))
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            failureTrigger.accept(coordiError.errorMessage)
+                        }
+                        return Single<ProfileModel>.never()
+                    }
+            }
+            .flatMap { profile in
+                if profile.followers.map ({ $0.user_id == UserDefaultsManager.userId }).isEmpty {
+                    NetworkManager.request(api: .follow(userId: profile.user_id))
+                        .catch { error in
+                            let coordiError = error as! CoordiError
+                            switch coordiError {
+                            case .refreshTokenExpired:
+                                refreshTokenFailure.accept(())
+                            default:
+                                failureTrigger.accept(coordiError.errorMessage)
+                            }
+                            return Single<FollowModel>.never()
+                        }
+                } else {
+                    NetworkManager.request(api: .deleteFollow(userId: profile.user_id))
+                        .catch { error in
+                            let coordiError = error as! CoordiError
+                            switch coordiError {
+                            case .refreshTokenExpired:
+                                refreshTokenFailure.accept(())
+                            default:
+                                failureTrigger.accept(coordiError.errorMessage)
+                            }
+                            return Single<FollowModel>.never()
+                        }
+                }
+            }
+            .subscribe { follow in
+                followValue.accept(follow)
+            }
+            .disposed(by: disposeBag)
+        
         return Output.init(profile: myProfile,
                            posts: myPosts,
                            editButtonTap: editButtonTap,
                            barButtonTap: input.barButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()),
                            itemSelected:  input.itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
-                           profileFetchFailureTrigger: profileFetchFailureTrigger.asDriver(onErrorJustReturn: ()),
-                           postsFetchFailureTrigger: postsFetchFailureTrigger.asDriver(onErrorJustReturn: ()),
-                           itemFetchFailureTrigger: itemFetchFailureTrigger.asDriver(onErrorJustReturn: ()))
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""), 
+                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
+                           isMyFeed: isMyFeed.asDriver(onErrorJustReturn: false),
+                           followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)))
     }
 }

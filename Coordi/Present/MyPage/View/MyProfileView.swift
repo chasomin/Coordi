@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class MyProfileView: UICollectionReusableView {
+final class MyProfileView: BaseView {
     static let id = MyProfileView.description()
 
     let profileImageView = CirCleImageView()
@@ -22,23 +22,9 @@ final class MyProfileView: UICollectionReusableView {
     private let followingLabel = UILabel()
     let followingCount = UILabel()
     let editButton = CapsuleButton(text: "프로필 관리", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
+    let followButton = CapsuleButton(text: "", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configureHierarchy()
-        configureLayout()
-        configureView()
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-// MARK: - Layout
-extension MyProfileView {
-    private func configureHierarchy() {
+    override func configureHierarchy() {
         addSubview(profileImageView)
         addSubview(infoStack)
         infoStack.addArrangedSubview(nicknameLabel)
@@ -48,9 +34,10 @@ extension MyProfileView {
         followStack.addArrangedSubview(followingLabel)
         followStack.addArrangedSubview(followingCount)
         addSubview(editButton)
+        addSubview(followButton)
     }
     
-    private func configureLayout() {
+    override func configureLayout() {
         profileImageView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -68,9 +55,15 @@ extension MyProfileView {
             make.bottom.equalToSuperview()
             make.height.equalTo(30)
         }
+        followButton.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(15)
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(30)
+        }
     }
     
-    private func configureView() {
+    override func configureView() {
         infoStack.axis = .vertical
         infoStack.spacing = 10
         
@@ -81,13 +74,11 @@ extension MyProfileView {
         followerCount.font = .caption
         followingLabel.font = .caption
         followingCount.font = .caption
+        nicknameLabel.font = .body
 
         profileImageView.backgroundColor = .pointColor
-        nicknameLabel.text = "닉네임"
-        nicknameLabel.font = .body
         followerLabel.text = "팔로워"
         followingLabel.text = "팔로잉"
-        followerCount.text = "0"
-        followingCount.text = "0"
+        
     }
 }

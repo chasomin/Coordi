@@ -73,7 +73,7 @@ final class SignUpViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        let signUpQuery = Observable.combineLatest(input.emailText, input.emailText, input.nicknameText)
+        let signUpQuery = Observable.combineLatest(input.emailText, input.passwordText, input.nicknameText)
             .map { email, password, nick in
                 return SignUpQuery(email: email, password: password, nick: nick)
             }

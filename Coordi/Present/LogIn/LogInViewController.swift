@@ -42,13 +42,18 @@ final class LogInViewController: BaseViewController {
         output.successTrigger
             .drive(with: self) { owner, _ in
                 let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                
                 let sceneDelegate = windowScene?.delegate as? SceneDelegate
                 
-                let vc = ViewController()
-                let nav = UINavigationController(rootViewController: vc)
+                let firstVC = UINavigationController(rootViewController: FeedViewController())
+                firstVC.tabBarItem = UITabBarItem(title: "피드", image: nil, selectedImage: nil)
+                let secondVC = UINavigationController(rootViewController: LogInViewController())
+                secondVC.tabBarItem = UITabBarItem(title: "로그인", image: nil, selectedImage: nil)
+                let thirdVC = UINavigationController(rootViewController: MyPageViewController(userId: UserDefaultsManager.userId))
+                thirdVC.tabBarItem = UITabBarItem(title: "마이페이지", image: nil, selectedImage: nil )
+                let tabBar = UITabBarController()
+                tabBar.viewControllers = [firstVC, secondVC, thirdVC]
                 
-                sceneDelegate?.window?.rootViewController = nav
+                sceneDelegate?.window?.rootViewController = tabBar
                 sceneDelegate?.window?.makeKeyAndVisible()
             }
             .disposed(by: disposeBag)

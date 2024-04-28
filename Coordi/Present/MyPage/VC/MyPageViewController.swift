@@ -31,7 +31,6 @@ final class MyPageViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = Constants.NavigationTitle.myPage.title
         navigationItem.rightBarButtonItem = barButton
     }
     
@@ -115,7 +114,10 @@ final class MyPageViewController: BaseViewController {
 
         output.isMyFeed
             .drive(with: self) { owner, value in
-                owner.profileView.followButton.isHidden = value
+                let (isMyFeed, profile) = value
+                owner.profileView.followButton.isHidden = isMyFeed
+                owner.barButton.isHidden = !isMyFeed
+                owner.navigationItem.title = Constants.NavigationTitle.myPage(value: isMyFeed, nick: profile.nick).title
             }
             .disposed(by: disposeBag)
         

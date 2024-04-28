@@ -28,7 +28,7 @@ final class MyPageViewModel: ViewModelType {
         let itemSelected: Driver<PostModel>
         let failureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
-        let isMyFeed: Driver<Bool>
+        let isMyFeed: Driver<(Bool, ProfileModel)>
         let followValue: Driver<FollowModel>
     }
     
@@ -39,7 +39,7 @@ final class MyPageViewModel: ViewModelType {
         let failureTrigger = PublishRelay<String>()
         let refreshTokenFailure = PublishRelay<Void>()
         
-        let isMyFeed = PublishRelay<Bool>()
+        let isMyFeed = PublishRelay<(Bool, ProfileModel)>()
         let followValue = PublishRelay<FollowModel>()
 
 
@@ -78,9 +78,9 @@ final class MyPageViewModel: ViewModelType {
                 myProfile.accept(profile)
                 myPosts.accept(posts)
                 if profile.user_id == UserDefaultsManager.userId {
-                    isMyFeed.accept(true)
+                    isMyFeed.accept((true, profile))
                 } else {
-                    isMyFeed.accept(false)
+                    isMyFeed.accept((false, profile))
                 }
             }
             .disposed(by: disposeBag)
@@ -148,7 +148,7 @@ final class MyPageViewModel: ViewModelType {
                            itemSelected:  input.itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""), 
                            refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
-                           isMyFeed: isMyFeed.asDriver(onErrorJustReturn: false),
+                           isMyFeed: isMyFeed.asDriver(onErrorJustReturn: (true, .dummy)),
                            followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)))
     }
 }

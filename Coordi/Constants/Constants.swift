@@ -12,7 +12,7 @@ enum Constants {
     
     enum NavigationTitle {
         case feed
-        case myPage
+        case myPage(value: Bool, nick: String)
         case search
         case create
         case editProfile
@@ -22,8 +22,8 @@ enum Constants {
             switch self {
             case .feed:
                 ""
-            case .myPage:
-                "내 피드 모아보기"
+            case .myPage(let value, let nick):
+                value ? "내 피드 모아보기" : nick
             case .search:
                 ""
             case .create:

@@ -11,13 +11,23 @@ import RxSwift
 import RxCocoa
 
 final class FeedViewController: TabmanViewController {
-    private let viewModel = FeedViewModel()
+    private let viewModel: FeedViewModel
     private let disposeBag = DisposeBag()
     
-    private var viewControllers = [FollowFeedViewController(), UIViewController()]//
+    private var viewControllers: [UIViewController]
     private let searchButton = UIBarButtonItem()
     
-
+    init(viewModel: FeedViewModel, followFeedViewModel: FollowFeedViewModel, allFeedViewModel: AllFeedViewModel) {
+        self.viewModel = viewModel
+        self.viewControllers = [FollowFeedViewController(viewModel: followFeedViewModel),
+                                AllFeedViewController(viewModel: allFeedViewModel)]
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setTopTabBar()

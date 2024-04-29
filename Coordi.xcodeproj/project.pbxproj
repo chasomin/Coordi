@@ -52,6 +52,10 @@
 		79937A302BDEA7290063A2CE /* Tabman in Frameworks */ = {isa = PBXBuildFile; productRef = 79937A2F2BDEA7290063A2CE /* Tabman */; };
 		79937A322BDEA7C90063A2CE /* FollowFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A312BDEA7C90063A2CE /* FollowFeedViewController.swift */; };
 		79937A362BDEACD20063A2CE /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A352BDEACD20063A2CE /* FeedViewModel.swift */; };
+		79937A9F2BDFA43E0063A2CE /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937A9E2BDFA43E0063A2CE /* TabBar.swift */; };
+		79937AA12BDFA4D20063A2CE /* AllFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AA02BDFA4D20063A2CE /* AllFeedViewController.swift */; };
+		79937AA32BDFA5900063A2CE /* AllFeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AA22BDFA5900063A2CE /* AllFeedViewModel.swift */; };
+		79937AA82BDFCB070063A2CE /* UITabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AA72BDFCB070063A2CE /* UITabBarController.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -149,6 +153,10 @@
 		79937A2C2BDD72850063A2CE /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		79937A312BDEA7C90063A2CE /* FollowFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowFeedViewController.swift; sourceTree = "<group>"; };
 		79937A352BDEACD20063A2CE /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
+		79937A9E2BDFA43E0063A2CE /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		79937AA02BDFA4D20063A2CE /* AllFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllFeedViewController.swift; sourceTree = "<group>"; };
+		79937AA22BDFA5900063A2CE /* AllFeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllFeedViewModel.swift; sourceTree = "<group>"; };
+		79937AA72BDFCB070063A2CE /* UITabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITabBarController.swift; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79B043E92BCE8C9300407A1F /* TokenRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresh.swift; sourceTree = "<group>"; };
@@ -317,6 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				798604372BD29DBA003E721E /* Constants.swift */,
+				79937A9E2BDFA43E0063A2CE /* TabBar.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -368,6 +377,8 @@
 				79937A352BDEACD20063A2CE /* FeedViewModel.swift */,
 				79937A312BDEA7C90063A2CE /* FollowFeedViewController.swift */,
 				79937A1F2BDA53F50063A2CE /* FollowFeedViewModel.swift */,
+				79937AA02BDFA4D20063A2CE /* AllFeedViewController.swift */,
+				79937AA22BDFA5900063A2CE /* AllFeedViewModel.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -506,6 +517,7 @@
 				798604322BD26041003E721E /* UIImage+.swift */,
 				798604392BD2BCF3003E721E /* Toast+.swift */,
 				79937A132BD7E0120063A2CE /* String+.swift */,
+				79937AA72BDFCB070063A2CE /* UITabBarController.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -640,6 +652,7 @@
 				79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */,
 				79B043F22BCE9DB100407A1F /* MyPageViewController.swift in Sources */,
 				79EBA4E92BCD297900C3C530 /* PointButton.swift in Sources */,
+				79937AA12BDFA4D20063A2CE /* AllFeedViewController.swift in Sources */,
 				798604352BD293FA003E721E /* APIMonitor.swift in Sources */,
 				79EBA4752BCACFB700C3C530 /* WithdrawModel.swift in Sources */,
 				79937A322BDEA7C90063A2CE /* FollowFeedViewController.swift in Sources */,
@@ -648,6 +661,7 @@
 				79EBA4CF2BCD166000C3C530 /* SignUpViewModel.swift in Sources */,
 				79B043F02BCE991800407A1F /* UnderlineLabel.swift in Sources */,
 				79B043FC2BCECDB300407A1F /* BaseCollectionViewCell.swift in Sources */,
+				79937AA82BDFCB070063A2CE /* UITabBarController.swift in Sources */,
 				79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */,
 				79B043F82BCEA32800407A1F /* CirCleImageView.swift in Sources */,
 				79B043FA2BCECD8D00407A1F /* FeedCollectionViewCell.swift in Sources */,
@@ -659,6 +673,7 @@
 				79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */,
 				798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */,
 				798604542BD54167003E721E /* CommentTableViewCell.swift in Sources */,
+				79937AA32BDFA5900063A2CE /* AllFeedViewModel.swift in Sources */,
 				798604382BD29DBA003E721E /* Constants.swift in Sources */,
 				79EBA4DA2BCD174500C3C530 /* BaseViewController.swift in Sources */,
 				798604312BD2539F003E721E /* CreatePostViewModel.swift in Sources */,
@@ -671,6 +686,7 @@
 				79EBA4872BCAEA6400C3C530 /* TargetType.swift in Sources */,
 				79937A142BD7E0120063A2CE /* String+.swift in Sources */,
 				79937A362BDEACD20063A2CE /* FeedViewModel.swift in Sources */,
+				79937A9F2BDFA43E0063A2CE /* TabBar.swift in Sources */,
 				79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */,
 				79937A2D2BDD72850063A2CE /* CommentViewModel.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,

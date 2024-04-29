@@ -12,26 +12,26 @@ import RxCocoa
 import Kingfisher
 
 final class MyPageViewController: BaseViewController {
-    var userId: String
-    private let profileView = MyProfileView()
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-    private let viewModel = MyPageViewModel()
+    private let viewModel: MyPageViewModel
     
     private let editButtonTap = PublishRelay<String>()
     
-    private let barButton = UIBarButtonItem()
+    private let profileView = MyProfileView()
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    private let plusBarButton = UIBarButtonItem()
+    private let settingBarButton = UIBarButtonItem()
     
-    private var posts: [PostModel] = []
+//    private var posts: [PostModel] = []
     
-    init(userId: String) {
-        self.userId = userId
+    init(viewModel: MyPageViewModel) {
+        self.viewModel = viewModel
         super.init()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = barButton
+        navigationItem.rightBarButtonItems = [settingBarButton, plusBarButton]
     }
     
     override func configureHierarchy() {
@@ -52,7 +52,8 @@ final class MyPageViewController: BaseViewController {
     }
     
     override func configureView() {
-        barButton.image = UIImage(systemName: "plus")
+        plusBarButton.image = UIImage(systemName: "plus")
+        settingBarButton.image = UIImage(systemName: "line.3.horizontal")
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.id)
 
         collectionView.showsVerticalScrollIndicator = false
@@ -61,7 +62,11 @@ final class MyPageViewController: BaseViewController {
 
     override func bind() {
         
-        let input = MyPageViewModel.Input(viewDidLoad: Observable.just(userId), editButtonTap: profileView.editButton.rx.tap.asObservable(), followButtonTap: profileView.followButton.rx.tap.asObservable(), barButtonTap: barButton.rx.tap.asObservable(), itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable())
+        let input = MyPageViewModel.Input(editButtonTap: profileView.editButton.rx.tap.asObservable(),
+                                          followButtonTap: profileView.followButton.rx.tap.asObservable(),
+                                          plusButtonTap: plusBarButton.rx.tap.asObservable(),
+                                          itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable(),
+                                          settingButtonTap: settingBarButton.rx.tap.asObservable())
         let output = viewModel.transform(input: input)
         
         output.profile
@@ -85,15 +90,25 @@ final class MyPageViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        output.barButtonTap
+        output.plusButtonTap
             .drive(with: self) { owner, _ in
                 owner.navigationController?.pushViewController(CreatePostViewController(), animated: true)
             }
             .disposed(by: disposeBag)
-
+        
+        output.settingButtonTap
+            .drive(with: self) { owner, _ in
+                let vc = SettingViewController()
+                vc.sheetPresentationController?.detents = [.medium()]
+                vc.sheetPresentationController?.prefersGrabberVisible = true
+                owner.present(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
         output.itemSelected
             .drive(with: self) { owner, postModel in
-                owner.navigationController?.pushViewController(FeedDetailViewController(postModel: postModel), animated: true)
+                owner.navigationController?.pushViewController(FeedDetailViewController(postModel: BehaviorRelay(value: postModel)),
+                                                               animated: true)
             }
             .disposed(by: disposeBag)
         
@@ -116,7 +131,8 @@ final class MyPageViewController: BaseViewController {
             .drive(with: self) { owner, value in
                 let (isMyFeed, profile) = value
                 owner.profileView.followButton.isHidden = isMyFeed
-                owner.barButton.isHidden = !isMyFeed
+                owner.plusBarButton.isHidden = !isMyFeed
+                owner.settingBarButton.isHidden = !isMyFeed
                 owner.navigationItem.title = Constants.NavigationTitle.myPage(value: isMyFeed, nick: profile.nick).title
             }
             .disposed(by: disposeBag)

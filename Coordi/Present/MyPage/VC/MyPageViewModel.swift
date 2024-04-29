@@ -12,24 +12,32 @@ import RxCocoa
 final class MyPageViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    private let userId: Observable<String>
+    
+    init(userId: Observable<String>) {
+        self.userId = userId
+    }
+    
     struct Input {
-        let viewDidLoad: Observable<String>
+//        let viewDidLoad: Observable<String>
         let editButtonTap: Observable<Void>
         let followButtonTap: Observable<Void>
-        let barButtonTap: Observable<Void>
+        let plusButtonTap: Observable<Void>
         let itemSelected: Observable<PostModel>
+        let settingButtonTap: Observable<Void>
     }
     
     struct Output {
         let profile: PublishRelay<ProfileModel>
         let posts: PublishRelay<PostListModel>
         let editButtonTap: PublishRelay<ProfileModel>
-        let barButtonTap: Driver<Void>
+        let plusButtonTap: Driver<Void>
         let itemSelected: Driver<PostModel>
         let failureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
         let isMyFeed: Driver<(Bool, ProfileModel)>
         let followValue: Driver<FollowModel>
+        let settingButtonTap: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -38,12 +46,11 @@ final class MyPageViewModel: ViewModelType {
         let editButtonTap = PublishRelay<ProfileModel>()
         let failureTrigger = PublishRelay<String>()
         let refreshTokenFailure = PublishRelay<Void>()
-        
         let isMyFeed = PublishRelay<(Bool, ProfileModel)>()
         let followValue = PublishRelay<FollowModel>()
 
 
-        input.viewDidLoad
+        userId
             .flatMap { userId in
                 NetworkManager.request(api: .fetchUserProfile(userId: userId))
                     .catch { error in
@@ -95,7 +102,7 @@ final class MyPageViewModel: ViewModelType {
 
         input.followButtonTap
             .throttle(.seconds(2), scheduler: MainScheduler.instance)
-            .withLatestFrom(input.viewDidLoad)
+            .withLatestFrom(userId)
             .flatMap { userId in
                 NetworkManager.request(api: .fetchUserProfile(userId: userId))
                     .catch { error in
@@ -144,11 +151,12 @@ final class MyPageViewModel: ViewModelType {
         return Output.init(profile: myProfile,
                            posts: myPosts,
                            editButtonTap: editButtonTap,
-                           barButtonTap: input.barButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()),
+                           plusButtonTap: input.plusButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()),
                            itemSelected:  input.itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""), 
                            refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
                            isMyFeed: isMyFeed.asDriver(onErrorJustReturn: (true, .dummy)),
-                           followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)))
+                           followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)),
+                           settingButtonTap: input.settingButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()))
     }
 }

@@ -17,9 +17,9 @@ final class FeedCollectionViewCell: BaseCollectionViewCell {
     let commentImageView = UIImageView()
 
     let colors: [CGColor] = [
-        .init(red: 0, green: 0, blue: 0, alpha: 0.9),
         .init(red: 0, green: 0, blue: 0, alpha: 0.7),
         .init(red: 0, green: 0, blue: 0, alpha: 0.5),
+        .init(red: 0, green: 0, blue: 0, alpha: 0.3),
         .init(red: 0, green: 0, blue: 0, alpha: 0)
     ]
     let gradientLayer = CAGradientLayer()
@@ -104,19 +104,17 @@ final class FeedCollectionViewCell: BaseCollectionViewCell {
     override func configureView() {
         gradientLayer.colors = colors
         gradientLayer.frame = bounds
-//        gradientLayer.locations = [0.1,0.2,0.3]
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 1)
         gradientLayer.endPoint = CGPoint(x: 0.0, y: 0.8)
-//        tempLabel.backgroundColor = .white
         
         tempLabel.font = .boldBody
         tempLabel.textColor = .white
         
         image.contentMode = .scaleAspectFill
-        image.layer.cornerRadius = 20
-        image.clipsToBounds = true
-        image.layer.borderWidth = 1
-        image.layer.borderColor = UIColor.systemGray5.cgColor
+//        image.layer.cornerRadius = 20
+//        image.clipsToBounds = true
+//        image.layer.borderWidth = 1
+//        image.layer.borderColor = UIColor.systemGray5.cgColor
         
         heartCountLabel.font = .caption
         heartCountLabel.textColor = .white
@@ -138,3 +136,5 @@ final class FeedCollectionViewCell: BaseCollectionViewCell {
         commentCountLabel.text = item.comments.count.description
     }
 }
+
+

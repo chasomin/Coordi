@@ -27,39 +27,28 @@ final class TokenRefresh: RequestInterceptor {
     }
     
     func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping (RetryResult) -> Void) {
-        do {
             print("!!!retry")
-            let urlRequest = try Router.refreshToken.asURLRequest()
-            guard let statusCode = request.response?.statusCode else { return }
+            guard let statusCode = request.response?.statusCode, statusCode == 419 else { return }
             
-            if statusCode == 419 {
-                API.session.request(urlRequest)
-                    .responseDecodable(of: AccessTokenModel.self) { response in
-                        switch response.result {
-                        case .success(let success):
-                            print("토큰 갱신 성공 \(success)")
-                            UserDefaultsManager.accessToken = success.accessToken
-                            completion(.retry)
-                        case .failure(_):
-                            if let code = response.response?.statusCode {
-                                print("❌토큰 갱신 실패: \(code)")
-                                
-                                // TODO: 418이면 최초 로그인 화면으로 돌려주기 (refreshToken도 만료)
-                                //                            completion(.doNotRetryWithError(<#T##any Error#>))
-                                if code == 418 {
-                                    completion(.doNotRetryWithError(CoordiError.refreshTokenExpired))
-                                } else {
-                                    completion(.doNotRetry)
-                                }
-                            } else {
-                                print("❌토큰 갱신 실패")
-                                completion(.doNotRetry)
-                            }
+        do {
+            let urlRequest = try Router.refreshToken.asURLRequest()
+            API.session.request(urlRequest)
+                .responseDecodable(of: AccessTokenModel.self) { response in
+                    switch response.result {
+                    case .success(let success):
+                        print("토큰 갱신 성공 \(success)")
+                        UserDefaultsManager.accessToken = success.accessToken
+                        completion(.retry)
+                    case .failure(_):
+                        if let code = response.response?.statusCode {
+                            print("❌토큰 갱신 실패: \(code)")
+                            completion(.doNotRetryWithError(CoordiError.refreshTokenExpired))
+                        } else {
+                            print("❌토큰 갱신 실패")
+                            completion(.doNotRetry)
                         }
                     }
-            } else {
-                completion(.doNotRetry)
-            }
+                }
         } catch {
             
         }

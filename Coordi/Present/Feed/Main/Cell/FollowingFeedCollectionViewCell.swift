@@ -73,12 +73,14 @@ final class FollowingFeedCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureView() {
+        profileImageView.backgroundColor = .pointColor
         nicknameLabel.font = .caption
         contentLabel.font = .caption
         commentCountLabel.font = .caption
         heartCountLabel.font = .caption
         commentImageView.image = UIImage(systemName: "ellipsis.bubble")
         contentImageView.layer.cornerRadius = 15
+        contentImageView.contentMode = .scaleAspectFill
         contentImageView.clipsToBounds = true
     }
     

@@ -10,10 +10,16 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+//protocol TransferDelegate {
+//    func transfer(value: BehaviorRelay<PostModel>)//
+//}
+
 final class CommentViewController: BaseViewController {
-    var postModel: PostModel
+//    var postModel: BehaviorRelay<PostModel>
     
-    let viewModel = CommentViewModel()
+    let viewModel: CommentViewModel
+    
+//    var delegate: TransferDelegate?
     
     private let tableView = UITableView()
     private let bottomView = UIView()
@@ -22,12 +28,19 @@ final class CommentViewController: BaseViewController {
 
     private let commentText = PublishRelay<String>()
     
-    init(postModel: PostModel) {
-        self.postModel = postModel
+    init(viewModel: CommentViewModel) {
+        self.viewModel = viewModel
         super.init()
     }
     
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        
+//        delegate?.transfer(value: postModel)
+//    }
+    
     override func bind() {
+        
         commentUploadButton.rx.tap
             .withLatestFrom(commentTextfield.textField.rx.text.orEmpty)
             .bind(with: self) { owner, text in
@@ -35,27 +48,21 @@ final class CommentViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        let input = CommentViewModel.Input(postId: Observable.just(postModel.post_id), commentUpload: commentText)
+        let input = CommentViewModel.Input(commentUpload: commentText,
+                                           commentDelete: .init())
         let output = viewModel.transform(input: input)
         
+        tableView.rx.modelDeleted(CommentModel.self)
+            .bind(to: input.commentDelete)
+            .disposed(by: disposeBag)
         
-        let comments = BehaviorRelay(value: postModel.comments)
-        //TODO: 댓글 순서 뒤집어야됨, 밀어서 delete, 
         
-        comments
-            .bind(to: tableView.rx.items(cellIdentifier: CommentTableViewCell.id, cellType: CommentTableViewCell.self)) { (index, element, cell) in
+        output.comments
+            .drive(tableView.rx.items(cellIdentifier: CommentTableViewCell.id, cellType: CommentTableViewCell.self)) { (index, element, cell) in
                 cell.configureCell(item: element)
             }
             .disposed(by: disposeBag)
-        
-        output.commentModel
-            .drive(with: self) { owner, comment in
-                var commentValue = comments.value
-                commentValue.append(comment)
-                comments.accept(commentValue)
-                owner.tableView.reloadData()
-            }
-            .disposed(by: disposeBag)
+                
     }
     //TODO: 댓글 창 닫을 때 디테일화면 reload....
 
@@ -74,11 +81,12 @@ final class CommentViewController: BaseViewController {
         tableView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
+        
         bottomView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(40)
             make.top.equalTo(tableView.snp.bottom)
+            make.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
         }
         
         commentTextfield.snp.makeConstraints { make in
@@ -98,8 +106,6 @@ final class CommentViewController: BaseViewController {
     override func configureView() {
         tableView.backgroundColor = .backgroundColor
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: CommentTableViewCell.id)
-//        tableView.delegate = self
-//        tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         
         bottomView.backgroundColor = .backgroundColor

@@ -11,16 +11,13 @@ import RxSwift
 enum TabBar: CaseIterable {
     case Feed
     case MyPage
-    case login //test
     
     var title: String {
         switch self {
         case .Feed:
             "피드 모아보기"
         case .MyPage:
-            "마이페이지"
-        case .login:
-            "로그인"
+            "내 피드"
         }
     }
     
@@ -30,8 +27,6 @@ enum TabBar: CaseIterable {
             UIImage(systemName: "tshirt")
         case .MyPage:
             UIImage(systemName: "person")
-        case .login:
-             nil
         }
     }
     
@@ -46,10 +41,9 @@ enum TabBar: CaseIterable {
                                followFeedViewModel: followFeedViewModel,
                                allFeedViewModel: allFeedViewModel)
         case .MyPage:
-            let myPageViewModel = MyPageViewModel(userId: Observable.just(UserDefaultsManager.userId))
+            let myPageViewModel = MyPageViewModel(userId: UserDefaultsManager.userId)
+            print("여기", UserDefaultsManager.userId)
             return MyPageViewController(viewModel: myPageViewModel)
-        case .login:
-            return LogInViewController()
         }
     }
     

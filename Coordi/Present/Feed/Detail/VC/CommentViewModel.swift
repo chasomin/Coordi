@@ -12,34 +12,38 @@ import RxCocoa
 final class CommentViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    private let post: BehaviorRelay<PostModel>
+    
+    init(post: BehaviorRelay<PostModel>) {
+        self.post = post
+    }
+    
     struct Input {
-        let postId: Observable<String>
+//        let postId: Observable<String>
         let commentUpload: PublishRelay<String>
+        let commentDelete: PublishRelay<CommentModel>
     }
     
     struct Output {
-        let commentModel: Driver<CommentModel>
+        let comments: Driver<[CommentModel]>
+//        let commentModel: Driver<CommentModel>
         let failureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
+        let commentDelete: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
-        let comment = PublishRelay<CommentModel>()
         let failureTrigger = PublishRelay<String>()
         let refreshTokenFailure = PublishRelay<Void>()
+        let commentDelete = PublishRelay<Void>()
+        let comments: BehaviorRelay<[CommentModel]> = BehaviorRelay(value: [])
+
+
         
-//        input.post
-//            .debug("댓글")
-//            .bind { postModel in
-//                comment.accept(postModel.comments)
-//            }
-//            .disposed(by: disposeBag)
-        
-        Observable.combineLatest(input.postId, input.commentUpload)
-            .debug("댓글 작성")
-            .flatMap { query in
-                let (postId, text) = query
-                return NetworkManager.request(api: .uploadComment(postId: postId, query: CommentQuery.init(content: text)))
+        input.commentUpload
+            .withUnretained(self)
+            .flatMap { owner, comment in
+                return NetworkManager.request(api: .uploadComment(postId: owner.post.value.post_id, query: CommentQuery.init(content: comment)))
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {
@@ -50,33 +54,54 @@ final class CommentViewModel: ViewModelType {
                         }
                         return Single<CommentModel>.never()
                     }
-//                print("⚠️⚠️", text)
-
-//                print("⚠️⚠️", commentModel)
-//                return Observable.just(postId)
             }
-//            .debug("댓글 작성 서버 요청")
-//            .flatMap { postId in
-//                return NetworkManager.request(api: .fetchParticularPost(postId: postId))
-//                    .catch { error in
-//                        let coordiError = error as! CoordiError
-//                        switch coordiError {
-//                        case .refreshTokenExpired:
-//                            refreshTokenFailure.accept(())
-//                        default:
-//                            failureTrigger.accept(coordiError.errorMessage)
-//                        }
-//                        return Single<PostModel>.never()
-//                    }
-//            }
-//            .debug("게시글 fetch")
-            .subscribe { comments in
-                comment.accept(comments)
+            .subscribe(with: self) { owner, value in
+                var data = comments.value
+                data.insert(value, at: 0)
+                comments.accept(data)
             }
             .disposed(by: disposeBag)
         
-        return Output.init(commentModel: comment.asDriver(onErrorJustReturn: .dummy),
+        
+        post.map { $0.comments }
+            .debug("댓글")
+            .bind { value in
+                comments.accept(value)
+                print("댓글", value)
+            }
+            .disposed(by: disposeBag)
+        
+        
+        input.commentDelete
+            .withUnretained(self)
+            .map { owner, comment in
+                let remove = NetworkManager.request(api: .deleteComment(postId: owner.post.value.post_id, commentId: comment.comment_id))
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .refreshTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            failureTrigger.accept(coordiError.errorMessage)
+                        }
+                        return Single<Bool>.never()
+                    }
+                print("댓글 삭제", remove.values, comment)
+                return (remove, comment)
+            }
+            .subscribe { value in
+                let (_, comment) = value
+                var data = comments.value
+                guard let index = data.firstIndex(of: comment) else { return }
+                data.remove(at: index)
+                comments.accept(data)
+            }
+            .disposed(by: disposeBag)
+        
+        return Output.init(comments: comments.asDriver(onErrorJustReturn: []),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
-                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()))
+                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
+                           commentDelete: commentDelete.asDriver(onErrorJustReturn: ()))
     }
 }
+

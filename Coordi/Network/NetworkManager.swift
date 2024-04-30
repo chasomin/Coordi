@@ -18,6 +18,7 @@ class API {
 }
 
 struct NetworkManager {
+    
     static func request<T: Decodable>(api: Router) -> Single<T> {
         return Single<T>.create { single in
             do {
@@ -30,6 +31,7 @@ struct NetworkManager {
                             single(.success(success))
                             dump(success)
                         case .failure(_):
+                            print("👻여기!@!@!@")
                             guard let statusCode = response.response?.statusCode else { return }
                             switch statusCode {
                             case 400:
@@ -59,15 +61,68 @@ struct NetworkManager {
                             default:
                                 single(.failure(CoordiError.unknownError))
                             }
+                            print("👻여기!@!@!@", statusCode)
+
                         }
                     }
             } catch {
-                single(.failure(CoordiError.unknownError))
+//                single(.failure(CoordiError.unknownError))
             }
             return Disposables.create()
         }
     }
     
+    static func request(api: Router) -> Single<Bool> {
+        return Single<Bool>.create { single in
+            do {
+                let urlRequest = try api.asURLRequest()
+                
+                API.session.request(urlRequest, interceptor: TokenRefresh())
+                    .response(completionHandler: { response in
+                        switch response.result {
+                        case .success(_):
+                            single(.success(true))
+                        case .failure(_):
+                            print("👻여기!@!@!@")
+                            guard let statusCode = response.response?.statusCode else { return }
+                            switch statusCode {
+                            case 400:
+                                single(.failure(CoordiError.invalidRequest(kind: api)))
+                            case 401:
+                                single(.failure(CoordiError.unauthenticatedToken(kind: api)))
+                            case 403:
+                                single(.failure(CoordiError.forbidden))
+                            case 409:
+                                single(.failure(CoordiError.alreadySubscribed))
+                            case 410:
+                                single(.failure(CoordiError.creationFailed))
+                            case 418:
+                                single(.failure(CoordiError.refreshTokenExpired))
+                            case 419:
+                                single(.failure(CoordiError.accessTokenExpired))
+                            case 420:
+                                single(.failure(CoordiError.withoutKey))
+                            case 429:
+                                single(.failure(CoordiError.overCall))
+                            case 444:
+                                single(.failure(CoordiError.invalidURL))
+                            case 445:
+                                single(.failure(CoordiError.haveNoAuthority))
+                            case 500:
+                                single(.failure(CoordiError.unknownError))
+                            default:
+                                single(.failure(CoordiError.unknownError))
+                            }
+                            print("👻여기!@!@!@", statusCode)
+
+                        }
+                    })
+            } catch {
+            }
+            return Disposables.create()
+        }
+    }
+
     static func upload<T: Decodable>(api: Router) -> Single<T> {
         return Single<T>.create { single in
             guard let url = URL(string: api.baseURL + api.path) else { return Disposables.create() }
@@ -191,7 +246,7 @@ enum CoordiError: /*String,*/ Error {
             }
         case .unauthenticatedToken(let kind):   // 401
             switch kind {
-            case .logIn(let query):
+            case .logIn:
                 "계정을 확인해주세요"
             default:
                 "인증할 수 없는 토큰"

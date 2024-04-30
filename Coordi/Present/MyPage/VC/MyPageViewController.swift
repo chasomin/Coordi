@@ -15,6 +15,7 @@ final class MyPageViewController: BaseViewController {
     private let viewModel: MyPageViewModel
     
     private let editButtonTap = PublishRelay<String>()
+    private let dataReload = PublishRelay<Void>()
     
     private let profileView = MyProfileView()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -26,6 +27,12 @@ final class MyPageViewController: BaseViewController {
     init(viewModel: MyPageViewModel) {
         self.viewModel = viewModel
         super.init()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        dataReload.accept(())
     }
     
     override func viewDidLoad() {
@@ -53,7 +60,7 @@ final class MyPageViewController: BaseViewController {
     
     override func configureView() {
         plusBarButton.image = UIImage(systemName: "plus")
-        settingBarButton.image = UIImage(systemName: "line.3.horizontal")
+        settingBarButton.image = UIImage(systemName: "ellipsis")
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.id)
 
         collectionView.showsVerticalScrollIndicator = false
@@ -62,7 +69,8 @@ final class MyPageViewController: BaseViewController {
 
     override func bind() {
         
-        let input = MyPageViewModel.Input(editButtonTap: profileView.editButton.rx.tap.asObservable(),
+        let input = MyPageViewModel.Input(dataReload: dataReload,
+                                          editButtonTap: profileView.editButton.rx.tap.asObservable(),
                                           followButtonTap: profileView.followButton.rx.tap.asObservable(),
                                           plusButtonTap: plusBarButton.rx.tap.asObservable(),
                                           itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable(),
@@ -71,15 +79,7 @@ final class MyPageViewController: BaseViewController {
         
         output.profile
             .bind(with: self, onNext: { owner, profile in
-                owner.profileView.profileImageView.loadImage(from: profile.profileImage)
-                owner.profileView.nicknameLabel.text = profile.nick
-                owner.profileView.followerCount.text = "\(profile.followers.count)"
-                owner.profileView.followingCount.text = "\(profile.following.count)"
-                if profile.followers.map({ $0.user_id == UserDefaultsManager.userId }).isEmpty {
-                    owner.profileView.followButton.setTitle(text: "팔로우", font: .boldBody)
-                } else {
-                    owner.profileView.followButton.setTitle(text: "팔로우 취소", font: .boldBody)
-                }
+                owner.profileView.configure(profile: profile)
             })
             .disposed(by: disposeBag)
         
@@ -99,7 +99,7 @@ final class MyPageViewController: BaseViewController {
         output.settingButtonTap
             .drive(with: self) { owner, _ in
                 let vc = SettingViewController()
-                vc.sheetPresentationController?.detents = [.medium()]
+                vc.sheetPresentationController?.detents = [.custom(resolver: { _ in owner.view.frame.height / 3 })]
                 vc.sheetPresentationController?.prefersGrabberVisible = true
                 owner.present(vc, animated: true)
             }

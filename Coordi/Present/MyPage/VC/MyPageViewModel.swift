@@ -12,14 +12,14 @@ import RxCocoa
 final class MyPageViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
-    private let userId: Observable<String>
+    private let userId: String
     
-    init(userId: Observable<String>) {
+    init(userId: String) {
         self.userId = userId
     }
     
     struct Input {
-//        let viewDidLoad: Observable<String>
+        let dataReload: PublishRelay<Void>
         let editButtonTap: Observable<Void>
         let followButtonTap: Observable<Void>
         let plusButtonTap: Observable<Void>
@@ -50,9 +50,10 @@ final class MyPageViewModel: ViewModelType {
         let followValue = PublishRelay<FollowModel>()
 
 
-        userId
-            .flatMap { userId in
-                NetworkManager.request(api: .fetchUserProfile(userId: userId))
+        input.dataReload
+            .withUnretained(self)
+            .flatMap { owner, _ in
+                return NetworkManager.request(api: .fetchUserProfile(userId: owner.userId))
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {
@@ -102,9 +103,9 @@ final class MyPageViewModel: ViewModelType {
 
         input.followButtonTap
             .throttle(.seconds(2), scheduler: MainScheduler.instance)
-            .withLatestFrom(userId)
-            .flatMap { userId in
-                NetworkManager.request(api: .fetchUserProfile(userId: userId))
+            .withUnretained(self)
+            .flatMap { owner, _ in
+                NetworkManager.request(api: .fetchUserProfile(userId: owner.userId))
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {

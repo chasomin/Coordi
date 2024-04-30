@@ -81,4 +81,18 @@ final class MyProfileView: BaseView {
         followingLabel.text = "팔로잉"
         
     }
+    
+    func configure(profile: ProfileModel) {
+        profileImageView.loadImage(from: profile.profileImage)
+        nicknameLabel.text = profile.nick
+        followerCount.text = "\(profile.followers.count)"
+        followingCount.text = "\(profile.following.count)"
+        if profile.followers.map({ $0.user_id == UserDefaultsManager.userId }).isEmpty {
+            followButton.setTitle(text: "팔로우", font: .boldBody)
+        } else {
+            followButton.setTitle(text: "팔로우 취소", font: .boldBody)
+        }
+
+    }
 }
+

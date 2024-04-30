@@ -56,10 +56,10 @@ final class LogInViewModel: ViewModelType {
                     }
             }
             .subscribe { loginModel in
-                successTrigger.accept(())
                 UserDefaultsManager.accessToken = loginModel.element?.accessToken ?? ""
                 UserDefaultsManager.refreshToken = loginModel.element?.refreshToken ?? ""
                 UserDefaultsManager.userId = loginModel.element?.user_id ?? ""
+                successTrigger.accept(())
             }
             .disposed(by: disposeBag)
 

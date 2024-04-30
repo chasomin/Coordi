@@ -288,8 +288,8 @@ extension CreatePostViewController: UIPickerViewDelegate, UIPickerViewDataSource
 extension CreatePostViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         
-        results.forEach { results in
-            let itemProvider = results.itemProvider
+        results.forEach { result in
+            let itemProvider = result.itemProvider
             if itemProvider.canLoadObject(ofClass: UIImage.self) {
                 itemProvider.loadObject(ofClass: UIImage.self) { [weak self] result, error in
                     guard let self else { return }

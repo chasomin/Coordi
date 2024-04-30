@@ -17,6 +17,7 @@ enum Section: Int, CaseIterable {
 }
 
 final class FeedDetailViewController: BaseViewController {
+    
     private let viewModel = FeedDetailViewModel()
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -25,7 +26,9 @@ final class FeedDetailViewController: BaseViewController {
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
 
-    var postModel: PostModel
+    var postModel: BehaviorRelay<PostModel>
+    
+    
     
     private let backButtonTap = PublishRelay<Void>()
     private let popGesture = PublishRelay<Void>()
@@ -36,7 +39,7 @@ final class FeedDetailViewController: BaseViewController {
     private let postEditAction = PublishRelay<PostModel>()
     private let postDeleteAction = PublishRelay<String>()
 
-    init(postModel: PostModel) {
+    init(postModel: BehaviorRelay<PostModel>) {
         self.postModel = postModel
         super.init()
     }
@@ -65,7 +68,7 @@ final class FeedDetailViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         
-        let input = FeedDetailViewModel.Input(postId: Observable.just(postModel.post_id),
+        let input = FeedDetailViewModel.Input(postId: postModel.map { $0.post_id },
                                               backButtonTap: backButtonTap,
                                               popGesture: popGesture,
                                               heartButtonTap: heartButtonTap,
@@ -81,23 +84,7 @@ final class FeedDetailViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
-        
-//        output.commentUploadSuccessTrigger
-//            .drive(with: self) { owner, commentModel in
-//                owner.snapshot.appendItems([commentModel], toSection: .comment)
-//                owner.dataSource.apply(owner.snapshot)
-//
-//                let indexPath = IndexPath(item: owner.collectionView.numberOfItems(inSection: owner.collectionView.numberOfSections - 1) - 1, section: owner.collectionView.numberOfSections - 1)
-//                owner.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
-//            }
-//            .disposed(by: disposeBag)
-        
-//        output.commentUploadFailureTrigger
-//            .drive(with: self) { owner, _ in
-//                owner.showErrorToast()
-//            }
-//            .disposed(by: disposeBag)
-//        
+
         output.popGesture
             .drive(with: self) { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
@@ -106,7 +93,7 @@ final class FeedDetailViewController: BaseViewController {
         
         output.heartButtonTap
             .drive(with: self) { owner, postModel in
-                owner.postModel = postModel
+                owner.postModel.accept(postModel)
                 owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()  //???: cell 추가하지 않고 cell 내부만 변경된다면 snapshot 초기화 방법밖에 없는지
                 owner.updateSnapshot()
             }
@@ -114,7 +101,7 @@ final class FeedDetailViewController: BaseViewController {
         
         output.imageDoubleTap
             .drive(with: self) { owner, postModel in
-                owner.postModel = postModel
+                owner.postModel.accept(postModel)
                 owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
                 owner.updateSnapshot()
             }
@@ -137,21 +124,36 @@ final class FeedDetailViewController: BaseViewController {
         
         output.profileTap
             .drive(with: self) { owner, _ in
-                owner.navigationController?.pushViewController(MyPageViewController(userId: owner.postModel.creator.user_id), animated: true)
+                let myPageViewModel = MyPageViewModel(userId: owner.postModel.value.creator.user_id)
+                owner.navigationController?.pushViewController(MyPageViewController(viewModel: myPageViewModel), animated: true)
             }
             .disposed(by: disposeBag)
         
         output.commentButtonTap
             .drive(with: self) { owner, postModel in
-                let vc = CommentViewController(postModel: postModel)
+                let commentViewModel = CommentViewModel(post: owner.postModel)
+                let vc = CommentViewController(viewModel: commentViewModel)
                 vc.sheetPresentationController?.detents = [.medium(), .large()]
                 vc.sheetPresentationController?.prefersGrabberVisible = true
                 vc.sheetPresentationController?.prefersScrollingExpandsWhenScrolledToEdge = false
                 owner.present(vc, animated: true)
             }
             .disposed(by: disposeBag)
+        
+        output.postDeleteAction
+            .debug("삭제")
+            .drive(with: self) { owner, text in
+                print("삭제", text)
+                owner.showErrorToast(text)//
+                Observable.just(())
+                    .delay(.seconds(1), scheduler: MainScheduler.instance)
+                    .subscribe(onNext: { _ in
+                        owner.navigationController?.popViewController(animated: true)
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+            .disposed(by: disposeBag)
     }
-    // TODO: 내 댓글만 밀어서 삭제
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -181,7 +183,6 @@ final class FeedDetailViewController: BaseViewController {
         let profileCellRegistration = profileCellRegistration()
         let imageCellRegistration = imageCellRegistration()
         let contentCellRegistration = contentCellRegistration()
-//        let commentCellRegistration = commentCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
             if let section = Section(rawValue: indexPath.section) {
@@ -195,9 +196,6 @@ final class FeedDetailViewController: BaseViewController {
                 case .content:
                     let cell = collectionView.dequeueConfiguredReusableCell(using: contentCellRegistration, for: indexPath, item: itemIdentifier as? PostModel)
                     return cell
-//                case .comment:
-//                    let cell = collectionView.dequeueConfiguredReusableCell(using: commentCellRegistration, for: indexPath, item: itemIdentifier as? CommentModel)
-//                    return cell
                 }
             } else {
                 return nil
@@ -206,11 +204,12 @@ final class FeedDetailViewController: BaseViewController {
     }
     
     private func updateSnapshot() {
+        
+        
         snapshot.appendSections(Section.allCases)
-        snapshot.appendItems([postModel.creator], toSection: .profile)
-        snapshot.appendItems(postModel.files, toSection: .image)
-        snapshot.appendItems([postModel], toSection: .content)
-//        snapshot.appendItems(postModel.comments.reversed(), toSection: .comment)
+        snapshot.appendItems([postModel.value.creator], toSection: .profile)
+        snapshot.appendItems(postModel.value.files, toSection: .image)
+        snapshot.appendItems([postModel.value], toSection: .content)
         dataSource.apply(snapshot)
     }
 
@@ -258,18 +257,6 @@ extension FeedDetailViewController {
                 layoutSection.contentInsets = .init(top: 15, leading: 15, bottom: 15, trailing: 15)
 
                 return layoutSection
-//            case .comment:
-//                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))
-//                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-//                
-//                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))//
-//                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-//                
-//                let layoutSection = NSCollectionLayoutSection(group: group)
-//                layoutSection.interGroupSpacing = 10
-//                layoutSection.contentInsets = .init(top: 0, leading: 15, bottom: 15, trailing: 15)
-//
-//                return layoutSection
             }
 
         }
@@ -289,9 +276,13 @@ extension FeedDetailViewController {
                     owner.profileTap.accept(())
                 }
                 .disposed(by: cell.disposeBag)
-            cell.configureCell(item: itemIdentifier, postModel: self.postModel)
-            let editAction = UIAction(title: "삭제하기", handler: { _ in self.postEditAction.accept(self.postModel) })
-            let deleteAction = UIAction(title: "삭제하기", attributes: .destructive, handler: { _ in self.postDeleteAction.accept(self.postModel.post_id) })
+            cell.configureCell(item: itemIdentifier, postModel: self.postModel.value)
+            let editAction = UIAction(title: "수정하기", handler: { _ in
+                self.postEditAction.accept(self.postModel.value)
+            })
+            let deleteAction = UIAction(title: "삭제하기", attributes: .destructive, handler: { _ in 
+                self.postDeleteAction.accept(self.postModel.value.post_id)
+            })
             let buttonMenu = UIMenu(title: "", children: [editAction, deleteAction])
             cell.editButton.menu = buttonMenu
         }
@@ -301,7 +292,7 @@ extension FeedDetailViewController {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
             cell.tapGesture.rx.event
                 .bind(with: self) { owner, _ in
-                    owner.imageDoubleTapGesture.accept(owner.postModel)
+                    owner.imageDoubleTapGesture.accept(owner.postModel.value)
                 }
                 .disposed(by: cell.disposeBag)
             cell.configureCell(item: itemIdentifier)
@@ -314,33 +305,18 @@ extension FeedDetailViewController {
             guard let self else { return }
             cell.heartButton.rx.tap
                 .bind(with: self) { owner, _ in
-                    owner.heartButtonTap.accept(owner.postModel)
+                    owner.heartButtonTap.accept(owner.postModel.value)
                 }
                 .disposed(by: cell.disposeBag)
             
             cell.commentButton.rx.tap
                 .bind(with: self) { owner, _ in
-                    owner.commentButtonTap.accept(owner.postModel)
+                    owner.commentButtonTap.accept(owner.postModel.value)
                 }
-                .disposed(by: disposeBag)
+                .disposed(by: cell.disposeBag)
 
             cell.configureCell(item: itemIdentifier)
         }
     }
     
-//    private func commentCellRegistration() -> UICollectionView.CellRegistration<CommentTableViewCell, CommentModel> {
-//        return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
-//            cell.configureCell(item: itemIdentifier)
-//        }
-//    }
 }
-
-
-//extension UICollectionView {
-//    func scrollToBottom() {
-//        let bottomOffset = CGPoint(x: 0, y: self.frame.height)
-//        if(bottomOffset.y > 0) {
-//            setContentOffset(bottomOffset, animated: true)
-//        }
-//    }
-//}

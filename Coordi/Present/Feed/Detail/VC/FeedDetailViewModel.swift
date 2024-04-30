@@ -48,31 +48,19 @@ final class FeedDetailViewModel: ViewModelType {
 
         input.heartButtonTap
             .flatMap { postModel in
-                if postModel.likes.contains(UserDefaultsManager.userId) {
-                    return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: false)))
-                        .catch { error in
-                            let coordiError = error as! CoordiError
-                            switch coordiError {
-                            case .refreshTokenExpired:
-                                refreshTokenFailure.accept(())
-                            default:
-                                requestFailureTrigger.accept(coordiError.errorMessage)
-                            }
-                            return Single<LikeModel>.never()
+                let likeStatus = postModel.likes.contains(UserDefaultsManager.userId)
+                
+                return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: !likeStatus)))
+                    .catch { error in
+                        let coordiError = error as! CoordiError
+                        switch coordiError {
+                        case .accessTokenExpired:
+                            refreshTokenFailure.accept(())
+                        default:
+                            requestFailureTrigger.accept(coordiError.errorMessage)
                         }
-                } else {
-                    return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: true)))
-                        .catch { error in
-                            let coordiError = error as! CoordiError
-                            switch coordiError {
-                            case .refreshTokenExpired:
-                                refreshTokenFailure.accept(())
-                            default:
-                                requestFailureTrigger.accept(coordiError.errorMessage)
-                            }
-                            return Single<LikeModel>.never()
-                        }
-                }
+                        return Single<LikeModel>.never()
+                    }
             }
             .withLatestFrom(input.postId)
             .flatMap { postId in
@@ -80,7 +68,7 @@ final class FeedDetailViewModel: ViewModelType {
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {
-                        case .refreshTokenExpired:
+                        case .accessTokenExpired:
                             refreshTokenFailure.accept(())
                         default:
                             requestFailureTrigger.accept(coordiError.errorMessage)
@@ -101,7 +89,7 @@ final class FeedDetailViewModel: ViewModelType {
                         .catch { error in
                             let coordiError = error as! CoordiError
                             switch coordiError {
-                            case .refreshTokenExpired:
+                            case .accessTokenExpired:
                                 refreshTokenFailure.accept(())
                             default:
                                 requestFailureTrigger.accept(coordiError.errorMessage)
@@ -113,7 +101,7 @@ final class FeedDetailViewModel: ViewModelType {
                         .catch { error in
                             let coordiError = error as! CoordiError
                             switch coordiError {
-                            case .refreshTokenExpired:
+                            case .accessTokenExpired:
                                 refreshTokenFailure.accept(())
                             default:
                                 requestFailureTrigger.accept(coordiError.errorMessage)
@@ -128,7 +116,7 @@ final class FeedDetailViewModel: ViewModelType {
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {
-                        case .refreshTokenExpired:
+                        case .accessTokenExpired:
                             refreshTokenFailure.accept(())
                         default:
                             requestFailureTrigger.accept(coordiError.errorMessage)
@@ -141,15 +129,17 @@ final class FeedDetailViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        input.postDeleteAction //TODO: Alert으로 묻고 삭제
+        input.postDeleteAction
+            .throttle(.seconds(5), scheduler: MainScheduler.instance)
             .flatMap { postId in
-                NetworkManager.request(api: .deletePost(postId: postId))
+                let result = NetworkManager.request(api: .deletePost(postId: postId))
                     .catch { error in
-                        //
-                        return Single<String?>.never()  //???:  응답값 없음
+                        return Single<Bool>.never()  //TODO: 삭제 두 번 요청됨
                     }
+                print("삭제 Viewmodel", result.values)
+                return result
             }
-            .subscribe { _ in
+            .subscribe { value in
                 postDeleteAction.accept("삭제 되었습니다.")
             }
             .disposed(by: disposeBag)

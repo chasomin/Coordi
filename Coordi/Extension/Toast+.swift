@@ -13,14 +13,15 @@ extension BaseViewController {
         var style = ToastStyle.init()
         style.backgroundColor = .pointColor
         style.titleColor = .backgroundColor
-        view.makeToast(nil, duration: 2, position: .top, title: text, style: style) //TODO: 오류 처리
+        view.makeToast(nil, duration: 1, position: .top, title: text, style: style) //TODO: 오류 처리
     }
     
-    func showDoneToast() {
+    func showCheckToast(_ completionHandler: () -> Void) {
         var style = ToastStyle.init()
         style.backgroundColor = .pointColor
         style.titleColor = .backgroundColor
         style.cornerRadius = 15
         view.makeToast(nil, duration: 1, position: .center, image: .check, style: style)
+        completionHandler()
     }
 }

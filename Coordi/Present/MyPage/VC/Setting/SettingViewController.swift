@@ -11,31 +11,21 @@ import RxSwift
 import RxCocoa
 
 final class SettingViewController: BaseViewController {
-    private let viewModel = SettingViewModel()
+    private let viewModel: SettingViewModel
     
     private let viewDidLoadTrigger = PublishRelay<Void>()
     
     private let tableView = UITableView(frame: .zero, style: .plain)
+    
+    init(viewModel: SettingViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         viewDidLoadTrigger.accept(())
-    }
-    
-    override func configureHierarchy() {
-        view.addSubview(tableView)
-    }
-    
-    override func configureLayout() {
-        tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-    
-    override func configureView() {
-        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.id)
-        tableView.rowHeight = 60
     }
     
     override func bind() {
@@ -53,29 +43,20 @@ final class SettingViewController: BaseViewController {
                 cell.icon.image = UIImage(systemName: element.icon)
             }
             .disposed(by: disposeBag)
-        
-        output.settingTap
-            .drive(with: self) { owner, _ in
-                owner.dismiss(animated: true)
-                
-            }
-            .disposed(by: disposeBag)
-        
-        output.likeTap
-            .drive(with: self) { owner, _ in
-                owner.dismiss(animated: true)
-            }
-            .disposed(by: disposeBag)
-        
-        
-        output.logOutTap
-            .drive(with: self) { owner, _ in
-                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                let sceneDelegate = windowScene?.delegate as? SceneDelegate
-                sceneDelegate?.window?.rootViewController = LogInViewController()
-                sceneDelegate?.window?.makeKeyAndVisible()
-
-            }
-            .disposed(by: disposeBag)
+    }
+    
+    override func configureHierarchy() {
+        view.addSubview(tableView)
+    }
+    
+    override func configureLayout() {
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    override func configureView() {
+        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.id)
+        tableView.rowHeight = 60
     }
 }

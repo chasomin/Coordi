@@ -12,6 +12,8 @@ import RxCocoa
 final class SettingViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    weak var coordinator: Coordinator?
+    
     struct Input {
         let viewDidLoad: PublishRelay<Void>
         let selectedItem: PublishRelay<Setting>
@@ -19,9 +21,6 @@ final class SettingViewModel: ViewModelType {
     
     struct Output {
         let settingList: Driver<[Setting]>
-        let settingTap: Driver<Void>
-        let likeTap: Driver<Void>
-        let logOutTap: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -32,7 +31,6 @@ final class SettingViewModel: ViewModelType {
             }
         let settingTap = PublishRelay<Void>()
         let likeTap = PublishRelay<Void>()
-        let logOutTap = PublishRelay<Void>()
         
         setting
             .debug("여기")
@@ -42,28 +40,27 @@ final class SettingViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         input.selectedItem
-            .bind(onNext: { value in
-                if value == .setting {          ///
+            .bind(with: self, onNext: { owner, value in
+                if value == .setting {
                     settingTap.accept(())
+                    owner.coordinator?.dismiss(animation: true)
+                    owner.coordinator?.push(AllFeedViewController(viewModel: AllFeedViewModel()), animation: true) //TEST
+                    
                 } else if value == .like {
-                    likeTap.accept(())
+                    owner.coordinator?.dismiss(animation: true)
+                    owner.coordinator?.push(AllFeedViewController(viewModel: AllFeedViewModel()), animation: true) //TEST
                 } else {
                     UserDefaultsManager.accessToken = ""
                     UserDefaultsManager.refreshToken = ""
                     UserDefaultsManager.userId = ""
                     print("여기", UserDefaultsManager.accessToken, UserDefaultsManager.refreshToken, UserDefaultsManager.userId)
-                    logOutTap.accept(())
+                    
+                    owner.coordinator?.end()
                 }
             })
             .disposed(by: disposeBag)
         
-
-
-        
-        return Output.init(settingList: settingList.asDriver(onErrorJustReturn: []),
-                           settingTap: settingTap.asDriver(onErrorJustReturn: ()),
-                           likeTap: likeTap.asDriver(onErrorJustReturn: ()),
-                           logOutTap: logOutTap.asDriver(onErrorJustReturn: ()))
+        return Output.init(settingList: settingList.asDriver(onErrorJustReturn: []))
     }
     
     enum Setting: CaseIterable {

@@ -12,13 +12,14 @@ import RxCocoa
 final class FeedViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    weak var coordinator: FeedCoordinator?
+    
     struct Input {
         let searchButtonTap: Observable<Void>
         let temp: PublishRelay<Double>
     }
     
     struct Output {
-        let serarchButtonTap: Driver<Void>
         let temp: Driver<Int>
         let tempText: Driver<String>
     }
@@ -37,8 +38,15 @@ final class FeedViewModel: ViewModelType {
             .bind(to: tempText)
             .disposed(by: disposeBag)
         
-        return Output.init(serarchButtonTap: input.searchButtonTap.asDriver(onErrorJustReturn: ()),
-                           temp: temp.asDriver(onErrorJustReturn: 0),
+        input.searchButtonTap
+            .bind(with: self) { owner, _ in
+                let vm = SearchViewModel()
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(SearchViewController(viewModel: vm))
+            }
+            .disposed(by: disposeBag)
+        
+        return Output.init(temp: temp.asDriver(onErrorJustReturn: 0),
                            tempText: tempText.asDriver(onErrorJustReturn: ""))
     }
 }

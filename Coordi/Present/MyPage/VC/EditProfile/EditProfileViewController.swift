@@ -11,16 +11,11 @@ import RxSwift
 import RxCocoa
 
 final class EditProfileViewController: BaseViewController {
-    private let viewModel = EditProfileViewModel()
+    private let viewModel: EditProfileViewModel
+    
     private let imagePickerCancel = PublishRelay<Void>()
     private let imagePickerFinishPicking = PublishRelay<Data>()
-    
-    var nick: String {
-        didSet {
-            nickname.label.text = nick
-        }
-    }
-    var profileImage: String
+    private let viewDidLoadTrigger = PublishRelay<Void>()
     
     private let profileImageView = CirCleImageView()
     private let imageEditLabel = UILabel()
@@ -29,17 +24,58 @@ final class EditProfileViewController: BaseViewController {
     private let imageTapGesture = UITapGestureRecognizer()
     private let nicknameTapGesture = UITapGestureRecognizer()
     
-    init(nick: String, profileImage: String) {
-        self.nick = nick
-        self.profileImage = profileImage
-        
+    init(viewModel: EditProfileViewModel) {
+        self.viewModel = viewModel
         super.init()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationItem.title = Constants.NavigationTitle.editProfile.title
+        viewDidLoadTrigger.accept(())
+    }
+    
+    override func bind() {
+        let input = EditProfileViewModel.Input(viewDidLoadTrigger: .init(),
+                                               imageTap: imageTapGesture.rx.event.map { _ in () },
+                                               labelTap: nicknameTapGesture.rx.event.map { _ in () },
+                                               imagePickerCancel: imagePickerCancel,
+                                               imagePickerFinishPicking: imagePickerFinishPicking)
+        let output = viewModel.transform(input: input)
+        
+        viewDidLoadTrigger
+            .bind { _ in
+                input.viewDidLoadTrigger.accept(())
+            }
+            .disposed(by: disposeBag)
+        
+        output.viewDidLoadTrigger
+            .drive(with: self) { owner, value in
+                let (nick, profileImage) = value
+                owner.nickname.label.text = nick
+                owner.profileImageView.loadImage(from: profileImage)
+            }
+            .disposed(by: disposeBag)
+        
+        output.imageTap
+            .drive(with: self) { owner, _ in
+                let vc = UIImagePickerController()
+                vc.allowsEditing = true
+                vc.delegate = self
+                owner.present(vc, animated: true)   //FIXME: ImagePick present도 ViewModel이????
+            }
+            .disposed(by: disposeBag)
+        
+        output.imagePickerFinishPicking
+            .drive(with: self) { owner, image in
+                owner.profileImageView.loadImage(from: image)
+            }
+            .disposed(by: disposeBag)
+        
+        output.changeNick
+            .drive(with: self) { owner, nick in
+                owner.nickname.label.text = nick
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureHierarchy() {
@@ -49,7 +85,6 @@ final class EditProfileViewController: BaseViewController {
         view.addSubview(nickname)
         profileImageView.addGestureRecognizer(imageTapGesture)
         nickname.addGestureRecognizer(nicknameTapGesture)
-        
     }
     
     override func configureLayout() {
@@ -79,12 +114,11 @@ final class EditProfileViewController: BaseViewController {
     }
     
     override func configureView() {
+        navigationItem.title = Constants.NavigationTitle.editProfile.title
         nicknameTitleLabel.text = "닉네임"
         nicknameTitleLabel.font = .boldBody
-        nickname.label.text = nick
         nickname.label.font = .body
         profileImageView.backgroundColor = .pointColor
-        profileImageView.loadImage(from: profileImage)
         profileImageView.isUserInteractionEnabled = true
         imageEditLabel.text = "변경"
         imageEditLabel.textColor = .white
@@ -92,48 +126,6 @@ final class EditProfileViewController: BaseViewController {
         imageEditLabel.font = .caption
         imageEditLabel.backgroundColor = .black
         imageEditLabel.alpha = 0.5
-    }
-    
-    override func bind() {
-        let input = EditProfileViewModel.Input(imageTap: imageTapGesture.rx.event.map { _ in () },
-                                               labelTap: nicknameTapGesture.rx.event.map { _ in () },
-                                               imagePickerCancel: imagePickerCancel,
-                                               imagePickerFinishPicking: imagePickerFinishPicking)
-        let output = viewModel.transform(input: input)
-        
-        output.imageTap
-            .drive(with: self) { owner, _ in
-                let vc = UIImagePickerController()
-                vc.allowsEditing = true
-                vc.delegate = self
-                owner.present(vc, animated: true)
-            }
-            .disposed(by: disposeBag)
-        
-        output.labelTap
-            .drive(with: self) { owner, _ in
-                print("label 탭")
-                //TODO: 닉네임 텍스트필드 + 확인 버튼 수정뷰
-                let vc = EditNicknameViewController(currentNickname: owner.nick)
-                vc.changeNickname = { nick in
-                    owner.nick = nick
-                }
-                owner.navigationController?.pushViewController(vc, animated: true)
-            }
-            .disposed(by: disposeBag)
-        
-        output.imagePickerCancel
-            .drive(with: self) { owner, _ in
-                owner.dismiss(animated: true)
-            }
-            .disposed(by: disposeBag)
-        
-        output.imagePickerFinishPicking
-            .drive(with: self) { owner, image in
-                owner.profileImageView.loadImage(from: image)
-                owner.dismiss(animated: true)
-            }
-            .disposed(by: disposeBag)
     }
 }
 

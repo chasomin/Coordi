@@ -39,13 +39,7 @@ final class AllFeedViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         let output = viewModel.transform(input: input)
-        
-        output.itemSelected
-            .drive(with: self) { owner, post in
-                owner.navigationController?.pushViewController(FeedDetailViewController(postModel: BehaviorRelay(value: post)), animated: true)
-            }
-            .disposed(by: disposeBag)
-        
+
         output.postData.drive(collectionView.rx.items(cellIdentifier: FollowingFeedCollectionViewCell.id, cellType: FollowingFeedCollectionViewCell.self)) { index, element, cell in
             cell.configureCell(item: element)
         }

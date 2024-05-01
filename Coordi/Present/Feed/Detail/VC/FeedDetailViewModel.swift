@@ -11,30 +11,36 @@ import RxCocoa
 
 final class FeedDetailViewModel: ViewModelType {
     let disposeBag = DisposeBag()
+    var postModel: BehaviorRelay<PostModel>
+
+    weak var coordinator: Coordinator?
+    
+    init(postModel: BehaviorRelay<PostModel>) {
+        self.postModel = postModel
+    }
     
     struct Input {
-        let postId: Observable<String>
         let backButtonTap: PublishRelay<Void>
         let popGesture: PublishRelay<Void>
-        let heartButtonTap: PublishRelay<PostModel>
-        let imageDoubleTap: PublishRelay<PostModel>
+        let heartButtonTap: PublishRelay<Void>
+        let imageDoubleTap: PublishRelay<Void>
         let profileTap: PublishRelay<Void>
-        let commentButtonTap: PublishRelay<PostModel>
-        let postEditAction: PublishRelay<PostModel>
-        let postDeleteAction: PublishRelay<String>
+        let commentButtonTap: PublishRelay<Void>
+        let postEditAction: PublishRelay<Void>
+        let postDeleteAction: PublishRelay<Void>
+        let popTrigger: PublishRelay<Void>
+        let viewDidLoad: PublishRelay<Void>
     }
     
     struct Output {
-        let backButtonTap: Driver<Void>
-        let popGesture: Driver<Void>
         let heartButtonTap: Driver<PostModel>
         let imageDoubleTap: Driver<PostModel>
         let requestFailureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
-        let profileTap: Driver<Void>
-        let commentButtonTap: Driver<PostModel>
 //        let postEditAction: Driver<PostModel>
         let postDeleteAction: Driver<String>
+        let viewDidLoadTrigger: Driver<PostModel>
+        let changeComment: Driver<PostModel>
     }
     
     func transform(input: Input) -> Output {
@@ -44,9 +50,18 @@ final class FeedDetailViewModel: ViewModelType {
         let requestFailureTrigger = PublishRelay<String>()
         let postEditAction = PublishRelay<PostModel>()
         let postDeleteAction = PublishRelay<String>()
+        let viewDidLoad = PublishRelay<PostModel>()
+        let changeComment = PublishRelay<PostModel>()
 
+        input.viewDidLoad
+            .withLatestFrom(postModel)
+            .bind { postModel in
+                viewDidLoad.accept(postModel)
+            }
+            .disposed(by: disposeBag)
 
         input.heartButtonTap
+            .withLatestFrom(postModel)
             .flatMap { postModel in
                 let likeStatus = postModel.likes.contains(UserDefaultsManager.userId)
                 
@@ -62,9 +77,9 @@ final class FeedDetailViewModel: ViewModelType {
                         return Single<LikeModel>.never()
                     }
             }
-            .withLatestFrom(input.postId)
-            .flatMap { postId in
-                return NetworkManager.request(api: .fetchParticularPost(postId: postId))
+            .withLatestFrom(postModel)
+            .flatMap { postModel in
+                return NetworkManager.request(api: .fetchParticularPost(postId: postModel.post_id))
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {
@@ -76,13 +91,16 @@ final class FeedDetailViewModel: ViewModelType {
                         return Single<PostModel>.never()
                     }
             }
-            .bind{ postModel in
+            .bind(with: self){ owner, postModel in
                 heartButtonTap.accept(postModel)
+                owner.postModel.accept(postModel)
+
             }
             .disposed(by: disposeBag)
         
         
         input.imageDoubleTap
+            .withLatestFrom(postModel)
             .flatMap { postModel in
                 if postModel.likes.contains(UserDefaultsManager.userId) {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: false)))
@@ -110,9 +128,9 @@ final class FeedDetailViewModel: ViewModelType {
                         }
                 }
             }
-            .withLatestFrom(input.postId)
-            .flatMap { postId in
-                return NetworkManager.request(api: .fetchParticularPost(postId: postId))
+            .withLatestFrom(postModel)
+            .flatMap { postModel in
+                return NetworkManager.request(api: .fetchParticularPost(postId: postModel.post_id))
                     .catch { error in
                         let coordiError = error as! CoordiError
                         switch coordiError {
@@ -124,15 +142,17 @@ final class FeedDetailViewModel: ViewModelType {
                         return Single<PostModel>.never()
                     }
             }
-            .bind{ postModel in
+            .bind(with: self) { owner, postModel in
+                owner.postModel.accept(postModel)
                 imageDoubleTap.accept(postModel)
             }
             .disposed(by: disposeBag)
         
         input.postDeleteAction
             .throttle(.seconds(5), scheduler: MainScheduler.instance)
-            .flatMap { postId in
-                let result = NetworkManager.request(api: .deletePost(postId: postId))
+            .withLatestFrom(postModel)
+            .flatMap { post in
+                let result = NetworkManager.request(api: .deletePost(postId: post.post_id))
                     .catch { error in
                         return Single<Bool>.never()  //TODO: 삭제 두 번 요청됨
                     }
@@ -144,15 +164,61 @@ final class FeedDetailViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output.init(backButtonTap: input.backButtonTap.asDriver(onErrorJustReturn: ()),
-                           popGesture: input.popGesture.asDriver(onErrorJustReturn: ()),
-                           heartButtonTap: heartButtonTap.asDriver(onErrorJustReturn: .dummy),
+        input.backButtonTap
+            .bind(with: self) { owner, _ in
+                owner.coordinator?.pop(animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        input.popGesture
+            .bind(with: self) { owner, _ in
+                owner.coordinator?.pop(animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        input.profileTap
+            .bind(with: self) { owner, _ in
+                let myPageViewModel = MyPageViewModel(userId: owner.postModel.value.creator.user_id)
+                owner.coordinator?.push(MyPageViewController(viewModel: myPageViewModel), animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        input.commentButtonTap
+            .bind(with: self) { owner, _ in
+                let commentViewModel = CommentViewModel(post: owner.postModel)
+                commentViewModel.changeData = { comments in
+                    var post = owner.postModel.value
+                    post.comments = comments
+                    owner.postModel.accept(post)
+                }
+                let vc = CommentViewController(viewModel: commentViewModel)
+                vc.sheetPresentationController?.detents = [.medium(), .large()]
+                vc.sheetPresentationController?.prefersGrabberVisible = true
+                vc.sheetPresentationController?.prefersScrollingExpandsWhenScrolledToEdge = false
+                owner.coordinator?.present(vc)
+            }
+            .disposed(by: disposeBag)
+        
+        input.popTrigger
+            .delay(.seconds(1), scheduler: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                owner.coordinator?.pop(animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        postModel
+            .bind(with: self) { owner, post in
+                changeComment.accept(post)
+            }
+            .disposed(by: disposeBag)
+        
+        return Output.init(heartButtonTap: heartButtonTap.asDriver(onErrorJustReturn: .dummy),
                            imageDoubleTap: imageDoubleTap.asDriver(onErrorJustReturn: .dummy),
                            requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""),
                            refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
-                           profileTap: input.profileTap.asDriver(onErrorJustReturn: ()),
-                           commentButtonTap: input.commentButtonTap.asDriver(onErrorJustReturn: .dummy),
 //                           postEditAction: <#T##Driver<PostModel>#>,
-                           postDeleteAction: postDeleteAction.asDriver(onErrorJustReturn: ""))
+                           postDeleteAction: postDeleteAction.asDriver(onErrorJustReturn: ""),
+                           viewDidLoadTrigger: viewDidLoad.asDriver(onErrorJustReturn: .dummy), 
+                           changeComment: changeComment.asDriver(onErrorJustReturn: .dummy))
     }
 }

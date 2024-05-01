@@ -12,31 +12,45 @@ import RxCocoa
 final class EditNicknameViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    weak var coordinator: Coordinator?
+    
+    private let currentNickname: String
+    var changeNickname: ((String) -> Void)?
+
+    init(currentNickname: String) {
+        self.currentNickname = currentNickname
+    }
     struct Input {
-        let currentNickname: Observable<String>
+        let viewDidLoadTrigger: PublishRelay<Void>
         let userInputNickname: Observable<String>
         let saveButtonTap: Observable<Void>
     }
     
     struct Output {
+        let viewDidLoadTrigger: Driver<String>
         let failureTrigger: Driver<Void>
-        let successTrigger: Driver<String>
         let nicknameValidation: Driver<Bool>
         let validationText: Driver<String>
     }
     
     func transform(input: Input) -> Output {
+        let viewDidLoadTrigger = PublishRelay<String>()
         let validationText = PublishRelay<String>()
         let nicknameValidation = PublishRelay<Bool>()
         let failureTrigger = PublishRelay<Void>()
-        let successTrigger = PublishRelay<String>()
-
-        Observable.combineLatest(input.currentNickname, input.userInputNickname)
-            .map { nick in
-                let (current, userInput) = nick
-                if current == userInput {
+        
+        input.viewDidLoadTrigger
+            .bind(with: self) { owner, _ in
+                viewDidLoadTrigger.accept(owner.currentNickname)
+            }
+            .disposed(by: disposeBag)
+        
+        input.userInputNickname
+            .withUnretained(self)
+            .map { owner, userInputNickname in
+                if owner.currentNickname == userInputNickname {
                     return "현재 닉네임과 같아요"
-                } else if userInput.count < 2 {
+                } else if userInputNickname.count < 2 {
                     return "2자 이상으로 입력해주세요"
                 } else {
                     return ""
@@ -65,13 +79,14 @@ final class EditNicknameViewModel: ViewModelType {
                         return Single<ProfileModel>.never()
                     }
             }
-            .subscribe { profileModel in
-                successTrigger.accept(profileModel.element?.nick ?? "")
+            .subscribe(with: self) { owner, profileModel in
+                owner.changeNickname?(profileModel.nick) //FIXME: 전 화면 값 전달은 여기서?
+                owner.coordinator?.pop(animation: true)
             }
             .disposed(by: disposeBag)
         
-        return Output.init(failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()),
-                           successTrigger: successTrigger.asDriver(onErrorJustReturn: ""),
+        return Output.init(viewDidLoadTrigger: viewDidLoadTrigger.asDriver(onErrorJustReturn: ""),
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()),
                            nicknameValidation: nicknameValidation.asDriver(onErrorJustReturn: false),
                            validationText: validationText.asDriver(onErrorJustReturn: ""))
     }

@@ -12,6 +12,8 @@ import RxCocoa
 final class CreatePostViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    weak var coordinator: Coordinator?
+    
     struct Input {
         let imagePlusButtonTap: Observable<Void>
         let saveButtonTap: PublishRelay<[Data]>
@@ -21,12 +23,12 @@ final class CreatePostViewModel: ViewModelType {
         let imageData: Observable<[Data]>
         let textViewDidBeginEditing: PublishRelay<String>
         let textViewDidEndEditing: PublishRelay<String>
+        let popTrigger: PublishRelay<Void>
     }
     
     struct Output {
         let imagePlusButtonTap: Driver<Void>
         let saveButtonTap: Driver<Void>
-        let imageSelectedButtonTap: Driver<Void>
         let buttonEnable: Driver<Bool>
         let failureTrigger: Driver<Void>
         let textViewDidBeginEditing: Driver<Bool>
@@ -37,7 +39,6 @@ final class CreatePostViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         let saveButtonTap = PublishRelay<Void>()
         let failureTrigger = PublishRelay<Void>()
-
         let textViewPlaceholder = PublishRelay<String>()
         
         input.saveButtonTap
@@ -117,11 +118,21 @@ final class CreatePostViewModel: ViewModelType {
             .disposed(by: disposeBag)
 
         
-            
+        input.popTrigger
+            .delay(.seconds(1), scheduler: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                owner.coordinator?.pop(animation: true)
+            }
+            .disposed(by: disposeBag)
+
+        input.imageSelectedButtonTap
+            .bind(with: self) { owner, _ in
+                owner.coordinator?.dismiss(animation: true)
+            }
+            .disposed(by: disposeBag)
         
         return Output.init(imagePlusButtonTap: input.imagePlusButtonTap.asDriver(onErrorJustReturn: ()),
                            saveButtonTap: saveButtonTap.asDriver(onErrorJustReturn: ()),
-                           imageSelectedButtonTap: input.imageSelectedButtonTap.asDriver(onErrorJustReturn: ()),
                            buttonEnable: saveButtonEnable.asDriver(onErrorJustReturn: false),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()),
                            textViewDidBeginEditing: textViewDidBeginEditing.asDriver(onErrorJustReturn: true),

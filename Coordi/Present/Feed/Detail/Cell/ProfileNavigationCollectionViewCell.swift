@@ -71,11 +71,11 @@ final class ProfileNavigationCollectionViewCell: BaseCollectionViewCell {
 //        editButton.menu = buttonMenu
     }
     
-    func configureCell(item: UserModel, postModel: PostModel) {
+    func configureCell(item: UserModel) {
         nicknameLabel.text = item.nick
         profileImage.loadImage(from: item.profileImage)
         
-        if postModel.creator.user_id != UserDefaultsManager.userId {
+        if item.user_id != UserDefaultsManager.userId {
             editButton.isHidden = true
         }
     }

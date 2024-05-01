@@ -35,7 +35,6 @@ final class FeedViewController: TabmanViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setTopTabBar()
@@ -52,12 +51,6 @@ final class FeedViewController: TabmanViewController {
         let input = FeedViewModel.Input(searchButtonTap: searchButton.rx.tap.asObservable(),
                                         temp: temp)
         let output = viewModel.transform(input: input)
-        
-        output.serarchButtonTap
-            .drive(with: self) { owner, _ in
-                owner.navigationController?.pushViewController(SearchViewController(), animated: true)
-            }
-            .disposed(by: disposeBag)
         
         output.tempText
             .drive(with: self) { owner, text in
@@ -83,8 +76,6 @@ final class FeedViewController: TabmanViewController {
         searchButton.image = UIImage(systemName: "magnifyingglass")
         navigationItem.title = "현재 기온 알 수 없음"   // 기온 모를 때는 전체 보여주기 OR 텅뷰 만들어서 위치허용 유도하기
     }
-    
-    
 }
 
 extension FeedViewController: PageboyViewControllerDataSource, TMBarDataSource {

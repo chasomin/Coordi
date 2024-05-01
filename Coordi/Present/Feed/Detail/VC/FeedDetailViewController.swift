@@ -18,37 +18,34 @@ enum Section: Int, CaseIterable {
 
 final class FeedDetailViewController: BaseViewController {
     
-    private let viewModel = FeedDetailViewModel()
+    private let viewModel: FeedDetailViewModel
     
+    private let backButtonTap = PublishRelay<Void>()
+    private let popGesture = PublishRelay<Void>()
+    private let imageDoubleTapGesture = PublishRelay<Void>()
+    private let heartButtonTap = PublishRelay<Void>()
+    private let commentButtonTap = PublishRelay<Void>()
+    private let profileTap = PublishRelay<Void>()
+    private let postEditAction = PublishRelay<Void>()
+    private let postDeleteAction = PublishRelay<Void>()
+    private let popTrigger = PublishRelay<Void>()
+    private let viewDidLoadTrigger = PublishRelay<Void>()
+
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     private let panGesture = UIPanGestureRecognizer()
 
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
 
-    var postModel: BehaviorRelay<PostModel>
-    
-    
-    
-    private let backButtonTap = PublishRelay<Void>()
-    private let popGesture = PublishRelay<Void>()
-    private let imageDoubleTapGesture = PublishRelay<PostModel>()
-    private let heartButtonTap = PublishRelay<PostModel>()
-    private let commentButtonTap = PublishRelay<PostModel>()
-    private let profileTap = PublishRelay<Void>()
-    private let postEditAction = PublishRelay<PostModel>()
-    private let postDeleteAction = PublishRelay<String>()
-
-    init(postModel: BehaviorRelay<PostModel>) {
-        self.postModel = postModel
+    init(viewModel: FeedDetailViewModel) {
+        self.viewModel = viewModel
         super.init()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         makeCellRegistration()
-        updateSnapshot()
-        
+        viewDidLoadTrigger.accept(())
     }
     
     override func bind() {
@@ -68,42 +65,36 @@ final class FeedDetailViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         
-        let input = FeedDetailViewModel.Input(postId: postModel.map { $0.post_id },
-                                              backButtonTap: backButtonTap,
+        let input = FeedDetailViewModel.Input(backButtonTap: backButtonTap,
                                               popGesture: popGesture,
                                               heartButtonTap: heartButtonTap,
                                               imageDoubleTap: imageDoubleTapGesture,
                                               profileTap: profileTap, 
                                               commentButtonTap: commentButtonTap,
                                               postEditAction: postEditAction,
-                                              postDeleteAction: postDeleteAction)
+                                              postDeleteAction: postDeleteAction,
+                                              popTrigger: popTrigger, 
+                                              viewDidLoad: viewDidLoadTrigger)
+        
         let output = viewModel.transform(input: input)
         
-        output.backButtonTap
-            .drive(with: self) { owner, _ in
-                owner.navigationController?.popViewController(animated: true)
-            }
-            .disposed(by: disposeBag)
-
-        output.popGesture
-            .drive(with: self) { owner, _ in
-                owner.navigationController?.popViewController(animated: true)
+        output.viewDidLoadTrigger
+            .drive(with: self) { owner, post in
+                owner.updateSnapshot(post: post)
             }
             .disposed(by: disposeBag)
         
         output.heartButtonTap
             .drive(with: self) { owner, postModel in
-                owner.postModel.accept(postModel)
                 owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()  //???: cell 추가하지 않고 cell 내부만 변경된다면 snapshot 초기화 방법밖에 없는지
-                owner.updateSnapshot()
+                owner.updateSnapshot(post: postModel)
             }
             .disposed(by: disposeBag)
         
         output.imageDoubleTap
             .drive(with: self) { owner, postModel in
-                owner.postModel.accept(postModel)
                 owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
-                owner.updateSnapshot()
+                owner.updateSnapshot(post: postModel)
             }
             .disposed(by: disposeBag)
         
@@ -115,42 +106,25 @@ final class FeedDetailViewController: BaseViewController {
         
         output.refreshTokenFailure
             .drive(with: self) { owner, _ in
-                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                let sceneDelegate = windowScene?.delegate as? SceneDelegate
-                sceneDelegate?.window?.rootViewController = LogInViewController()
-                sceneDelegate?.window?.makeKeyAndVisible()
+//                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+//                let sceneDelegate = windowScene?.delegate as? SceneDelegate
+//                sceneDelegate?.window?.rootViewController = LogInViewController()
+//                sceneDelegate?.window?.makeKeyAndVisible()
             }
             .disposed(by: disposeBag)
-        
-        output.profileTap
-            .drive(with: self) { owner, _ in
-                let myPageViewModel = MyPageViewModel(userId: owner.postModel.value.creator.user_id)
-                owner.navigationController?.pushViewController(MyPageViewController(viewModel: myPageViewModel), animated: true)
-            }
-            .disposed(by: disposeBag)
-        
-        output.commentButtonTap
-            .drive(with: self) { owner, postModel in
-                let commentViewModel = CommentViewModel(post: owner.postModel)
-                let vc = CommentViewController(viewModel: commentViewModel)
-                vc.sheetPresentationController?.detents = [.medium(), .large()]
-                vc.sheetPresentationController?.prefersGrabberVisible = true
-                vc.sheetPresentationController?.prefersScrollingExpandsWhenScrolledToEdge = false
-                owner.present(vc, animated: true)
-            }
-            .disposed(by: disposeBag)
-        
+
         output.postDeleteAction
-            .debug("삭제")
             .drive(with: self) { owner, text in
-                print("삭제", text)
-                owner.showErrorToast(text)//
-                Observable.just(())
-                    .delay(.seconds(1), scheduler: MainScheduler.instance)
-                    .subscribe(onNext: { _ in
-                        owner.navigationController?.popViewController(animated: true)
-                    })
-                    .disposed(by: self.disposeBag)
+                owner.showCheckToast {
+                    owner.popTrigger.accept(())
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        output.changeComment
+            .drive(with: self) { owner, post in
+                owner.snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
+                owner.updateSnapshot(post: post)
             }
             .disposed(by: disposeBag)
     }
@@ -166,7 +140,6 @@ final class FeedDetailViewController: BaseViewController {
         navigationController?.isNavigationBarHidden = false
         tabBarController?.tabBar.isHidden = false
     }
-    
 
     override func configureHierarchy() {
         view.addSubview(collectionView)
@@ -202,19 +175,16 @@ final class FeedDetailViewController: BaseViewController {
             }
         })
     }
-    
-    private func updateSnapshot() {
-        
-        
+    private func updateSnapshot(post: PostModel) {
         snapshot.appendSections(Section.allCases)
-        snapshot.appendItems([postModel.value.creator], toSection: .profile)
-        snapshot.appendItems(postModel.value.files, toSection: .image)
-        snapshot.appendItems([postModel.value], toSection: .content)
+        snapshot.appendItems([post.creator], toSection: .profile)
+        snapshot.appendItems(post.files, toSection: .image)
+        snapshot.appendItems([post], toSection: .content)
         dataSource.apply(snapshot)
     }
-
 }
 
+// MARK: - Layout
 extension FeedDetailViewController {
     private func createLayout() -> UICollectionViewLayout {
         
@@ -276,12 +246,12 @@ extension FeedDetailViewController {
                     owner.profileTap.accept(())
                 }
                 .disposed(by: cell.disposeBag)
-            cell.configureCell(item: itemIdentifier, postModel: self.postModel.value)
+            cell.configureCell(item: itemIdentifier)
             let editAction = UIAction(title: "수정하기", handler: { _ in
-                self.postEditAction.accept(self.postModel.value)
+                self.postEditAction.accept(())
             })
             let deleteAction = UIAction(title: "삭제하기", attributes: .destructive, handler: { _ in 
-                self.postDeleteAction.accept(self.postModel.value.post_id)
+                self.postDeleteAction.accept(())
             })
             let buttonMenu = UIMenu(title: "", children: [editAction, deleteAction])
             cell.editButton.menu = buttonMenu
@@ -292,7 +262,7 @@ extension FeedDetailViewController {
         return UICollectionView.CellRegistration { cell, indexPath, itemIdentifier in
             cell.tapGesture.rx.event
                 .bind(with: self) { owner, _ in
-                    owner.imageDoubleTapGesture.accept(owner.postModel.value)
+                    owner.imageDoubleTapGesture.accept(())
                 }
                 .disposed(by: cell.disposeBag)
             cell.configureCell(item: itemIdentifier)
@@ -305,13 +275,13 @@ extension FeedDetailViewController {
             guard let self else { return }
             cell.heartButton.rx.tap
                 .bind(with: self) { owner, _ in
-                    owner.heartButtonTap.accept(owner.postModel.value)
+                    owner.heartButtonTap.accept(())
                 }
                 .disposed(by: cell.disposeBag)
             
             cell.commentButton.rx.tap
                 .bind(with: self) { owner, _ in
-                    owner.commentButtonTap.accept(owner.postModel.value)
+                    owner.commentButtonTap.accept(())
                 }
                 .disposed(by: cell.disposeBag)
 

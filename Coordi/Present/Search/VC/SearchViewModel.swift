@@ -12,6 +12,8 @@ import RxCocoa
 final class SearchViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    weak var coordinator: Coordinator?
+    
     struct Input {
         let searchText: Observable<String>
         let searchButtonTap: Observable<Void>
@@ -20,7 +22,6 @@ final class SearchViewModel: ViewModelType {
     
     struct Output {
         let posts: Driver<[PostModel]>
-        let itemSelected: Driver<PostModel>
     }
     
     func transform(input: Input) -> Output {
@@ -41,6 +42,14 @@ final class SearchViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output.init(posts: posts.asDriver(onErrorJustReturn: []), itemSelected: input.itemSelected.asDriver(onErrorJustReturn: .dummy))
+        input.itemSelected
+            .bind(with: self) { owner, postModel in
+                let vm = FeedDetailViewModel(postModel: BehaviorRelay(value: postModel))
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(FeedDetailViewController(viewModel: vm), animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        return Output.init(posts: posts.asDriver(onErrorJustReturn: []))
     }
 }

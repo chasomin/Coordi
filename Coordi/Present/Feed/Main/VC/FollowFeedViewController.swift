@@ -26,8 +26,6 @@ final class FollowFeedViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,12 +50,6 @@ final class FollowFeedViewController: BaseViewController {
         output.requestFailureTrigger
             .drive(with: self) { owner, errorText in
                 owner.showErrorToast(errorText)
-            }
-            .disposed(by: disposeBag)
-        
-        output.itemSelected
-            .drive(with: self) { owner, postModel in
-                owner.navigationController?.pushViewController(FeedDetailViewController(postModel: BehaviorRelay(value: postModel)), animated: true)
             }
             .disposed(by: disposeBag)
     }

@@ -12,19 +12,20 @@ import RxCocoa
 import PhotosUI
 
 final class CreatePostViewController: BaseViewController {
-    private let viewModel = CreatePostViewModel()
+    private let viewModel: CreatePostViewModel
+    
+    private let selectTemp = PublishRelay<Int>()
+    private var imageSelectedButtonTap = PublishRelay<Void>()
+    private var textViewDidBeginEditing = PublishRelay<String>()
+    private var textViewDidEndEditing = PublishRelay<String>()
+    private let popTrigger = PublishRelay<Void>()
+    private var images: BehaviorRelay<[UIImage]> = .init(value: [])
+
     private var imageContainer: [UIImage] = [] {
         didSet {
             images.accept(imageContainer)
         }
     }
-    private let selectTemp = PublishRelay<Int>()
-    
-    private var images: BehaviorRelay<[UIImage]> = .init(value: [])
-    private var imageSelectedButtonTap = PublishRelay<Void>()
-    private var textViewDidBeginEditing = PublishRelay<String>()
-    private var textViewDidEndEditing = PublishRelay<String>()
-    
     private let imagePlusButton = UIButton()
     private lazy var imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     private let tempTitleLabel = UILabel()
@@ -37,13 +38,16 @@ final class CreatePostViewController: BaseViewController {
     
     private var dataSource: UICollectionViewDiffableDataSource<String, UIImage>!
     
+    init(viewModel: CreatePostViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         makeCellRegistration()
         
-        navigationItem.title = Constants.NavigationTitle.create.title
     }
     
     override func bind() {
@@ -68,7 +72,8 @@ final class CreatePostViewController: BaseViewController {
                                               content: .init(value: ""),
                                               imageData: imageData,
                                               textViewDidBeginEditing: textViewDidBeginEditing,
-                                              textViewDidEndEditing: textViewDidEndEditing)
+                                              textViewDidEndEditing: textViewDidEndEditing, 
+                                              popTrigger: popTrigger)
         let output = viewModel.transform(input: input)
         
         selectTemp
@@ -89,26 +94,16 @@ final class CreatePostViewController: BaseViewController {
                 configuration.filter = .any(of: [.images, .livePhotos, .videos])
                 let picker = PHPickerViewController(configuration: configuration)
                 picker.delegate = self
-                owner.present(picker, animated:  true)
+                owner.present(picker, animated: true)   // FIXME: image picker 띄우는 것도 viewModel???
             }
             .disposed(by: disposeBag)
-        
-        output.imageSelectedButtonTap
-            .drive(with: self) { owner, _ in
-                owner.dismiss(animated: true)
-            }
-            .disposed(by: disposeBag)
-        
+                
         output.saveButtonTap
             .drive(with: self) { owner, _ in
-                owner.showDoneToast()
+                owner.showCheckToast {
+                    owner.popTrigger.accept(())
+                }
                 owner.saveButton.configuration?.showsActivityIndicator = false
-                Observable.just(())
-                    .delay(.seconds(1), scheduler: MainScheduler.instance)
-                    .subscribe(onNext: { _ in
-                        owner.navigationController?.popViewController(animated: true)
-                    })
-                    .disposed(by: self.disposeBag)
             }
             .disposed(by: disposeBag)
         
@@ -202,6 +197,8 @@ final class CreatePostViewController: BaseViewController {
     }
     
     override func configureView() {
+        navigationItem.title = Constants.NavigationTitle.create.title
+
         var config = UIButton.Configuration.tinted()
         config.image = UIImage(systemName: "plus")
         config.imagePlacement = .top

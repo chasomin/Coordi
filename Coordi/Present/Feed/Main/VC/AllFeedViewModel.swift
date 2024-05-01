@@ -12,6 +12,8 @@ import RxCocoa
 final class AllFeedViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
+    weak var coordinator: Coordinator?
+    
     struct Input {
         let dataReload: PublishRelay<Void>
         let itemSelected: PublishRelay<PostModel>
@@ -20,7 +22,6 @@ final class AllFeedViewModel: ViewModelType {
     struct Output {
         let postData: Driver<[PostModel]>
         let requestFailureTrigger: Driver<String>
-        let itemSelected: Driver<PostModel>
     }
     
     func transform(input: Input) -> Output {
@@ -43,10 +44,17 @@ final class AllFeedViewModel: ViewModelType {
             .disposed(by: disposeBag)
             
         
-
+        input.itemSelected
+            .bind(with: self) { owner, postModel in
+                let vm = FeedDetailViewModel(postModel: BehaviorRelay(value: postModel))
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(FeedDetailViewController(viewModel: vm), animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        
         
         return Output.init(postData: postData.asDriver(onErrorJustReturn: []),
-                           requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""),
-                           itemSelected: input.itemSelected.asDriver(onErrorJustReturn: .dummy))
+                           requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""))
     }
 }

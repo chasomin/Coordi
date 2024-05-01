@@ -11,42 +11,41 @@ import RxSwift
 import RxCocoa
 
 final class EditNicknameViewController: BaseViewController {
-    let currentNickname: String
-    var changeNickname: ((String) -> Void)?
     
-    private let viewModel = EditNicknameViewModel()
+    private let viewModel: EditNicknameViewModel
+    
+    private let viewDidLoadTrigger = PublishRelay<Void>()
     
     private let nicknameTitleLabel = UILabel()
     private let textField = LineTextField()
     private let statusLabel = UILabel()
     private let saveButton = PointButton(text: "저장")
 
-    init(currentNickname: String) {
-        self.currentNickname = currentNickname
+    init(viewModel: EditNicknameViewModel) {
+        self.viewModel = viewModel
         super.init()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = Constants.NavigationTitle.editNickname.title
+        viewDidLoadTrigger.accept(())
     }
     
     override func bind() {
-        let currentNickname = Observable.just(currentNickname)
-        let input = EditNicknameViewModel.Input(currentNickname: currentNickname, userInputNickname: textField.textField.rx.text.orEmpty.asObservable(), saveButtonTap: saveButton.rx.tap.asObservable())
+        let input = EditNicknameViewModel.Input(viewDidLoadTrigger: viewDidLoadTrigger,
+                                                userInputNickname: textField.textField.rx.text.orEmpty.asObservable(),
+                                                saveButtonTap: saveButton.rx.tap.asObservable())
         let output = viewModel.transform(input: input)
+        
+        output.viewDidLoadTrigger
+            .drive(with: self) { owner, nick in
+                owner.textField.textField.text = nick
+            }
+            .disposed(by: disposeBag)
         
         output.failureTrigger
             .drive(with: self) { owner, _ in
                 owner.showErrorToast("⚠️")
-            }
-            .disposed(by: disposeBag)
-        
-        output.successTrigger
-            .drive(with: self) { owner, nick in
-                owner.navigationController?.popViewController(animated: true)
-                owner.changeNickname?(nick)
             }
             .disposed(by: disposeBag)
         
@@ -93,10 +92,10 @@ final class EditNicknameViewController: BaseViewController {
     }
     
     override func configureView() {
+        navigationItem.title = Constants.NavigationTitle.editNickname.title
         nicknameTitleLabel.font = .boldBody
         nicknameTitleLabel.text = "닉네임"
         textField.textField.font = .body
-        textField.textField.text = currentNickname
         statusLabel.font = .caption
     }
 }

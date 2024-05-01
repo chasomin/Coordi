@@ -11,10 +11,15 @@ import RxSwift
 import RxCocoa
 
 final class SearchViewController: BaseViewController {
-    private let viewModel = SearchViewModel()
+    private let viewModel: SearchViewModel
         
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     private let searchBar = UISearchBar()
+    
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,12 +32,6 @@ final class SearchViewController: BaseViewController {
         output.posts
             .drive(collectionView.rx.items(cellIdentifier: FeedCollectionViewCell.id, cellType: FeedCollectionViewCell.self)) { index, element, cell in
                 cell.configureCell(item: element)
-            }
-            .disposed(by: disposeBag)
-        
-        output.itemSelected
-            .drive(with: self) { owner, postModel in
-                owner.navigationController?.pushViewController(FeedDetailViewController(postModel: postModel), animated: true)
             }
             .disposed(by: disposeBag)
     }

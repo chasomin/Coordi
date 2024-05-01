@@ -11,6 +11,7 @@ import RxCocoa
 
 final class LogInViewModel: ViewModelType {
     let disposeBag = DisposeBag()
+    weak var coordinator: LoginCoordinator?
     
     struct Input {
         let emailText: Observable<String>
@@ -21,14 +22,11 @@ final class LogInViewModel: ViewModelType {
     
     struct Output {
         let logInButtonStatus: Driver<Bool>
-        let successTrigger: Driver<Void>
         let failureTrigger: Driver<Void>
-        let moveSignUp: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
         let logInButtonStatus = BehaviorRelay(value: false)
-        let successTrigger = PublishRelay<Void>()
         let failureTrigger = PublishRelay<Void>()
         
         Observable.combineLatest(input.emailText, input.passwordText)
@@ -55,15 +53,23 @@ final class LogInViewModel: ViewModelType {
                         return Single<LogInModel>.never()
                     }
             }
-            .subscribe { loginModel in
-                UserDefaultsManager.accessToken = loginModel.element?.accessToken ?? ""
-                UserDefaultsManager.refreshToken = loginModel.element?.refreshToken ?? ""
-                UserDefaultsManager.userId = loginModel.element?.user_id ?? ""
-                successTrigger.accept(())
+            .bind(with: self) { owner, loginModel in
+                UserDefaultsManager.accessToken = loginModel.accessToken
+                UserDefaultsManager.refreshToken = loginModel.refreshToken
+                UserDefaultsManager.userId = loginModel.user_id
+                
+                owner.coordinator?.end()
+            }
+            .disposed(by: disposeBag)
+            
+
+        input.moveSignUpButtonTap
+            .bind(with: self) { owner, _ in
+                owner.coordinator?.present(SignUpViewController())
             }
             .disposed(by: disposeBag)
 
-        
-        return Output.init(logInButtonStatus: logInButtonStatus.asDriver(onErrorJustReturn: false), successTrigger: successTrigger.asDriver(onErrorJustReturn: ()), failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()), moveSignUp: input.moveSignUpButtonTap.asDriver(onErrorJustReturn: ()))
+        return Output.init(logInButtonStatus: logInButtonStatus.asDriver(onErrorJustReturn: false),
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()))
     }
 }

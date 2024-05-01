@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class LogInViewController: BaseViewController {
-    let viewModel = LogInViewModel()
+    let viewModel: LogInViewModel
     
     let logoImageView = UIImageView()
         
@@ -27,6 +27,12 @@ final class LogInViewController: BaseViewController {
     
     let tapGesture = UITapGestureRecognizer()
 
+    init(viewModel: LogInViewModel) {
+        self.viewModel = viewModel
+        
+        super.init()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -38,29 +44,10 @@ final class LogInViewController: BaseViewController {
         output.logInButtonStatus
             .drive(logInButton.rx.isEnabled)
             .disposed(by: disposeBag)
-        
-        output.successTrigger
-            .drive(with: self) { owner, _ in
-                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                let sceneDelegate = windowScene?.delegate as? SceneDelegate
-                let tabBar = UITabBarController()
-                tabBar.setTabBar()
-                sceneDelegate?.window?.rootViewController = tabBar
-                sceneDelegate?.window?.makeKeyAndVisible()
-            }
-            .disposed(by: disposeBag)
-        
+                
         output.failureTrigger
             .drive(with: self) { owner, _ in
                 owner.showErrorToast("⚠️")
-            }
-            .disposed(by: disposeBag)
-        
-        output.moveSignUp
-            .drive(with: self) { owner, _ in
-                let vc = SignUpViewController()
-                vc.modalPresentationStyle = .fullScreen
-                owner.present(vc, animated: true)
             }
             .disposed(by: disposeBag)
     }

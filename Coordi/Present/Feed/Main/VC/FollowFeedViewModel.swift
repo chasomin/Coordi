@@ -11,6 +11,7 @@ import RxCocoa
 
 final class FollowFeedViewModel: ViewModelType {
     let disposeBag = DisposeBag()
+    weak var coordinator: Coordinator?
     
     struct Input {
         let dataReload: PublishRelay<Void> // 넘길 때 next랑, hashtag 넘기면 되나..?
@@ -20,7 +21,6 @@ final class FollowFeedViewModel: ViewModelType {
     struct Output {
         let postData: Driver<[PostModel]>
         let requestFailureTrigger: Driver<String>
-        let itemSelected: Driver<PostModel>
     }
     
     func transform(input: Input) -> Output {
@@ -67,11 +67,16 @@ final class FollowFeedViewModel: ViewModelType {
             .disposed(by: disposeBag)
             
         
-        
-        
+        input.itemSelected
+            .bind(with: self) { owner, postModel in
+                let vm = FeedDetailViewModel(postModel: BehaviorRelay(value: postModel))
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(FeedDetailViewController(viewModel: vm), animation: true)
+            }
+            .disposed(by: disposeBag)
+
         
         return Output.init(postData: postData.asDriver(onErrorJustReturn: []),
-                           requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""),
-                           itemSelected: input.itemSelected.asDriver(onErrorJustReturn: .dummy))
+                           requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""))
     }
 }

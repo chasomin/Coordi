@@ -13,20 +13,19 @@ final class CommentViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
     private let post: BehaviorRelay<PostModel>
-    
+    var changeData: (([CommentModel]) -> Void)?
+
     init(post: BehaviorRelay<PostModel>) {
         self.post = post
     }
     
     struct Input {
-//        let postId: Observable<String>
         let commentUpload: PublishRelay<String>
         let commentDelete: PublishRelay<CommentModel>
     }
     
     struct Output {
         let comments: Driver<[CommentModel]>
-//        let commentModel: Driver<CommentModel>
         let failureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
         let commentDelete: Driver<Void>
@@ -37,8 +36,6 @@ final class CommentViewModel: ViewModelType {
         let refreshTokenFailure = PublishRelay<Void>()
         let commentDelete = PublishRelay<Void>()
         let comments: BehaviorRelay<[CommentModel]> = BehaviorRelay(value: [])
-
-
         
         input.commentUpload
             .withUnretained(self)
@@ -59,6 +56,7 @@ final class CommentViewModel: ViewModelType {
                 var data = comments.value
                 data.insert(value, at: 0)
                 comments.accept(data)
+                owner.changeData?(data)
             }
             .disposed(by: disposeBag)
         
@@ -89,12 +87,13 @@ final class CommentViewModel: ViewModelType {
                 print("댓글 삭제", remove.values, comment)
                 return (remove, comment)
             }
-            .subscribe { value in
+            .subscribe(with: self) { owner, value in
                 let (_, comment) = value
                 var data = comments.value
                 guard let index = data.firstIndex(of: comment) else { return }
                 data.remove(at: index)
                 comments.accept(data)
+                owner.changeData?(data)
             }
             .disposed(by: disposeBag)
         

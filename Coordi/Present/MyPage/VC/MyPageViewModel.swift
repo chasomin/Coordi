@@ -13,6 +13,7 @@ final class MyPageViewModel: ViewModelType {
     let disposeBag = DisposeBag()
     
     private let userId: String
+    weak var coordinator: Coordinator?
     
     init(userId: String) {
         self.userId = userId
@@ -30,20 +31,15 @@ final class MyPageViewModel: ViewModelType {
     struct Output {
         let profile: PublishRelay<ProfileModel>
         let posts: PublishRelay<PostListModel>
-        let editButtonTap: PublishRelay<ProfileModel>
-        let plusButtonTap: Driver<Void>
-        let itemSelected: Driver<PostModel>
         let failureTrigger: Driver<String>
         let refreshTokenFailure: Driver<Void>
         let isMyFeed: Driver<(Bool, ProfileModel)>
         let followValue: Driver<FollowModel>
-        let settingButtonTap: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
         let myProfile = PublishRelay<ProfileModel>()
         let myPosts = PublishRelay<PostListModel>()
-        let editButtonTap = PublishRelay<ProfileModel>()
         let failureTrigger = PublishRelay<String>()
         let refreshTokenFailure = PublishRelay<Void>()
         let isMyFeed = PublishRelay<(Bool, ProfileModel)>()
@@ -96,9 +92,11 @@ final class MyPageViewModel: ViewModelType {
         input.editButtonTap
             .throttle(.seconds(2), scheduler: MainScheduler.instance)
             .withLatestFrom(myProfile)
-            .subscribe { profileModel in
-                editButtonTap.accept(profileModel)
-            }
+            .bind(with: self, onNext: { owner, profile in
+                let vm = EditProfileViewModel(nick: BehaviorRelay(value: profile.nick), profileImage: profile.profileImage)
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(EditProfileViewController(viewModel: vm), animation: true)
+            })
             .disposed(by: disposeBag)
 
         input.followButtonTap
@@ -149,15 +147,40 @@ final class MyPageViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
+        input.settingButtonTap
+            .throttle(.seconds(2), scheduler: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                let vm = SettingViewModel()
+                vm.coordinator = owner.coordinator
+                let vc = SettingViewController(viewModel: vm)
+                vc.sheetPresentationController?.detents = [.custom(resolver: { _ in 200 })]
+                vc.sheetPresentationController?.prefersGrabberVisible = true
+                owner.coordinator?.present(vc)
+            }
+            .disposed(by: disposeBag)
+        
+        input.itemSelected
+            .bind(with: self) { owner, postModel in
+                let vm = FeedDetailViewModel(postModel: BehaviorRelay(value: postModel))
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(FeedDetailViewController(viewModel: vm), animation: true)
+            }
+            .disposed(by: disposeBag)
+        
+        input.plusButtonTap
+            .throttle(.seconds(2), scheduler: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                let vm = CreatePostViewModel()
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(CreatePostViewController(viewModel: vm), animation: true)
+            }
+            .disposed(by: disposeBag)
+        
         return Output.init(profile: myProfile,
                            posts: myPosts,
-                           editButtonTap: editButtonTap,
-                           plusButtonTap: input.plusButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()),
-                           itemSelected:  input.itemSelected.asDriver(onErrorJustReturn: PostModel.dummy),
-                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""), 
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
                            refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
                            isMyFeed: isMyFeed.asDriver(onErrorJustReturn: (true, .dummy)),
-                           followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)),
-                           settingButtonTap: input.settingButtonTap.throttle(.seconds(2), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: ()))
+                           followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)))
     }
 }

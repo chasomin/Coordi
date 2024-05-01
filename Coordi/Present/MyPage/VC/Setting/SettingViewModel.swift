@@ -30,7 +30,6 @@ final class SettingViewModel: ViewModelType {
                 return Setting.allCases
             }
         let settingTap = PublishRelay<Void>()
-        let likeTap = PublishRelay<Void>()
         
         setting
             .debug("여기")
@@ -44,7 +43,9 @@ final class SettingViewModel: ViewModelType {
                 if value == .setting {
                     settingTap.accept(())
                     owner.coordinator?.dismiss(animation: true)
-                    owner.coordinator?.push(AllFeedViewController(viewModel: AllFeedViewModel()), animation: true) //TEST
+                    let vm = GeneralSettingViewModel()
+                    vm.coordinator = owner.coordinator
+                    owner.coordinator?.push(GeneralSettingViewController(viewModel: vm), animation: true) //TEST
                     
                 } else if value == .like {
                     owner.coordinator?.dismiss(animation: true)

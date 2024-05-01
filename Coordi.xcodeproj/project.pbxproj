@@ -66,6 +66,9 @@
 		79937ACC2BE225800063A2CE /* FeedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937ACB2BE225800063A2CE /* FeedCoordinator.swift */; };
 		79937ACE2BE230A20063A2CE /* MyPageCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937ACD2BE230A20063A2CE /* MyPageCoordinator.swift */; };
 		79937AD02BE287C40063A2CE /* TabCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937ACF2BE287C40063A2CE /* TabCoordinator.swift */; };
+		79937AD22BE2AC360063A2CE /* GeneralSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AD12BE2AC360063A2CE /* GeneralSettingViewController.swift */; };
+		79937AD42BE2AF180063A2CE /* GeneralSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AD32BE2AF180063A2CE /* GeneralSettingViewModel.swift */; };
+		79937AD62BE2B25C0063A2CE /* Alert+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AD52BE2B25C0063A2CE /* Alert+.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -178,6 +181,9 @@
 		79937ACB2BE225800063A2CE /* FeedCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCoordinator.swift; sourceTree = "<group>"; };
 		79937ACD2BE230A20063A2CE /* MyPageCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCoordinator.swift; sourceTree = "<group>"; };
 		79937ACF2BE287C40063A2CE /* TabCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabCoordinator.swift; sourceTree = "<group>"; };
+		79937AD12BE2AC360063A2CE /* GeneralSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingViewController.swift; sourceTree = "<group>"; };
+		79937AD32BE2AF180063A2CE /* GeneralSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingViewModel.swift; sourceTree = "<group>"; };
+		79937AD52BE2B25C0063A2CE /* Alert+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+.swift"; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79B043E92BCE8C9300407A1F /* TokenRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresh.swift; sourceTree = "<group>"; };
@@ -426,6 +432,8 @@
 			children = (
 				79937AAA2BE0108D0063A2CE /* SettingViewController.swift */,
 				79937AAC2BE0112E0063A2CE /* SettingViewModel.swift */,
+				79937AD12BE2AC360063A2CE /* GeneralSettingViewController.swift */,
+				79937AD32BE2AF180063A2CE /* GeneralSettingViewModel.swift */,
 				79937AB02BE0144D0063A2CE /* Cell */,
 			);
 			path = Setting;
@@ -573,6 +581,7 @@
 				798604392BD2BCF3003E721E /* Toast+.swift */,
 				79937A132BD7E0120063A2CE /* String+.swift */,
 				79937AA72BDFCB070063A2CE /* UITabBarController.swift */,
+				79937AD52BE2B25C0063A2CE /* Alert+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -700,11 +709,13 @@
 				79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */,
 				79B044002BCECE6F00407A1F /* UICollectionViewCell+.swift in Sources */,
 				79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */,
+				79937AD42BE2AF180063A2CE /* GeneralSettingViewModel.swift in Sources */,
 				79937AD02BE287C40063A2CE /* TabCoordinator.swift in Sources */,
 				79553B4C2BC9135C000B4E4B /* ViewController.swift in Sources */,
 				79EBA4832BCAE70400C3C530 /* ProfileModel.swift in Sources */,
 				79EBA48E2BCC27BE00C3C530 /* FetchPostQuery.swift in Sources */,
 				7986043A2BD2BCF3003E721E /* Toast+.swift in Sources */,
+				79937AD62BE2B25C0063A2CE /* Alert+.swift in Sources */,
 				7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */,
 				79937ACA2BE2178A0063A2CE /* LoginCoordinator.swift in Sources */,
 				79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */,
@@ -752,6 +763,7 @@
 				79937A9F2BDFA43E0063A2CE /* TabBar.swift in Sources */,
 				79EBA4772BCAD04100C3C530 /* ImageUploadModel.swift in Sources */,
 				79937A2D2BDD72850063A2CE /* CommentViewModel.swift in Sources */,
+				79937AD22BE2AC360063A2CE /* GeneralSettingViewController.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
 				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
 				79937A202BDA53F50063A2CE /* FollowFeedViewModel.swift in Sources */,

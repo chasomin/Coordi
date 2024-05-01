@@ -30,25 +30,8 @@ enum TabBar: CaseIterable {
         }
     }
     
-    var root: UIViewController {
-        switch self {
-        case .Feed:
-            let feedViewModel = FeedViewModel()
-            let followFeedViewModel = FollowFeedViewModel()
-            let allFeedViewModel = AllFeedViewModel()
-            
-            return FeedViewController(viewModel: feedViewModel,
-                               followFeedViewModel: followFeedViewModel,
-                               allFeedViewModel: allFeedViewModel)
-        case .MyPage:
-            let myPageViewModel = MyPageViewModel(userId: UserDefaultsManager.userId)
-            print("여기", UserDefaultsManager.userId)
-            return MyPageViewController(viewModel: myPageViewModel)
-        }
-    }
-    
-    func setViewContollerWithTabBarItem() -> UIViewController {
-        let vc = UINavigationController(rootViewController: root)
+    func setViewContollerWithTabBarItem() -> UINavigationController {
+        let vc = UINavigationController()
         vc.tabBarItem = UITabBarItem(title: title, image: image, selectedImage: image)
         return vc
     }

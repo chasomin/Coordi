@@ -17,6 +17,7 @@ enum Constants {
         case create
         case editProfile
         case editNickname
+        case loginInformation
         
         var title: String {
             switch self {
@@ -32,6 +33,8 @@ enum Constants {
                 "프로필 관리"
             case .editNickname:
                 "닉네임 수정"
+            case .loginInformation:
+                "로그인 정보"
             }
         }
     }

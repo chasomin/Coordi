@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.enable = true
         IQKeyboardManager.shared.disabledDistanceHandlingClasses = [CommentViewController.self]
         IQKeyboardManager.shared.disabledToolbarClasses = [CommentViewController.self]
+        
         return true
     }
 

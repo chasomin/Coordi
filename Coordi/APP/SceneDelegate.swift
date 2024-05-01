@@ -10,18 +10,20 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var appCoordinator: AppCoordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
+        
+        let rootNavigationVC = UINavigationController()
+        rootNavigationVC.setNavigationBarHidden(true, animated: false)
+        
         window = UIWindow(windowScene: scene)
-        if UserDefaultsManager.accessToken != "" {
-            let tabBar = UITabBarController()
-            tabBar.setTabBar()
-            window?.rootViewController = tabBar
-        } else {
-            window?.rootViewController = LogInViewController()
-        }
+        window?.rootViewController = rootNavigationVC
         window?.makeKeyAndVisible()
+        
+        appCoordinator = AppCoordinator(rootNavigationVC)
+        appCoordinator?.start()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

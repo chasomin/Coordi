@@ -18,6 +18,7 @@ enum Constants {
         case editProfile
         case editNickname
         case loginInformation
+        case likeFeeds
         
         var title: String {
             switch self {
@@ -35,6 +36,8 @@ enum Constants {
                 "닉네임 수정"
             case .loginInformation:
                 "로그인 정보"
+            case .likeFeeds:
+                "좋아요한 게시글"
             }
         }
     }

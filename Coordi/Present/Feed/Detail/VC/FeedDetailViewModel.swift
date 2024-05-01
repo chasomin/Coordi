@@ -171,6 +171,7 @@ final class FeedDetailViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         input.popGesture
+            .debounce(.seconds(1), scheduler: MainScheduler.instance)
             .bind(with: self) { owner, _ in
                 owner.coordinator?.pop(animation: true)
             }

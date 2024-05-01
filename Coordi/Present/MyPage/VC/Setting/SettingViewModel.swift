@@ -45,11 +45,13 @@ final class SettingViewModel: ViewModelType {
                     owner.coordinator?.dismiss(animation: true)
                     let vm = GeneralSettingViewModel()
                     vm.coordinator = owner.coordinator
-                    owner.coordinator?.push(GeneralSettingViewController(viewModel: vm), animation: true) //TEST
+                    owner.coordinator?.push(GeneralSettingViewController(viewModel: vm), animation: true)
                     
                 } else if value == .like {
                     owner.coordinator?.dismiss(animation: true)
-                    owner.coordinator?.push(AllFeedViewController(viewModel: AllFeedViewModel()), animation: true) //TEST
+                    let vm = LikeAllFeedViewModel()
+                    vm.coordinator = owner.coordinator
+                    owner.coordinator?.push(LikeAllFeedViewController(viewModel: vm), animation: true)
                 } else {
                     UserDefaultsManager.accessToken = ""
                     UserDefaultsManager.refreshToken = ""

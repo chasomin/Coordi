@@ -11,21 +11,16 @@ import RxSwift
 import RxCocoa
 
 final class LogInViewController: BaseViewController {
-    let viewModel: LogInViewModel
+    private let viewModel: LogInViewModel
     
-    let logoImageView = UIImageView()
-        
-    let emailLabel = UILabel()
-    let emailTextField = LineTextField()
-    
-    let passwordLabel = UILabel()
-    let passwordTextField = LineTextField()
-        
-    let logInButton = PointButton(text: "로그인")
-    
-    let moveSignUpButton = UIButton()
-    
-    let tapGesture = UITapGestureRecognizer()
+    private let logoImageView = UIImageView()
+    private let emailLabel = UILabel()
+    private let emailTextField = LineTextField()
+    private let passwordLabel = UILabel()
+    private let passwordTextField = LineTextField()
+    private let logInButton = PointButton(text: "로그인")
+    private let moveSignUpButton = UIButton()
+    private let tapGesture = UITapGestureRecognizer()
 
     init(viewModel: LogInViewModel) {
         self.viewModel = viewModel
@@ -38,16 +33,45 @@ final class LogInViewController: BaseViewController {
     }
     
     override func bind() {
-        let input = LogInViewModel.Input(emailText: emailTextField.textField.rx.text.orEmpty.asObservable(), passwordText: passwordTextField.textField.rx.text.orEmpty.asObservable(), logInButtonTap: logInButton.rx.tap.asObservable(), moveSignUpButtonTap: moveSignUpButton.rx.tap.asObservable())
+        let input = LogInViewModel.Input(emailText: .init(),
+                                         passwordText: .init(),
+                                         logInButtonTap: .init(),
+                                         moveSignUpButtonTap: .init())
         let output = viewModel.transform(input: input)
+        
+        emailTextField.textField.rx.text.orEmpty
+            .bind(to: input.emailText)
+            .disposed(by: disposeBag)
+        
+        passwordTextField.textField.rx.text.orEmpty
+            .bind(to: input.passwordText)
+            .disposed(by: disposeBag)
+        
+        logInButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.logInButton.configuration?.showsActivityIndicator = true
+                input.logInButtonTap.accept(())
+            }
+            .disposed(by: disposeBag)
+        
+        moveSignUpButton.rx.tap
+            .bind(to: input.moveSignUpButtonTap)
+            .disposed(by: disposeBag)
         
         output.logInButtonStatus
             .drive(logInButton.rx.isEnabled)
             .disposed(by: disposeBag)
                 
         output.failureTrigger
+            .drive(with: self) { owner, text in
+                owner.showErrorToast(text)
+                owner.logInButton.configuration?.showsActivityIndicator = false
+            }
+            .disposed(by: disposeBag)
+        
+        output.successTrigger
             .drive(with: self) { owner, _ in
-                owner.showErrorToast("⚠️")
+                owner.logInButton.configuration?.showsActivityIndicator = false
             }
             .disposed(by: disposeBag)
     }

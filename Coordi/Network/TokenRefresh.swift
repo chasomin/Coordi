@@ -28,7 +28,10 @@ final class TokenRefresh: RequestInterceptor {
     
     func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping (RetryResult) -> Void) {
             print("!!!retry")
-            guard let statusCode = request.response?.statusCode, statusCode == 419 else { return }
+        guard let statusCode = request.response?.statusCode, statusCode == 419 else {
+            completion(.doNotRetry)
+            return
+        }
             
         do {
             let urlRequest = try Router.refreshToken.asURLRequest()

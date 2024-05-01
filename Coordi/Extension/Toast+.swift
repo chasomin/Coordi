@@ -13,7 +13,11 @@ extension BaseViewController {
         var style = ToastStyle.init()
         style.backgroundColor = .pointColor
         style.titleColor = .backgroundColor
-        view.makeToast(nil, duration: 1, position: .top, title: text, style: style) //TODO: 오류 처리
+        style.cornerRadius = 15
+        style.imageSize = CGSize(width: 50, height: 50)
+        style.messageFont = .caption
+        style.titleFont = .boldBody
+        view.makeToast(text, duration: 2, position: .center, title: "오류", image: .error, style: style)
     }
     
     func showCheckToast(_ completionHandler: () -> Void) {

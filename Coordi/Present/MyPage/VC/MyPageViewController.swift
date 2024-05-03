@@ -43,18 +43,24 @@ final class MyPageViewController: BaseViewController {
                                           followButtonTap: profileView.followButton.rx.tap.asObservable(),
                                           plusButtonTap: plusBarButton.rx.tap.asObservable(),
                                           itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable(),
-                                          settingButtonTap: settingBarButton.rx.tap.asObservable())
+                                          settingButtonTap: settingBarButton.rx.tap.asObservable(),
+                                          lastItemIndex: .init())
         let output = viewModel.transform(input: input)
         
+        collectionView.rx.prefetchItems
+            .map { $0.last?.item }
+            .bind(to: input.lastItemIndex)
+            .disposed(by: disposeBag)
+
         output.profile
-            .bind(with: self, onNext: { owner, profile in
+            .drive(with: self, onNext: { owner, profile in
                 owner.profileView.configure(profile: profile)
             })
             .disposed(by: disposeBag)
         
         output.posts
             .map { $0.data }
-            .bind(to: collectionView.rx.items(cellIdentifier: FeedCollectionViewCell.id, cellType: FeedCollectionViewCell.self)) { index, post, cell in
+            .drive(collectionView.rx.items(cellIdentifier: FeedCollectionViewCell.id, cellType: FeedCollectionViewCell.self)) { index, post, cell in
                 cell.configureCell(item: post)
             }
             .disposed(by: disposeBag)
@@ -64,16 +70,7 @@ final class MyPageViewController: BaseViewController {
                 owner.showErrorToast(text)
             }
             .disposed(by: disposeBag)
-        
-        output.refreshTokenFailure
-            .drive(with: self) { owner, _ in
-                //                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                //                let sceneDelegate = windowScene?.delegate as? SceneDelegate
-                //                sceneDelegate?.window?.rootViewController = LogInViewController()
-                //                sceneDelegate?.window?.makeKeyAndVisible()
-            }
-            .disposed(by: disposeBag)
-        
+                
         output.isMyFeed
             .drive(with: self) { owner, value in
                 let (isMyFeed, profile) = value

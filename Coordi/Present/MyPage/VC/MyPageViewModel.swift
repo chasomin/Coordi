@@ -9,10 +9,10 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class MyPageViewModel: ViewModelType {
+final class MyPageViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
-    private let userId: String
+    private var userId: String
     weak var coordinator: Coordinator?
     
     init(userId: String) {
@@ -25,52 +25,42 @@ final class MyPageViewModel: ViewModelType {
         let followButtonTap: Observable<Void>
         let plusButtonTap: Observable<Void>
         let itemSelected: Observable<PostModel>
-        let settingButtonTap: Observable<Void>
+        let settingButtonTap: Observable<Void>        
+        let lastItemIndex: PublishRelay<Int?>
     }
     
     struct Output {
-        let profile: PublishRelay<ProfileModel>
-        let posts: PublishRelay<PostListModel>
+        let profile: Driver<ProfileModel>
+        let posts: Driver<PostListModel>
         let failureTrigger: Driver<String>
-        let refreshTokenFailure: Driver<Void>
         let isMyFeed: Driver<(Bool, ProfileModel)>
         let followValue: Driver<FollowModel>
     }
     
     func transform(input: Input) -> Output {
         let myProfile = PublishRelay<ProfileModel>()
-        let myPosts = PublishRelay<PostListModel>()
+        let myPosts: BehaviorRelay<PostListModel> = BehaviorRelay(value: .init(data: [], next_cursor: ""))
         let failureTrigger = PublishRelay<String>()
-        let refreshTokenFailure = PublishRelay<Void>()
         let isMyFeed = PublishRelay<(Bool, ProfileModel)>()
         let followValue = PublishRelay<FollowModel>()
-
+        var nextCursor = ""
 
         input.dataReload
             .withUnretained(self)
             .flatMap { owner, _ in
-                return NetworkManager.request(api: .fetchUserProfile(userId: owner.userId))
+                NetworkManager.request(api: .fetchUserProfile(userId: owner.userId))
                     .catch { error in
-                        let coordiError = error as! CoordiError
-                        switch coordiError {
-                        case .refreshTokenExpired:
-                            refreshTokenFailure.accept(())
-                        default:
-                            failureTrigger.accept(coordiError.errorMessage)
-                        }
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<ProfileModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<ProfileModel>.never()
                     }
             }
-            .flatMap { profile in
-               let posts = NetworkManager.request(api: .fetchPostByUser(userId: profile.user_id, query: FetchPostQuery.init(next: "", limit: "", product_id: Constants.productId)))
+            .withUnretained(self)
+            .flatMap { owner, profile in
+                let posts = NetworkManager.request(api: .fetchPostByUser(userId: owner.userId, query: FetchPostQuery.init(next: "", limit: "10", product_id: Constants.productId)))
                     .catch { error in
-                        let coordiError = error as! CoordiError
-                        switch coordiError {
-                        case .refreshTokenExpired:
-                            refreshTokenFailure.accept(())
-                        default:
-                            failureTrigger.accept(coordiError.errorMessage)
-                        }
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<PostListModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<PostListModel>.never()
                     }
                 let userProfile = Observable.just(profile).asSingle()
@@ -79,6 +69,7 @@ final class MyPageViewModel: ViewModelType {
             }
             .subscribe { response in
                 let (profile, posts) = response
+                nextCursor = posts.next_cursor
                 myProfile.accept(profile)
                 myPosts.accept(posts)
                 if profile.user_id == UserDefaultsManager.userId {
@@ -105,39 +96,25 @@ final class MyPageViewModel: ViewModelType {
             .flatMap { owner, _ in
                 NetworkManager.request(api: .fetchUserProfile(userId: owner.userId))
                     .catch { error in
-                        let coordiError = error as! CoordiError
-                        switch coordiError {
-                        case .refreshTokenExpired:
-                            refreshTokenFailure.accept(())
-                        default:
-                            failureTrigger.accept(coordiError.errorMessage)
-                        }
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<ProfileModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<ProfileModel>.never()
                     }
             }
-            .flatMap { profile in
+            .withUnretained(self)
+            .flatMap { owner, profile in
                 if profile.followers.map ({ $0.user_id == UserDefaultsManager.userId }).isEmpty {
                     NetworkManager.request(api: .follow(userId: profile.user_id))
                         .catch { error in
-                            let coordiError = error as! CoordiError
-                            switch coordiError {
-                            case .refreshTokenExpired:
-                                refreshTokenFailure.accept(())
-                            default:
-                                failureTrigger.accept(coordiError.errorMessage)
-                            }
+                            guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<FollowModel>.never() }
+                            failureTrigger.accept(errorMessage)
                             return Single<FollowModel>.never()
                         }
                 } else {
                     NetworkManager.request(api: .deleteFollow(userId: profile.user_id))
                         .catch { error in
-                            let coordiError = error as! CoordiError
-                            switch coordiError {
-                            case .refreshTokenExpired:
-                                refreshTokenFailure.accept(())
-                            default:
-                                failureTrigger.accept(coordiError.errorMessage)
-                            }
+                            guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<FollowModel>.never() }
+                            failureTrigger.accept(errorMessage)
                             return Single<FollowModel>.never()
                         }
                 }
@@ -176,11 +153,39 @@ final class MyPageViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output.init(profile: myProfile,
-                           posts: myPosts,
+        input.lastItemIndex
+            .withUnretained(self)
+            .flatMap { owner, _ in
+                return owner.callPaginationFeeds(nextCursor: nextCursor) { error in
+                    guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return }
+                    failureTrigger.accept(errorMessage)
+                }
+            }
+            .subscribe(onNext: { posts in
+                nextCursor = posts.next_cursor
+                var data = myPosts.value
+                data.data.append(contentsOf: posts.data)
+                myPosts.accept(data)
+            })
+            .disposed(by: disposeBag)
+
+        return Output.init(profile: myProfile.asDriver(onErrorJustReturn: .dummy),
+                           posts: myPosts.asDriver(),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
-                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
                            isMyFeed: isMyFeed.asDriver(onErrorJustReturn: (true, .dummy)),
                            followValue: followValue.asDriver(onErrorJustReturn: .init(nick: "", opponent_nick: "", following_status: false)))
+    }
+    
+}
+
+extension MyPageViewModel {
+    private func callPaginationFeeds(nextCursor: String, failCompletionHandler: @escaping (CoordiError) -> Void) -> Single<PostListModel> {
+        guard nextCursor != "0" else { return Single<PostListModel>.never() }
+        return NetworkManager.request(api: .fetchPostByUser(userId: userId, query: FetchPostQuery.init(next: nextCursor, limit: "10", product_id: Constants.productId)))
+            .catch { error in
+                let coordiError = error as! CoordiError
+                failCompletionHandler(coordiError)
+                return Single<PostListModel>.never()
+            }
     }
 }

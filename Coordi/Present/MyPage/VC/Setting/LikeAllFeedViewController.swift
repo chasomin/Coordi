@@ -29,11 +29,18 @@ final class LikeAllFeedViewController: BaseViewController {
     
     override func bind() {
         let input = LikeAllFeedViewModel.Input(dataReloadTrigger: dataReloadTrigger,
-                                               itemSelected: itemSelected)
+                                               itemSelected: itemSelected,
+                                               lastItemIndex: .init())
         let output = viewModel.transform(input: input)
+        
         
         collectionView.rx.modelSelected(PostModel.self)
             .bind(to: itemSelected)
+            .disposed(by: disposeBag)
+        
+        collectionView.rx.prefetchItems
+            .map { $0.last?.item }
+            .bind(to: input.lastItemIndex)
             .disposed(by: disposeBag)
         
         output.likePosts
@@ -41,7 +48,6 @@ final class LikeAllFeedViewController: BaseViewController {
                 cell.configureCell(item: element)
             }
             .disposed(by: disposeBag)
-        
     }
     
     override func configureHierarchy() {

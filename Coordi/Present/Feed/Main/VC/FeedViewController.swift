@@ -12,11 +12,11 @@ import RxCocoa
 import WeatherKit
 import CoreLocation
 
+let temp = BehaviorRelay(value: 40)
+
 final class FeedViewController: TabmanViewController {
     private let viewModel: FeedViewModel
     private let disposeBag = DisposeBag()
-    
-    private let temp = PublishRelay<Double>()
     
     private var viewControllers: [UIViewController]
     private let searchButton = UIBarButtonItem()
@@ -31,6 +31,7 @@ final class FeedViewController: TabmanViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    @available (*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -38,19 +39,23 @@ final class FeedViewController: TabmanViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setTopTabBar()
+        setLocation()
         configureView()
         bind()
-        navigationItem.rightBarButtonItem = searchButton
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        requestLocationPermission()
-
+    }
+    
+    deinit {
+        locationManager.stopUpdatingLocation()
     }
     
     private func bind() {
         let input = FeedViewModel.Input(searchButtonTap: searchButton.rx.tap.asObservable(),
-                                        temp: temp)
+                                        temp: .init())
         let output = viewModel.transform(input: input)
+        
+        temp
+            .bind(to: input.temp)
+            .disposed(by: disposeBag)
         
         output.tempText
             .drive(with: self) { owner, text in
@@ -75,6 +80,7 @@ final class FeedViewController: TabmanViewController {
     private func configureView() {
         searchButton.image = UIImage(systemName: "magnifyingglass")
         navigationItem.title = "현재 기온 알 수 없음"   // 기온 모를 때는 전체 보여주기 OR 텅뷰 만들어서 위치허용 유도하기
+        navigationItem.rightBarButtonItem = searchButton
     }
 }
 
@@ -106,7 +112,8 @@ extension FeedViewController {
             do {
                 let weather = try await WeatherService.shared.weather(for: location)
                 print("Temp: \(weather.currentWeather.temperature)")
-                temp.accept(weather.currentWeather.temperature.value)
+                temp.accept(Int(weather.currentWeather.temperature.value))
+                
                 
             } catch {
                 print("날씨 못 받아옴",String(describing: error.localizedDescription))
@@ -116,9 +123,11 @@ extension FeedViewController {
 }
 
 extension FeedViewController: CLLocationManagerDelegate {
-    
-    func requestLocationPermission() {
+    func setLocation() {
+        locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+        locationManager.startUpdatingLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -136,14 +145,17 @@ extension FeedViewController: CLLocationManagerDelegate {
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
             print("GPS 권한 설정됨")
-            locationManager.startUpdatingLocation()
         case .restricted, .notDetermined:
             print("GPS 권한 설정되지 않음")
+            locationManager.requestWhenInUseAuthorization()
         case .denied:
             print("GPS 권한 요청 거부됨")
+            locationManager.requestWhenInUseAuthorization()
         default:
             print("GPS: Default")
+            locationManager.requestWhenInUseAuthorization()
         }
     }
     
 }
+

@@ -9,30 +9,23 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class FeedViewModel: ViewModelType {
+final class FeedViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
-    weak var coordinator: FeedCoordinator?
+    weak var coordinator: Coordinator?
     
     struct Input {
         let searchButtonTap: Observable<Void>
-        let temp: PublishRelay<Double>
+        let temp: PublishRelay<Int>
     }
     
     struct Output {
-        let temp: Driver<Int>
         let tempText: Driver<String>
     }
     
     func transform(input: Input) -> Output {
-        let temp = PublishRelay<Int>()
         let tempText = PublishRelay<String>()
 
-        input.temp
-            .map { Int($0) }
-            .bind(to: temp)
-            .disposed(by: disposeBag)
-        
         input.temp
             .map { "현재 \(Int($0))℃" }
             .bind(to: tempText)
@@ -46,7 +39,6 @@ final class FeedViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output.init(temp: temp.asDriver(onErrorJustReturn: 0),
-                           tempText: tempText.asDriver(onErrorJustReturn: ""))
+        return Output.init(tempText: tempText.asDriver(onErrorJustReturn: ""))
     }
 }

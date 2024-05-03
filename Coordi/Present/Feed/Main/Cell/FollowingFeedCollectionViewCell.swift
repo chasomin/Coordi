@@ -89,7 +89,7 @@ final class FollowingFeedCollectionViewCell: BaseCollectionViewCell {
         nicknameLabel.text = item.creator.nick
         contentImageView.loadImage(from: item.files.first!)
         contentLabel.text = item.content1
-        contentLabel.numberOfLines = 2
+        contentLabel.numberOfLines = 1
         commentCountLabel.text = "\(item.comments.count)"
         heartCountLabel.text = "\(item.likes.count)"
         heartImageView.image = item.likes.contains(UserDefaultsManager.userId) ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")

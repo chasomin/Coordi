@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class CreatePostViewModel: ViewModelType {
+final class CreatePostViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
     weak var coordinator: Coordinator?
@@ -30,7 +30,7 @@ final class CreatePostViewModel: ViewModelType {
         let imagePlusButtonTap: Driver<Void>
         let saveButtonTap: Driver<Void>
         let buttonEnable: Driver<Bool>
-        let failureTrigger: Driver<Void>
+        let failureTrigger: Driver<String>
         let textViewDidBeginEditing: Driver<Bool>
         let textViewDidEndEditing: Driver<Bool>
         let textViewPlaceholder: Driver<String>
@@ -38,31 +38,40 @@ final class CreatePostViewModel: ViewModelType {
     
     func transform(input: Input) -> Output {
         let saveButtonTap = PublishRelay<Void>()
-        let failureTrigger = PublishRelay<Void>()
+        let failureTrigger = PublishRelay<String>()
         let textViewPlaceholder = PublishRelay<String>()
         
         input.saveButtonTap
             .map { data in
                 return ImageUploadQuery(files: data)
             }
-            .flatMap { data in
+            .withUnretained(self)
+            .flatMap { owner, data in
                 NetworkManager.upload(api: .uploadImage(query: data))
-                    .catch { _ in
-                        failureTrigger.accept(())
+                    .catch { error in
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<ImageUploadModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<ImageUploadModel>.never()
                     }
             }
             .map { imageModel in
-                return PostQuery(title: "", content: "#\(input.temp.value)", content1: input.content.value, content2: "", product_id: Constants.productId, files: imageModel.files)
+                let tempHashTag = (input.temp.value - 2...input.temp.value + 2)
+                    .map { String($0) }
+                    .map { "#" + $0 }
+                    .joined(separator: " ")
+                return PostQuery(title: "", content: tempHashTag, content1: input.content.value, content2: "", product_id: Constants.productId, files: imageModel.files)
             }
-            .flatMap { postQuery in
+            .withUnretained(self)
+            .flatMap { owner, postQuery in
                 return NetworkManager.request(api: .uploadPost(query: postQuery))
                     .catch { error in
-                        failureTrigger.accept(())
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<PostModel>.never() }
+                        failureTrigger.accept(errorMessage)
+
                         return Single<PostModel>.never()
                     }
             }
-            .subscribe { postModel in
+            .bind(with: self) { owner, postModel in
                 saveButtonTap.accept(())
             }
             .disposed(by: disposeBag)
@@ -134,7 +143,7 @@ final class CreatePostViewModel: ViewModelType {
         return Output.init(imagePlusButtonTap: input.imagePlusButtonTap.asDriver(onErrorJustReturn: ()),
                            saveButtonTap: saveButtonTap.asDriver(onErrorJustReturn: ()),
                            buttonEnable: saveButtonEnable.asDriver(onErrorJustReturn: false),
-                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()),
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
                            textViewDidBeginEditing: textViewDidBeginEditing.asDriver(onErrorJustReturn: true),
                            textViewDidEndEditing: textViewDidEndEditing.asDriver(onErrorJustReturn: false),
                            textViewPlaceholder: textViewPlaceholder.asDriver(onErrorJustReturn: ""))

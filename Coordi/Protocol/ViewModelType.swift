@@ -17,3 +17,24 @@ protocol ViewModelType {
     
     func transform(input: Input) -> Output
 }
+
+protocol CoordinatorViewModelType: ViewModelType {
+    var coordinator: Coordinator? { get }
+}
+
+extension CoordinatorViewModelType {
+    func choiceLoginOrMessage(error: CoordiError) -> String? {
+        switch error {
+        case .accessTokenExpired, .unauthenticatedToken:
+            UserDefaultsManager.accessToken = ""
+            UserDefaultsManager.refreshToken = ""
+            UserDefaultsManager.userId = ""
+            coordinator?.end()
+            print("😇")
+            return nil
+        default:
+            return error.errorMessage
+        }
+    }
+}
+

@@ -19,6 +19,7 @@ class BaseTableViewCell: UITableViewCell {
         configureLayout()
         configureView()
         contentView.backgroundColor = .backgroundColor
+        selectionStyle = .none
     }
     
     @available(*, unavailable)

@@ -12,8 +12,8 @@ import RxCocoa
 final class AllFeedViewController: BaseViewController {
     private let viewModel: AllFeedViewModel
     
-    private let dataReload = PublishRelay<Void>()
-    
+    private let viewReloadTrigger = PublishRelay<Void>()
+
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
 
     init(viewModel: AllFeedViewModel) {
@@ -28,28 +28,52 @@ final class AllFeedViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        dataReload.accept(())
+        viewReloadTrigger.accept(())
     }
     
     override func bind() {
-        let input = AllFeedViewModel.Input(dataReload: dataReload,
-                                           itemSelected: .init())
+        let input = AllFeedViewModel.Input(viewReloadTrigger: .init(),
+                                           itemSelected: .init(),
+                                           lastItemIndex: .init())
+                
+        viewReloadTrigger
+            .bind(with: self) { owner, _ in
+                owner.showToastActivity()
+                input.viewReloadTrigger.accept(())
+            }
+            .disposed(by: disposeBag)
+
+        
         collectionView.rx.modelSelected(PostModel.self)
             .bind(to: input.itemSelected)
             .disposed(by: disposeBag)
         
+        collectionView.rx.prefetchItems
+            .map { $0.last?.item }
+            .bind(to: input.lastItemIndex)
+            .disposed(by: disposeBag)        
+        
         let output = viewModel.transform(input: input)
 
-        output.postData.drive(collectionView.rx.items(cellIdentifier: FollowingFeedCollectionViewCell.id, cellType: FollowingFeedCollectionViewCell.self)) { index, element, cell in
+        output.postData
+            .drive(collectionView.rx.items(cellIdentifier: FollowingFeedCollectionViewCell.id, cellType: FollowingFeedCollectionViewCell.self)) { index, element, cell in
             cell.configureCell(item: element)
         }
         .disposed(by: disposeBag)
         
-        output.requestFailureTrigger
+        output.postData
+            .drive(with: self) { owner, posts in
+                owner.hideToastActivity()
+            }
+            .disposed(by: disposeBag)
+        
+        output.failureTrigger
             .drive(with: self) { owner, text in
                 owner.showErrorToast(text)
             }
             .disposed(by: disposeBag)
+        
+
     }
     
     override func configureHierarchy() {
@@ -72,7 +96,7 @@ extension AllFeedViewController {
     private func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         let spacing: CGFloat = 15
-        layout.itemSize = CGSize(width: (view.frame.width - spacing * 3)/2 , height: ((view.frame.width - spacing * 3)/2) * 1.4)
+        layout.itemSize = CGSize(width: (view.frame.width - spacing * 3)/2 , height: ((view.frame.width - spacing * 3)/2) * 1.5)
         layout.minimumLineSpacing = spacing
         layout.minimumInteritemSpacing = spacing
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)

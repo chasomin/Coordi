@@ -28,8 +28,4 @@ final class SettingTableViewCell: BaseTableViewCell {
             make.verticalEdges.equalToSuperview().inset(15)
         }
     }
-    
-    override func configureView() {
-        selectionStyle = .none
-    }
 }

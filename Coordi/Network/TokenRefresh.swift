@@ -45,7 +45,7 @@ final class TokenRefresh: RequestInterceptor {
                     case .failure(_):
                         if let code = response.response?.statusCode {
                             print("❌토큰 갱신 실패: \(code)")
-                            completion(.doNotRetryWithError(CoordiError.refreshTokenExpired))
+                            completion(.doNotRetry)
                         } else {
                             print("❌토큰 갱신 실패")
                             completion(.doNotRetry)

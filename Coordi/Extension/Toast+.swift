@@ -28,4 +28,12 @@ extension BaseViewController {
         view.makeToast(nil, duration: 1, position: .center, image: .check, style: style)
         completionHandler()
     }
+    
+    func showToastActivity() {
+        view.makeToastActivity(.center)
+    }
+    
+    func hideToastActivity() {
+        view.hideToastActivity()
+    }
 }

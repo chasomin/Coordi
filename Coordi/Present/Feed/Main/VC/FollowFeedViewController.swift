@@ -15,9 +15,9 @@ final class FollowFeedViewController: BaseViewController {
     private let viewModel: FollowFeedViewModel
     
     private let viewReloadTrigger = PublishRelay<Void>()
-    private let postData = BehaviorRelay<[PostModel]>(value: [])
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    private let plusButton = CircleButton(image: "plus")
 
     init(viewModel: FollowFeedViewModel) {
         self.viewModel = viewModel
@@ -35,15 +35,43 @@ final class FollowFeedViewController: BaseViewController {
     }
     
     override func bind() {
-        let input = FollowFeedViewModel.Input(dataReload: viewReloadTrigger,
-                                              itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable())
+        let input = FollowFeedViewModel.Input(dataReload: .init(),
+                                              itemSelected: .init(),
+                                              lastItemIndex: .init(), 
+                                              plusButtonTap: .init())
         let output = viewModel.transform(input: input)
+        
+        viewReloadTrigger
+            .bind(with: self) { owner, _ in
+                owner.showToastActivity()
+                input.dataReload.accept(())
+            }
+            .disposed(by: disposeBag)
+        
+        collectionView.rx.prefetchItems
+            .map { $0.last?.item }
+            .bind(to: input.lastItemIndex)
+            .disposed(by: disposeBag)
+
+        
+        collectionView.rx.modelSelected(PostModel.self)
+            .debounce(.milliseconds(200), scheduler: MainScheduler.instance)
+            .bind(to: input.itemSelected)
+            .disposed(by: disposeBag)
+        
+        plusButton.rx.tap
+            .bind(to: input.plusButtonTap)
+            .disposed(by: disposeBag)
         
         output.postData
             .drive(collectionView.rx.items(cellIdentifier: FollowingFeedCollectionViewCell.id, cellType: FollowingFeedCollectionViewCell.self)) { index, element, cell in
                 cell.configureCell(item: element)
-                let imageView = UIImageView()
-                imageView.loadImage(from: element.files.first!)
+            }
+            .disposed(by: disposeBag)
+        
+        output.postData
+            .drive(with: self) { owner, posts in
+                owner.hideToastActivity()
             }
             .disposed(by: disposeBag)
         
@@ -56,6 +84,7 @@ final class FollowFeedViewController: BaseViewController {
     
     override func configureHierarchy() {
         view.addSubview(collectionView)
+        view.addSubview(plusButton)
     }
     
     override func configureLayout() {
@@ -63,10 +92,19 @@ final class FollowFeedViewController: BaseViewController {
             make.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
             make.top.equalTo(view.safeAreaLayoutGuide)
         }
+        plusButton.snp.makeConstraints { make in
+            make.trailing.bottom.equalTo(view.safeAreaLayoutGuide).inset(15)
+            make.size.equalTo(60)
+        }
     }
     
     override func configureView() {
         collectionView.register(FollowingFeedCollectionViewCell.self, forCellWithReuseIdentifier: FollowingFeedCollectionViewCell.id)
+        plusButton.layer.shadowRadius = 3
+        plusButton.layer.shadowOpacity = 0.5
+        plusButton.layer.shadowOffset = .init(width: 1, height: 1)
+        plusButton.layer.shadowColor = UIColor.gray.cgColor
+        
     }
 }
 

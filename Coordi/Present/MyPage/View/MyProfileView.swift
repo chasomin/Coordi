@@ -13,14 +13,16 @@ import RxCocoa
 final class MyProfileView: BaseView {
     static let id = MyProfileView.description()
 
-    let profileImageView = CirCleImageView()
+    private let profileImageView = CirCleImageView()
     private let infoStack = UIStackView()
-    let nicknameLabel = UILabel()
+    private let nicknameLabel = UILabel()
     private let followStack = UIStackView()
+    private let postLabel = UILabel()
+    private let postCount = UILabel()
     private let followerLabel = UILabel()
     let followerCount = UILabel()
     private let followingLabel = UILabel()
-    let followingCount = UILabel()
+    private let followingCount = UILabel()
     let editButton = CapsuleButton(text: "프로필 관리", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
     let followButton = CapsuleButton(text: "", textColor: .backgroundColor, backColor: .LabelColor, font: .boldBody)
     
@@ -29,6 +31,8 @@ final class MyProfileView: BaseView {
         addSubview(infoStack)
         infoStack.addArrangedSubview(nicknameLabel)
         infoStack.addArrangedSubview(followStack)
+        followStack.addArrangedSubview(postLabel)
+        followStack.addArrangedSubview(postCount)
         followStack.addArrangedSubview(followerLabel)
         followStack.addArrangedSubview(followerCount)
         followStack.addArrangedSubview(followingLabel)
@@ -74,12 +78,14 @@ final class MyProfileView: BaseView {
         followerCount.font = .caption
         followingLabel.font = .caption
         followingCount.font = .caption
+        postCount.font = .caption
+        postLabel.font = .caption
         nicknameLabel.font = .body
 
         profileImageView.backgroundColor = .pointColor
         followerLabel.text = "팔로워"
         followingLabel.text = "팔로잉"
-        
+        postLabel.text = "게시글"
     }
     
     func configure(profile: ProfileModel) {
@@ -87,6 +93,7 @@ final class MyProfileView: BaseView {
         nicknameLabel.text = profile.nick
         followerCount.text = "\(profile.followers.count)"
         followingCount.text = "\(profile.following.count)"
+        postCount.text = "\(profile.posts.count)"
         if profile.followers.map({ $0.user_id == UserDefaultsManager.userId }).isEmpty {
             followButton.setTitle(text: "팔로우", font: .boldBody)
         } else {

@@ -26,12 +26,26 @@ final class SearchViewController: BaseViewController {
     }
     
     override func bind() {
-        let input = SearchViewModel.Input(searchText: searchBar.rx.text.orEmpty.asObservable(), searchButtonTap: searchBar.rx.searchButtonClicked.asObservable(), itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable())
+        let input = SearchViewModel.Input(searchText: searchBar.rx.text.orEmpty.asObservable(), 
+                                          searchButtonTap: searchBar.rx.searchButtonClicked.asObservable(),
+                                          itemSelected: collectionView.rx.modelSelected(PostModel.self).asObservable(),
+                                          lastItemIndex: .init())
         let output = viewModel.transform(input: input)
+        
+        collectionView.rx.prefetchItems
+            .map { $0.last?.item }
+            .bind(to: input.lastItemIndex)
+            .disposed(by: disposeBag)
         
         output.posts
             .drive(collectionView.rx.items(cellIdentifier: FeedCollectionViewCell.id, cellType: FeedCollectionViewCell.self)) { index, element, cell in
                 cell.configureCell(item: element)
+            }
+            .disposed(by: disposeBag)
+        
+        output.posts
+            .drive(with: self) { owner, _ in
+                owner.searchBar.endEditing(true)
             }
             .disposed(by: disposeBag)
     }
@@ -49,6 +63,7 @@ final class SearchViewController: BaseViewController {
     override func configureView() {
         navigationItem.titleView = searchBar
         searchBar.placeholder = "코디가 궁금한 기온을 검색해보세요 :)"
+        searchBar.keyboardType = .numbersAndPunctuation
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.id)
     }
 }

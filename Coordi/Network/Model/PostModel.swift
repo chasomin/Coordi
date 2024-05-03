@@ -24,10 +24,15 @@ struct PostModel: Decodable, Hashable {
     let likes: [String]
     let likes2: [String]
     let hashTags: [String]
-    let comments: [CommentModel]
+    var comments: [CommentModel]
     
     var temp: String {
-        content.dropFirst().description + "℃"
+        let count = hashTags.count
+        return hashTags[count / 2] + "℃"
+    }
+    
+    var tempNum: Int {
+        Int(content.dropFirst()) ?? 0
     }
     
     enum CodingKeys: CodingKey {

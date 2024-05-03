@@ -8,6 +8,6 @@
 import Foundation
 
 struct PostListModel: Decodable {
-    let data: [PostModel]
+    var data: [PostModel]
     let next_cursor: String
 }

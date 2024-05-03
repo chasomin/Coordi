@@ -36,18 +36,24 @@ final class CommentViewController: BaseViewController {
     }
 
     override func bind() {
-        let input = CommentViewModel.Input(commentUpload: commentText,
+        let input = CommentViewModel.Input(commentUpload: .init(),
+                                           commentText: .init(),
                                            commentDelete: .init())
         let output = viewModel.transform(input: input)
-        
+                
         commentUploadButton.rx.tap
-            .withLatestFrom(commentTextfield.textField.rx.text.orEmpty)
-            .bind(with: self) { owner, text in
-                owner.commentText.accept(text)
+            .bind(with: self) { owner, _ in
+                owner.commentTextfield.textField.text = ""
+                input.commentUpload.accept(())
             }
+            .disposed(by: disposeBag)
+        
+        commentTextfield.textField.rx.text.orEmpty
+            .bind(to: input.commentText)
             .disposed(by: disposeBag)
 
         tableView.rx.modelDeleted(CommentModel.self)
+            .filter { $0.creator.user_id == UserDefaultsManager.userId }
             .bind(to: input.commentDelete)
             .disposed(by: disposeBag)
         

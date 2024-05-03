@@ -20,7 +20,8 @@ final class CommentViewModel: ViewModelType {
     }
     
     struct Input {
-        let commentUpload: PublishRelay<String>
+        let commentUpload: PublishRelay<Void>
+        let commentText: PublishRelay<String>
         let commentDelete: PublishRelay<CommentModel>
     }
     
@@ -38,8 +39,10 @@ final class CommentViewModel: ViewModelType {
         let comments: BehaviorRelay<[CommentModel]> = BehaviorRelay(value: [])
         
         input.commentUpload
+            .withLatestFrom(input.commentText)
             .withUnretained(self)
             .flatMap { owner, comment in
+                guard !comment.isEmpty else { return Single<CommentModel>.never() }
                 return NetworkManager.request(api: .uploadComment(postId: owner.post.value.post_id, query: CommentQuery.init(content: comment)))
                     .catch { error in
                         let coordiError = error as! CoordiError
@@ -53,6 +56,7 @@ final class CommentViewModel: ViewModelType {
                     }
             }
             .subscribe(with: self) { owner, value in
+                input.commentText.accept("")
                 var data = comments.value
                 data.insert(value, at: 0)
                 comments.accept(data)

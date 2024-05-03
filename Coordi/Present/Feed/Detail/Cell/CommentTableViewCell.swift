@@ -8,37 +8,20 @@
 import UIKit
 import SnapKit
 
-final class CommentTableViewCell: UITableViewCell {
-    static var id: String {
-        return self.description()
-    }
-    
+final class CommentTableViewCell: BaseTableViewCell {    
     let profileImageView = CirCleImageView()
     let nicknameLabel = UILabel()
     let commentLabel = UILabel()
     let dateLabel = UILabel()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        configureHierarchy()
-        configureLayout()
-        configureView()
-    }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureHierarchy() {
+    override func configureHierarchy() {
         contentView.addSubview(profileImageView)
         contentView.addSubview(nicknameLabel)
         contentView.addSubview(commentLabel)
         contentView.addSubview(dateLabel)
     }
     
-    func configureLayout() {
+    override func configureLayout() {
         profileImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(15)
             make.size.equalTo(40)
@@ -62,7 +45,7 @@ final class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    func configureView() {        
+    override func configureView() {
         nicknameLabel.font = .caption
         nicknameLabel.textColor = .gray
         commentLabel.numberOfLines = 0
@@ -70,12 +53,13 @@ final class CommentTableViewCell: UITableViewCell {
         dateLabel.font = .caption
         dateLabel.textColor = .gray
         profileImageView.backgroundColor = .pointColor
+        
     }
     
     func configureCell(item: CommentModel) {
         commentLabel.text = item.content
         nicknameLabel.text = item.creator.nick
         profileImageView.loadImage(from: item.creator.profileImage)
-        dateLabel.text = item.createdAt.dateFormatString()
+        dateLabel.text = item.createdAt.timeFormatString()
     }
 }

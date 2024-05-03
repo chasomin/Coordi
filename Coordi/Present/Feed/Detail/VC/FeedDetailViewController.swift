@@ -98,21 +98,12 @@ final class FeedDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        output.requestFailureTrigger
+        output.failureTrigger
             .drive(with: self) { owner, errorText in
                 owner.showErrorToast(errorText)
             }
             .disposed(by: disposeBag)
         
-        output.refreshTokenFailure
-            .drive(with: self) { owner, _ in
-//                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-//                let sceneDelegate = windowScene?.delegate as? SceneDelegate
-//                sceneDelegate?.window?.rootViewController = LogInViewController()
-//                sceneDelegate?.window?.makeKeyAndVisible()
-            }
-            .disposed(by: disposeBag)
-
         output.postDeleteAction
             .drive(with: self) { owner, text in
                 owner.showCheckToast {

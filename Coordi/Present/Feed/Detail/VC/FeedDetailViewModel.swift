@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class FeedDetailViewModel: ViewModelType {
+final class FeedDetailViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     var postModel: BehaviorRelay<PostModel>
 
@@ -35,8 +35,7 @@ final class FeedDetailViewModel: ViewModelType {
     struct Output {
         let heartButtonTap: Driver<PostModel>
         let imageDoubleTap: Driver<PostModel>
-        let requestFailureTrigger: Driver<String>
-        let refreshTokenFailure: Driver<Void>
+        let failureTrigger: Driver<String>
 //        let postEditAction: Driver<PostModel>
         let postDeleteAction: Driver<String>
         let viewDidLoadTrigger: Driver<PostModel>
@@ -46,8 +45,7 @@ final class FeedDetailViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         let heartButtonTap = PublishRelay<PostModel>()
         let imageDoubleTap = PublishRelay<PostModel>()
-        let refreshTokenFailure = PublishRelay<Void>()
-        let requestFailureTrigger = PublishRelay<String>()
+        let failureTrigger = PublishRelay<String>()
         let postEditAction = PublishRelay<PostModel>()
         let postDeleteAction = PublishRelay<String>()
         let viewDidLoad = PublishRelay<PostModel>()
@@ -62,32 +60,26 @@ final class FeedDetailViewModel: ViewModelType {
 
         input.heartButtonTap
             .withLatestFrom(postModel)
-            .flatMap { postModel in
+            .withUnretained(self)
+            .flatMap { owner, postModel in
                 let likeStatus = postModel.likes.contains(UserDefaultsManager.userId)
                 
                 return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: !likeStatus)))
                     .catch { error in
-                        let coordiError = error as! CoordiError
-                        switch coordiError {
-                        case .accessTokenExpired:
-                            refreshTokenFailure.accept(())
-                        default:
-                            requestFailureTrigger.accept(coordiError.errorMessage)
-                        }
+                        guard let error = error as? CoordiError else { return Single<LikeModel>.never() }
+                        guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LikeModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<LikeModel>.never()
                     }
             }
             .withLatestFrom(postModel)
-            .flatMap { postModel in
+            .withUnretained(self)
+            .flatMap { owner, postModel in
                 return NetworkManager.request(api: .fetchParticularPost(postId: postModel.post_id))
                     .catch { error in
-                        let coordiError = error as! CoordiError
-                        switch coordiError {
-                        case .accessTokenExpired:
-                            refreshTokenFailure.accept(())
-                        default:
-                            requestFailureTrigger.accept(coordiError.errorMessage)
-                        }
+                        guard let error = error as? CoordiError else { return Single<PostModel>.never() }
+                        guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<PostModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<PostModel>.never()
                     }
             }
@@ -101,44 +93,35 @@ final class FeedDetailViewModel: ViewModelType {
         
         input.imageDoubleTap
             .withLatestFrom(postModel)
-            .flatMap { postModel in
+            .withUnretained(self)
+            .flatMap { owner, postModel in
                 if postModel.likes.contains(UserDefaultsManager.userId) {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: false)))
                         .catch { error in
-                            let coordiError = error as! CoordiError
-                            switch coordiError {
-                            case .accessTokenExpired:
-                                refreshTokenFailure.accept(())
-                            default:
-                                requestFailureTrigger.accept(coordiError.errorMessage)
-                            }
+                            guard let error = error as? CoordiError else { return Single<LikeModel>.never() }
+                            guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LikeModel>.never() }
+                            failureTrigger.accept(errorMessage)
                             return Single<LikeModel>.never()
                         }
                 } else {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: true)))
                         .catch { error in
                             let coordiError = error as! CoordiError
-                            switch coordiError {
-                            case .accessTokenExpired:
-                                refreshTokenFailure.accept(())
-                            default:
-                                requestFailureTrigger.accept(coordiError.errorMessage)
-                            }
+                            guard let error = error as? CoordiError else { return Single<LikeModel>.never() }
+                            guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LikeModel>.never() }
+                            failureTrigger.accept(errorMessage)
                             return Single<LikeModel>.never()
                         }
                 }
             }
             .withLatestFrom(postModel)
-            .flatMap { postModel in
+            .withUnretained(self)
+            .flatMap { owner, postModel in
                 return NetworkManager.request(api: .fetchParticularPost(postId: postModel.post_id))
                     .catch { error in
-                        let coordiError = error as! CoordiError
-                        switch coordiError {
-                        case .accessTokenExpired:
-                            refreshTokenFailure.accept(())
-                        default:
-                            requestFailureTrigger.accept(coordiError.errorMessage)
-                        }
+                        guard let error = error as? CoordiError else { return Single<PostModel>.never() }
+                        guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<PostModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<PostModel>.never()
                     }
             }
@@ -151,9 +134,13 @@ final class FeedDetailViewModel: ViewModelType {
         input.postDeleteAction
             .throttle(.seconds(5), scheduler: MainScheduler.instance)
             .withLatestFrom(postModel)
-            .flatMap { post in
+            .withUnretained(self)
+            .flatMap { owner, post in
                 let result = NetworkManager.request(api: .deletePost(postId: post.post_id))
                     .catch { error in
+                        guard let error = error as? CoordiError else { return Single<Bool>.never() }
+                        guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<Bool>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<Bool>.never()  //TODO: 삭제 두 번 요청됨
                     }
                 print("삭제 Viewmodel", result.values)
@@ -171,7 +158,7 @@ final class FeedDetailViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         input.popGesture
-            .debounce(.seconds(1), scheduler: MainScheduler.instance)
+            .debounce(.milliseconds(200), scheduler: MainScheduler.instance)
             .bind(with: self) { owner, _ in
                 owner.coordinator?.pop(animation: true)
             }
@@ -179,8 +166,9 @@ final class FeedDetailViewModel: ViewModelType {
         
         input.profileTap
             .bind(with: self) { owner, _ in
-                let myPageViewModel = MyPageViewModel(userId: owner.postModel.value.creator.user_id)
-                owner.coordinator?.push(MyPageViewController(viewModel: myPageViewModel), animation: true)
+                let vm = MyPageViewModel(userId: owner.postModel.value.creator.user_id)
+                vm.coordinator = owner.coordinator
+                owner.coordinator?.push(MyPageViewController(viewModel: vm), animation: true)
             }
             .disposed(by: disposeBag)
         
@@ -215,8 +203,7 @@ final class FeedDetailViewModel: ViewModelType {
         
         return Output.init(heartButtonTap: heartButtonTap.asDriver(onErrorJustReturn: .dummy),
                            imageDoubleTap: imageDoubleTap.asDriver(onErrorJustReturn: .dummy),
-                           requestFailureTrigger: requestFailureTrigger.asDriver(onErrorJustReturn: ""),
-                           refreshTokenFailure: refreshTokenFailure.asDriver(onErrorJustReturn: ()),
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
 //                           postEditAction: <#T##Driver<PostModel>#>,
                            postDeleteAction: postDeleteAction.asDriver(onErrorJustReturn: ""),
                            viewDidLoadTrigger: viewDidLoad.asDriver(onErrorJustReturn: .dummy), 

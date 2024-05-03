@@ -66,7 +66,6 @@ struct NetworkManager {
                         }
                     }
             } catch {
-//                single(.failure(CoordiError.unknownError))
             }
             return Disposables.create()
         }
@@ -200,32 +199,19 @@ struct NetworkManager {
 }
 
 
-enum CoordiError: /*String,*/ Error {
-    case withoutKey// = "SeSAC Memolease Only"
-    
-//    case noRequiredValue// = "필수 값을 채워주세요"
-    case invalidRequest(kind: Router)// = "잘못된 요청"
-    
-//    case checkAccount// = "계정을 확인해주세요"
-    case unauthenticatedToken(kind: Router)// = "인증할 수 없는 토큰"
-    
-    case forbidden //= "접근권한 없음"
-    
-    case alreadySubscribed// = "이미 가입된 계정"
-    
-    case creationFailed// = "생성 실페"
-    
-    case refreshTokenExpired //= "refresh토큰 만료 다시 로그인"
-    
-    case accessTokenExpired// = "accessToken 만료"
-    
-    case overCall //= "과호출"
-    
-    case invalidURL// = "비정상 URL"
-    
-    case haveNoAuthority// = "다른 사람의 게시글,댓글에 접근"//445
-    
-    case unknownError// = "알 수 없는 오류"
+enum CoordiError: Error {
+    case withoutKey
+    case invalidRequest(kind: Router)
+    case unauthenticatedToken(kind: Router)
+    case forbidden
+    case alreadySubscribed
+    case creationFailed
+    case refreshTokenExpired
+    case accessTokenExpired
+    case overCall
+    case invalidURL
+    case haveNoAuthority
+    case unknownError
     
     var errorMessage: String {
         switch self {
@@ -236,11 +222,11 @@ enum CoordiError: /*String,*/ Error {
             case .signUp, .emailValidation, .logIn:
                 "필수 값을 채워주세요"
             case .uploadImage, .editProfileImage:
-                "이미지 용량이 커요"
+                "5MB 미만 이미지만 가능해요"
             case .uploadComment, .editComment:
                 "댓글 내용을 채워주세요"
             case .like, .follow, .hashtag, .fetchPost, .fetchParticularPost, .fetchPostByUser, .fetchLikePost:
-                "잘못된 요청"
+                "잘못된 요청이에요"
             default:
                 ""
             }
@@ -249,24 +235,24 @@ enum CoordiError: /*String,*/ Error {
             case .logIn:
                 "계정을 확인해주세요"
             default:
-                "인증할 수 없는 토큰"
+                "다시 로그인해주세요"
             }
         case .forbidden:                        // 403
-            "접근권한 없음"
+            "접근권한이 없어요"
         case .alreadySubscribed:                // 409
-            "이미 가입된 계정"
+            "이미 가입된 계정이에요"
         case .creationFailed:                   // 410, 저장수정삭제
             "생성 실패"
         case .refreshTokenExpired:              // 418
-            "refresh토큰 만료 다시 로그인"
+            "다시 로그인해주세요"
         case .accessTokenExpired:               // 419
             "accessToken 만료"
         case .overCall:                         // 429
-            "과호출"
+            "잠시후에 다시 시도해주세요"
         case .invalidURL:                       // 444
             "비정상 URL"
         case .haveNoAuthority:                  // 445
-            "다른 사람의 게시글,댓글에 접근"
+            "다른 사용자 글은 접근권한이 없어요"
         case .unknownError:                     // 500
             "오류가 발생했어요"
         }

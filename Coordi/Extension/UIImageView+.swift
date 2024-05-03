@@ -17,7 +17,7 @@ extension UIImageView {
             request.setValue(APIKey.key.rawValue, forHTTPHeaderField: HTTPHeader.sesacKey.rawValue)
             return request
         }
-        self.kf.setImage(with: url, placeholder: placeHolderImage, options: [.requestModifier(modifier), .forceRefresh]) { result in
+        self.kf.setImage(with: url, placeholder: placeHolderImage, options: [.requestModifier(modifier)]) { result in
             switch result {
             case .success(let imageResult):
                 let resizedImage = imageResult.image.resize(newWidth: 150)

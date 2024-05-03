@@ -81,6 +81,9 @@ final class CreatePostViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         contentTextView.rx.text.orEmpty
+            .map {
+                return $0 == Constants.TextViewPlaceholder.createPost.rawValue ? "" : $0
+            }
             .bind(to: input.content)
             .disposed(by: disposeBag)
         
@@ -104,6 +107,7 @@ final class CreatePostViewController: BaseViewController {
                     owner.popTrigger.accept(())
                 }
                 owner.saveButton.configuration?.showsActivityIndicator = false
+                owner.view.endEditing(true)
             }
             .disposed(by: disposeBag)
         
@@ -212,7 +216,7 @@ final class CreatePostViewController: BaseViewController {
         
         imageCollectionView.showsHorizontalScrollIndicator = false
                 
-        tempTitleLabel.text = "이 코디와 함께 한 날의 온도는 어땠나요?"
+        tempTitleLabel.text = Constants.TextViewPlaceholder.createPost.rawValue
         tempTitleLabel.font = .boldBody
 
         tempLabel.text = "℃"

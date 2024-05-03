@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class GeneralSettingViewModel: ViewModelType {
+final class GeneralSettingViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
     weak var coordinator: Coordinator?
@@ -23,17 +23,20 @@ final class GeneralSettingViewModel: ViewModelType {
     struct Output {
         let profile: Driver<ProfileModel>
         let withdrawTap: Driver<Void>
+        let failureTrigger: Driver<String>
     }
     
     func transform(input: Input) -> Output {
         let profileModel = PublishRelay<ProfileModel>()
+        let failureTrigger = PublishRelay<String>()
         
         input.viewDidLoadTrigger
-            .flatMap { _ in
+            .withUnretained(self)
+            .flatMap { owner, _ in
                 NetworkManager.request(api: .fetchMyProfile)
                     .catch { error in
-                        guard let error = error as? CoordiError else { return Single<ProfileModel>.never()}
-                        //
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<ProfileModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<ProfileModel>.never()
                     }
             }
@@ -43,11 +46,12 @@ final class GeneralSettingViewModel: ViewModelType {
             .disposed(by: disposeBag)
                 
         input.withdrawAlertOKTap
-            .flatMap { _ in
+            .withUnretained(self)
+            .flatMap { owner, _ in
                 NetworkManager.request(api: .withdraw)
                     .catch { error in
-                        guard let error = error as? CoordiError else { return Single<WithdrawModel>.never()}
-                        //
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<WithdrawModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<WithdrawModel>.never()
                     }
             }
@@ -60,6 +64,7 @@ final class GeneralSettingViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         return Output.init(profile: profileModel.asDriver(onErrorJustReturn: .dummy),
-                           withdrawTap: input.withdrawTap.asDriver(onErrorJustReturn: ()))
+                           withdrawTap: input.withdrawTap.asDriver(onErrorJustReturn: ()),
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""))
     }
 }

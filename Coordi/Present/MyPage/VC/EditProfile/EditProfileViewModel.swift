@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class EditProfileViewModel: ViewModelType {
+final class EditProfileViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
     weak var coordinator: Coordinator?
@@ -34,14 +34,14 @@ final class EditProfileViewModel: ViewModelType {
         let viewDidLoadTrigger: Driver<(String,String)>
         let imageTap: Driver<Void>
         let imagePickerFinishPicking: Driver<String>
-        let failureTrigger: Driver<Void>
+        let failureTrigger: Driver<String>
         let changeNick: Driver<String>
     }
     
     func transform(input: Input) -> Output {
         let viewDidLoadTrigger = PublishRelay<(String, String)>()
         let imagePickerFinishPicking = PublishRelay<String>()
-        let failureTrigger = PublishRelay<Void>()
+        let failureTrigger = PublishRelay<String>()
         let changeNick = PublishRelay<String>()
         
         input.viewDidLoadTrigger
@@ -55,10 +55,12 @@ final class EditProfileViewModel: ViewModelType {
             .map { image in
                 return ProfileImageQuery(profile: image)
             }
-            .flatMap { profileQuery in
+            .withUnretained(self)
+            .flatMap { owner, profileQuery in
                 NetworkManager.upload(api: .editProfileImage(query: profileQuery))
                     .catch { error in
-                        failureTrigger.accept(())
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<ProfileModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<ProfileModel>.never()
                     }
             }
@@ -96,7 +98,7 @@ final class EditProfileViewModel: ViewModelType {
         return Output.init(viewDidLoadTrigger: viewDidLoadTrigger.asDriver(onErrorJustReturn: ("", "")),
                            imageTap: input.imageTap.asDriver(onErrorJustReturn: ()),
                            imagePickerFinishPicking: imagePickerFinishPicking.asDriver(onErrorJustReturn: ""),
-                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()), 
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""), 
                            changeNick: changeNick.asDriver(onErrorJustReturn: ""))
     }
 }

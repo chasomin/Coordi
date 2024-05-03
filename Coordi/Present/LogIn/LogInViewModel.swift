@@ -9,9 +9,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class LogInViewModel: ViewModelType {
+final class LogInViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
-    weak var coordinator: LoginCoordinator?
+    weak var coordinator: Coordinator?
     
     struct Input {
         let emailText: PublishRelay<String>
@@ -48,11 +48,13 @@ final class LogInViewModel: ViewModelType {
         input.logInButtonTap
             .throttle(.seconds(2), scheduler: MainScheduler.instance)
             .withLatestFrom(logInQuery)
-            .flatMap { logInQuery in
+            .withUnretained(self)
+            .flatMap { owner, logInQuery in
                 NetworkManager.request(api: .logIn(query: logInQuery))
                     .catch { error in
                         guard let error = error as? CoordiError else { return Single<LogInModel>.never() }
-                        failureTrigger.accept(error.errorMessage)
+                        guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LogInModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<LogInModel>.never()
                     }
             }

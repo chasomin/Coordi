@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class EditNicknameViewModel: ViewModelType {
+final class EditNicknameViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
     weak var coordinator: Coordinator?
@@ -28,7 +28,7 @@ final class EditNicknameViewModel: ViewModelType {
     
     struct Output {
         let viewDidLoadTrigger: Driver<String>
-        let failureTrigger: Driver<Void>
+        let failureTrigger: Driver<String>
         let nicknameValidation: Driver<Bool>
         let validationText: Driver<String>
     }
@@ -37,7 +37,7 @@ final class EditNicknameViewModel: ViewModelType {
         let viewDidLoadTrigger = PublishRelay<String>()
         let validationText = PublishRelay<String>()
         let nicknameValidation = PublishRelay<Bool>()
-        let failureTrigger = PublishRelay<Void>()
+        let failureTrigger = PublishRelay<String>()
         
         input.viewDidLoadTrigger
             .bind(with: self) { owner, _ in
@@ -72,10 +72,12 @@ final class EditNicknameViewModel: ViewModelType {
             .map { nick in
                 return ProfileNickQuery(nick: nick)
             }
-            .flatMap { nick in
+            .withUnretained(self)
+            .flatMap { owner, nick in
                 NetworkManager.upload(api: .editProfileNick(query: nick))
-                    .catch { _ in
-                        failureTrigger.accept(())
+                    .catch { error in
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<ProfileModel>.never() }
+                        failureTrigger.accept(errorMessage)
                         return Single<ProfileModel>.never()
                     }
             }
@@ -86,7 +88,7 @@ final class EditNicknameViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         return Output.init(viewDidLoadTrigger: viewDidLoadTrigger.asDriver(onErrorJustReturn: ""),
-                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ()),
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
                            nicknameValidation: nicknameValidation.asDriver(onErrorJustReturn: false),
                            validationText: validationText.asDriver(onErrorJustReturn: ""))
     }

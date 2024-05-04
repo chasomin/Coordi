@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		790040C62BE4B00E00FA40B9 /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040C52BE4B00E00FA40B9 /* CircleButton.swift */; };
+		790040C92BE6AD7700FA40B9 /* ShopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040C82BE6AD7700FA40B9 /* ShopViewController.swift */; };
+		790040CB2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040CA2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift */; };
+		790040CD2BE6C4BB00FA40B9 /* ShopViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040CC2BE6C4BB00FA40B9 /* ShopViewModel.swift */; };
+		790040CF2BE6D88A00FA40B9 /* ShopDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */; };
+		790040D12BE6E6A700FA40B9 /* ShopDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */; };
 		79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B472BC9135C000B4E4B /* AppDelegate.swift */; };
 		79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B492BC9135C000B4E4B /* SceneDelegate.swift */; };
 		79553B4F2BC9135C000B4E4B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 79553B4E2BC9135C000B4E4B /* Base */; };
@@ -124,6 +129,11 @@
 
 /* Begin PBXFileReference section */
 		790040C52BE4B00E00FA40B9 /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
+		790040C82BE6AD7700FA40B9 /* ShopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewController.swift; sourceTree = "<group>"; };
+		790040CA2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCollectionViewCell.swift; sourceTree = "<group>"; };
+		790040CC2BE6C4BB00FA40B9 /* ShopViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewModel.swift; sourceTree = "<group>"; };
+		790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailViewController.swift; sourceTree = "<group>"; };
+		790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailViewModel.swift; sourceTree = "<group>"; };
 		79553B442BC9135C000B4E4B /* Coordi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coordi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79553B472BC9135C000B4E4B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		79553B492BC9135C000B4E4B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -252,6 +262,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		790040C72BE6AD1C00FA40B9 /* Shop */ = {
+			isa = PBXGroup;
+			children = (
+				790040C82BE6AD7700FA40B9 /* ShopViewController.swift */,
+				790040CC2BE6C4BB00FA40B9 /* ShopViewModel.swift */,
+				790040CA2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift */,
+				790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */,
+				790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */,
+			);
+			path = Shop;
+			sourceTree = "<group>";
+		};
 		79553B3B2BC9135C000B4E4B = {
 			isa = PBXGroup;
 			children = (
@@ -541,6 +563,7 @@
 				79937A172BD94D370063A2CE /* Search */,
 				79B044152BCFF3FC00407A1F /* Create */,
 				79B043EB2BCE8F6A00407A1F /* MyPage */,
+				790040C72BE6AD1C00FA40B9 /* Shop */,
 			);
 			path = Present;
 			sourceTree = "<group>";
@@ -710,6 +733,7 @@
 				7986044C2BD52A40003E721E /* FeedDetailImageCollectionViewCell.swift in Sources */,
 				79553B652BC93984000B4E4B /* SignUpQuery.swift in Sources */,
 				798604402BD43194003E721E /* EditNicknameViewModel.swift in Sources */,
+				790040CB2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift in Sources */,
 				79EBA4EB2BCD310000C3C530 /* UIFont+.swift in Sources */,
 				79EBA4ED2BCD54A000C3C530 /* NetworkManager.swift in Sources */,
 				79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */,
@@ -724,8 +748,10 @@
 				7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */,
 				79937ACA2BE2178A0063A2CE /* LoginCoordinator.swift in Sources */,
 				79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */,
+				790040CD2BE6C4BB00FA40B9 /* ShopViewModel.swift in Sources */,
 				79B043F22BCE9DB100407A1F /* MyPageViewController.swift in Sources */,
 				79EBA4E92BCD297900C3C530 /* PointButton.swift in Sources */,
+				790040D12BE6E6A700FA40B9 /* ShopDetailViewModel.swift in Sources */,
 				79937AA12BDFA4D20063A2CE /* AllFeedViewController.swift in Sources */,
 				79937AAD2BE0112E0063A2CE /* SettingViewModel.swift in Sources */,
 				798604352BD293FA003E721E /* APIMonitor.swift in Sources */,
@@ -743,6 +769,7 @@
 				79B043FA2BCECD8D00407A1F /* FeedCollectionViewCell.swift in Sources */,
 				79937A292BDBC5560063A2CE /* FollowingFeedCollectionViewCell.swift in Sources */,
 				798604052BD10EB0003E721E /* EditProfileViewModel.swift in Sources */,
+				790040C92BE6AD7700FA40B9 /* ShopViewController.swift in Sources */,
 				79937ACC2BE225800063A2CE /* FeedCoordinator.swift in Sources */,
 				79EBA4E02BCD1C2900C3C530 /* ViewModelType.swift in Sources */,
 				79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */,
@@ -755,6 +782,7 @@
 				798604382BD29DBA003E721E /* Constants.swift in Sources */,
 				79EBA4DA2BCD174500C3C530 /* BaseViewController.swift in Sources */,
 				798604312BD2539F003E721E /* CreatePostViewModel.swift in Sources */,
+				790040CF2BE6D88A00FA40B9 /* ShopDetailViewController.swift in Sources */,
 				798604112BD17366003E721E /* CreateImageCollectionViewCell.swift in Sources */,
 				79EBA4E72BCD287B00C3C530 /* BaseView.swift in Sources */,
 				79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */,

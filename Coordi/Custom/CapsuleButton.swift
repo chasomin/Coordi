@@ -11,12 +11,17 @@ final class CapsuleButton: UIButton {
     private let text: String
     private let textColor: UIColor
     private let backColor: UIColor
-    private var config = UIButton.Configuration.filled()
+    private let isPointButton: Bool?
 
-    init(text: String, textColor: UIColor, backColor: UIColor, font: UIFont) {
+    lazy var config = isPointButton! ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
+
+    
+    
+    init(text: String, textColor: UIColor, backColor: UIColor, font: UIFont, isPointButton: Bool? = true) {
         self.text = text
         self.textColor = textColor
         self.backColor = backColor
+        self.isPointButton = isPointButton
         
         super.init(frame: .zero)
         

@@ -10,12 +10,15 @@ import RxSwift
 
 enum TabBar: CaseIterable {
     case Feed
+    case Shop
     case MyPage
     
     var title: String {
         switch self {
         case .Feed:
             "피드 모아보기"
+        case .Shop:
+            "쇼핑"
         case .MyPage:
             "내 피드"
         }
@@ -25,6 +28,8 @@ enum TabBar: CaseIterable {
         switch self {
         case .Feed:
             UIImage(systemName: "tshirt")
+        case.Shop:
+            UIImage(systemName: "tag")
         case .MyPage:
             UIImage(systemName: "person")
         }

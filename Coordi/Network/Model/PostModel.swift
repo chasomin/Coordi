@@ -32,7 +32,19 @@ struct PostModel: Decodable, Hashable {
     }
     
     var tempNum: Int {
-        Int(content.dropFirst()) ?? 0
+        let count = hashTags.count
+        let temp = hashTags[count / 2]
+        return Int(temp) ?? 0
+    }
+    
+    var brand: String {
+        return hashTags.first ?? ""
+    }
+    
+    var price: String {
+        let price = Int(content2) ?? 0
+        let formattedPrice = price.formatted()
+        return "\(formattedPrice)원"
     }
     
     enum CodingKeys: CodingKey {

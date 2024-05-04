@@ -9,6 +9,7 @@ import Foundation
 
 enum Constants {
     static var productId = "CoordiFeed"
+    static var shopProductId = "CoordiShop"
     
     enum NavigationTitle {
         case feed
@@ -19,7 +20,8 @@ enum Constants {
         case editNickname
         case loginInformation
         case likeFeeds
-        
+        case editPost
+
         var title: String {
             switch self {
             case .feed:
@@ -38,6 +40,8 @@ enum Constants {
                 "로그인 정보"
             case .likeFeeds:
                 "좋아요한 게시글"
+            case .editPost:
+                "수정하기"
             }
         }
     }

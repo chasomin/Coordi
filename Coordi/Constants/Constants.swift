@@ -10,6 +10,8 @@ import Foundation
 enum Constants {
     static var productId = "CoordiFeed"
     static var shopProductId = "CoordiShop"
+    static var appScheme = "coordi"
+    static var payUserCode = "imp57573124"
     
     enum NavigationTitle {
         case feed
@@ -46,8 +48,15 @@ enum Constants {
         }
     }
     
-    enum Temp: CaseIterable {
+    enum TitleLabel: String {
+        case createTemp
         
+        var title: String {
+            switch self {
+            case .createTemp:
+                "이 코디와 함께한 날의 온도는 어땠나요?"
+            }
+        }
         
     }
     

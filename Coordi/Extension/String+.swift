@@ -30,14 +30,14 @@ extension String {
         guard let hour = offsetComps.hour else { return "" }
         guard let day = offsetComps.day else { return "" }
         
-        if day == 0 && hour == 0 && minute == 0 {
-            return "\(second)초 전"
-        } else if day == 0 && hour == 0 {
-            return "\(minute)분 전"
-        } else if day == 0 {
-            return "\(hour)시간 전"
-        } else {
+        if day != 0 {
             return "\(day)일 전"
+        } else if hour != 0 {
+            return "\(hour)시간 전"
+        } else if minute != 0 {
+            return "\(minute)분 전"
+        } else {
+            return "\(second)초 전"
         }
     }
 

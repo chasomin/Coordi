@@ -31,7 +31,7 @@ final class TabBarCoordinator: Coordinator {
         
         // 네비게이션 컨트롤러마다 코디네이터 연결하기
         TabBar.allCases.enumerated().forEach { index, page in
-            서브코디네이터연결(page: page, navigationVC: viewControllers[index])
+            connectSubCoordinator(page: page, navigationVC: viewControllers[index])
         }
         
         // 탭바 페이지 리스트에 네비게이션 리스트 할당하기
@@ -41,7 +41,7 @@ final class TabBarCoordinator: Coordinator {
         push(tabBar, animation: false)
     }
     
-    private func 서브코디네이터연결(page: TabBar, navigationVC: UINavigationController) {
+    private func connectSubCoordinator(page: TabBar, navigationVC: UINavigationController) {
         
         switch page {
         case .Feed:
@@ -50,11 +50,17 @@ final class TabBarCoordinator: Coordinator {
             feedCoordinator.start()
             addChild(feedCoordinator)
             
+        case .Shop:
+            let shopCoordinator = ShopCoordinator(navigationVC)
+            shopCoordinator.delegate = self
+            shopCoordinator.start()
+            addChild(shopCoordinator)
         case .MyPage:
             let myPageCoordinator = MyPageCoordinator(navigationVC)
             myPageCoordinator.delegate = self
             myPageCoordinator.start()
             addChild(myPageCoordinator)
+            
         }
     }
 }

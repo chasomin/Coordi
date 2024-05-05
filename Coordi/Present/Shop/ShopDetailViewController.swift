@@ -48,8 +48,23 @@ final class ShopDetailViewController: BaseViewController {
     }
 
     override func bind() {
-        let input = ShopDetailViewModel.Input(reloadData: reloadData)
+        let input = ShopDetailViewModel.Input(reloadData: reloadData, 
+                                              purchaseButtonTap: .init(),
+                                              shoppingBagButtonTap: .init(),
+                                              bookmarkTap: .init())
         let output = viewModel.transform(input: input)
+        
+        shoppingBagButton.rx.tap
+            .bind(to: input.shoppingBagButtonTap)
+            .disposed(by: disposeBag)
+        
+        purchaseButton.rx.tap
+            .bind(to: input.purchaseButtonTap)
+            .disposed(by: disposeBag)
+        
+        bookmarkButton.rx.tap
+            .bind(to: input.bookmarkTap)
+            .disposed(by: disposeBag)
         
         output.product
             .drive(with: self) { owner, product in
@@ -58,7 +73,25 @@ final class ShopDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        //
+        output.putItInSuccessTrigger
+            .drive(with: self) { owner, _ in
+                owner.showCheckToast { }
+            }
+            .disposed(by: disposeBag)
+        
+        output.failureTrigger
+            .drive(with: self) { owner, text in
+                owner.showErrorToast(text)
+            }
+            .disposed(by: disposeBag)
+        
+        output.bookmarkSuccessTrigger
+            .drive(with: self) { owner, like in
+                let booked = UIImage(systemName: "bookmark.fill")?.setConfiguration(font: .largeTitle)
+                let unbooked = UIImage(systemName: "bookmark")?.setConfiguration(font: .largeTitle)
+                like.like_status ? owner.bookmarkButton.setImage(booked, for: .normal) : owner.bookmarkButton.setImage(unbooked, for: .normal)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureHierarchy() {

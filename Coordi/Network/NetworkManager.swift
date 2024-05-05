@@ -227,6 +227,8 @@ enum CoordiError: Error {
                 "댓글 내용을 채워주세요"
             case .like, .follow, .hashtag, .fetchPost, .fetchParticularPost, .fetchPostByUser, .fetchLikePost:
                 "잘못된 요청이에요"
+            case .paymentValid:
+                "유효하지 않은 결제건입니다"
             default:
                 ""
             }

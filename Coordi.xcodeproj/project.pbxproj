@@ -13,6 +13,7 @@
 		790040CD2BE6C4BB00FA40B9 /* ShopViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040CC2BE6C4BB00FA40B9 /* ShopViewModel.swift */; };
 		790040CF2BE6D88A00FA40B9 /* ShopDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */; };
 		790040D12BE6E6A700FA40B9 /* ShopDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */; };
+		790040D32BE6F33500FA40B9 /* ShopCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D22BE6F33500FA40B9 /* ShopCoordinator.swift */; };
 		79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B472BC9135C000B4E4B /* AppDelegate.swift */; };
 		79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B492BC9135C000B4E4B /* SceneDelegate.swift */; };
 		79553B4F2BC9135C000B4E4B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 79553B4E2BC9135C000B4E4B /* Base */; };
@@ -134,6 +135,7 @@
 		790040CC2BE6C4BB00FA40B9 /* ShopViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewModel.swift; sourceTree = "<group>"; };
 		790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailViewController.swift; sourceTree = "<group>"; };
 		790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailViewModel.swift; sourceTree = "<group>"; };
+		790040D22BE6F33500FA40B9 /* ShopCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCoordinator.swift; sourceTree = "<group>"; };
 		79553B442BC9135C000B4E4B /* Coordi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coordi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79553B472BC9135C000B4E4B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		79553B492BC9135C000B4E4B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 		790040C72BE6AD1C00FA40B9 /* Shop */ = {
 			isa = PBXGroup;
 			children = (
+				790040D22BE6F33500FA40B9 /* ShopCoordinator.swift */,
 				790040C82BE6AD7700FA40B9 /* ShopViewController.swift */,
 				790040CC2BE6C4BB00FA40B9 /* ShopViewModel.swift */,
 				790040CA2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift */,
@@ -736,6 +739,7 @@
 				790040CB2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift in Sources */,
 				79EBA4EB2BCD310000C3C530 /* UIFont+.swift in Sources */,
 				79EBA4ED2BCD54A000C3C530 /* NetworkManager.swift in Sources */,
+				790040D32BE6F33500FA40B9 /* ShopCoordinator.swift in Sources */,
 				79EBA4792BCAD09800C3C530 /* PostModel.swift in Sources */,
 				79B044002BCECE6F00407A1F /* UICollectionViewCell+.swift in Sources */,
 				79EBA46D2BCACC2F00C3C530 /* SignUpModel.swift in Sources */,

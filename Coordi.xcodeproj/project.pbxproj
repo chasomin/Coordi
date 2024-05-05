@@ -17,6 +17,9 @@
 		790040D52BE77B8900FA40B9 /* PaymentValidQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D42BE77B8900FA40B9 /* PaymentValidQuery.swift */; };
 		790040DD2BE77E6600FA40B9 /* PaymentValidModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040DC2BE77E6600FA40B9 /* PaymentValidModel.swift */; };
 		790040DF2BE77F1400FA40B9 /* PaymentListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */; };
+		790040E22BE7842B00FA40B9 /* iamport-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 790040E12BE7842B00FA40B9 /* iamport-ios */; };
+		790040E42BE788BC00FA40B9 /* PaymentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040E32BE788BC00FA40B9 /* PaymentViewController.swift */; };
+		790040E62BE7893B00FA40B9 /* PaymentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040E52BE7893B00FA40B9 /* PaymentViewModel.swift */; };
 		79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B472BC9135C000B4E4B /* AppDelegate.swift */; };
 		79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B492BC9135C000B4E4B /* SceneDelegate.swift */; };
 		79553B4F2BC9135C000B4E4B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 79553B4E2BC9135C000B4E4B /* Base */; };
@@ -142,6 +145,8 @@
 		790040D42BE77B8900FA40B9 /* PaymentValidQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentValidQuery.swift; sourceTree = "<group>"; };
 		790040DC2BE77E6600FA40B9 /* PaymentValidModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentValidModel.swift; sourceTree = "<group>"; };
 		790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentListModel.swift; sourceTree = "<group>"; };
+		790040E32BE788BC00FA40B9 /* PaymentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentViewController.swift; sourceTree = "<group>"; };
+		790040E52BE7893B00FA40B9 /* PaymentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentViewModel.swift; sourceTree = "<group>"; };
 		79553B442BC9135C000B4E4B /* Coordi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coordi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79553B472BC9135C000B4E4B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		79553B492BC9135C000B4E4B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -256,6 +261,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				790040E22BE7842B00FA40B9 /* iamport-ios in Frameworks */,
 				79EBA4D52BCD16B900C3C530 /* RxCocoa in Frameworks */,
 				79937A302BDEA7290063A2CE /* Tabman in Frameworks */,
 				79EBA48A2BCAEA7B00C3C530 /* Alamofire in Frameworks */,
@@ -279,6 +285,8 @@
 				790040CA2BE6BB5800FA40B9 /* ShopCollectionViewCell.swift */,
 				790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */,
 				790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */,
+				790040E32BE788BC00FA40B9 /* PaymentViewController.swift */,
+				790040E52BE7893B00FA40B9 /* PaymentViewModel.swift */,
 			);
 			path = Shop;
 			sourceTree = "<group>";
@@ -674,6 +682,7 @@
 				79EBA4F22BCD8BC800C3C530 /* IQKeyboardManagerSwift */,
 				7986040C2BD134DA003E721E /* Kingfisher */,
 				79937A2F2BDEA7290063A2CE /* Tabman */,
+				790040E12BE7842B00FA40B9 /* iamport-ios */,
 			);
 			productName = Coordi;
 			productReference = 79553B442BC9135C000B4E4B /* Coordi.app */;
@@ -711,6 +720,7 @@
 				79EBA4F12BCD8BC700C3C530 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 				7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				79937A2E2BDEA7290063A2CE /* XCRemoteSwiftPackageReference "Tabman" */,
+				790040E02BE7842B00FA40B9 /* XCRemoteSwiftPackageReference "iamport-ios" */,
 			);
 			productRefGroup = 79553B452BC9135C000B4E4B /* Products */;
 			projectDirPath = "";
@@ -786,6 +796,7 @@
 				79937ACC2BE225800063A2CE /* FeedCoordinator.swift in Sources */,
 				79EBA4E02BCD1C2900C3C530 /* ViewModelType.swift in Sources */,
 				79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */,
+				790040E42BE788BC00FA40B9 /* PaymentViewController.swift in Sources */,
 				79553B692BC93A51000B4E4B /* LogInQuery.swift in Sources */,
 				79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */,
 				790040DD2BE77E6600FA40B9 /* PaymentValidModel.swift in Sources */,
@@ -814,6 +825,7 @@
 				79937A2D2BDD72850063A2CE /* CommentViewModel.swift in Sources */,
 				79937AD22BE2AC360063A2CE /* GeneralSettingViewController.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
+				790040E62BE7893B00FA40B9 /* PaymentViewModel.swift in Sources */,
 				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
 				790040D52BE77B8900FA40B9 /* PaymentValidQuery.swift in Sources */,
 				79937A202BDA53F50063A2CE /* FollowFeedViewModel.swift in Sources */,
@@ -1088,6 +1100,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		790040E02BE7842B00FA40B9 /* XCRemoteSwiftPackageReference "iamport-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iamport/iamport-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.1;
+			};
+		};
 		7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -1147,6 +1167,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		790040E12BE7842B00FA40B9 /* iamport-ios */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 790040E02BE7842B00FA40B9 /* XCRemoteSwiftPackageReference "iamport-ios" */;
+			productName = "iamport-ios";
+		};
 		7986040C2BD134DA003E721E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */;

@@ -1,5 +1,5 @@
 {
-  "originHash" : "bce9a7518d2ba6363455542883098b23a23a2748dd915345868949afa1112893",
+  "originHash" : "87d6cf28ff1e9c0de2d3cdabed54f3bb5426a786c880df88fd11d9d4495c4840",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
         "version" : "5.9.1"
+      }
+    },
+    {
+      "identity" : "iamport-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iamport/iamport-ios",
+      "state" : {
+        "revision" : "133390ff3debd85a10160b9041f9c8147cea1e32",
+        "version" : "1.4.1"
       }
     },
     {
@@ -38,6 +47,15 @@
       }
     },
     {
+      "identity" : "rxbus-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iamport/RxBus-Swift",
+      "state" : {
+        "revision" : "24458425acf1da825a8e7587231052cef90c3a6b",
+        "version" : "1.3.5"
+      }
+    },
+    {
       "identity" : "rxswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ReactiveX/RxSwift.git",
@@ -62,6 +80,15 @@
       "state" : {
         "revision" : "3b2213290eb93e55bb50b49d1a179033005c11ab",
         "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "then",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/devxoul/Then.git",
+      "state" : {
+        "revision" : "e421a7b3440a271834337694e6050133a3958bc7",
+        "version" : "2.7.0"
       }
     },
     {

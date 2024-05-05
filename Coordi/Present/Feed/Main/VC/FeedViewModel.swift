@@ -27,7 +27,7 @@ final class FeedViewModel: CoordinatorViewModelType {
         let tempText = PublishRelay<String>()
 
         input.temp
-            .map { "현재 \(Int($0))℃" }
+            .map { "현재 \(Int($0))℃ 이 코디를 추천해요!" }
             .bind(to: tempText)
             .disposed(by: disposeBag)
         

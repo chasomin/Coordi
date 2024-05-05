@@ -12,7 +12,13 @@ import RxCocoa
 final class CreatePostViewModel: CoordinatorViewModelType {
     let disposeBag = DisposeBag()
     
+    private let postModel: PostModel?
+    
     weak var coordinator: Coordinator?
+    
+    init(postModel: PostModel? = nil) {
+        self.postModel = postModel
+    }
     
     struct Input {
         let imagePlusButtonTap: Observable<Void>
@@ -27,6 +33,7 @@ final class CreatePostViewModel: CoordinatorViewModelType {
     }
     
     struct Output {
+        let editPost: Driver<PostModel?>
         let imagePlusButtonTap: Driver<Void>
         let saveButtonTap: Driver<Void>
         let buttonEnable: Driver<Bool>
@@ -81,7 +88,7 @@ final class CreatePostViewModel: CoordinatorViewModelType {
         
         Observable.combineLatest(input.imageData, input.temp, input.content)
             .map { value in
-                let (image, temp, content) = value
+                let (image, _, content) = value
                 return !image.isEmpty && !content.isEmpty
             }
             .subscribe { value in
@@ -140,7 +147,10 @@ final class CreatePostViewModel: CoordinatorViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output.init(imagePlusButtonTap: input.imagePlusButtonTap.asDriver(onErrorJustReturn: ()),
+
+        
+        return Output.init(editPost: Observable.just(postModel).asDriver(onErrorJustReturn: .dummy),
+                           imagePlusButtonTap: input.imagePlusButtonTap.asDriver(onErrorJustReturn: ()),
                            saveButtonTap: saveButtonTap.asDriver(onErrorJustReturn: ()),
                            buttonEnable: saveButtonEnable.asDriver(onErrorJustReturn: false),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),

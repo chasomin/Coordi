@@ -116,8 +116,8 @@ final class CreatePostViewController: BaseViewController {
             .disposed(by: disposeBag)
 
         output.failureTrigger
-            .drive(with: self) { owner, _ in
-                owner.showErrorToast("⚠️")
+            .drive(with: self) { owner, text in
+                owner.showErrorToast(text)
             }
             .disposed(by: disposeBag)
         
@@ -141,6 +141,30 @@ final class CreatePostViewController: BaseViewController {
                     owner.contentTextView.textColor = .LabelColor
                 }
             })
+            .disposed(by: disposeBag)
+        
+        output.editPost
+            .drive(with: self) { owner, post in
+                guard let post else { return }
+//                let tempValue = post.tempNum
+//                owner.tempPicker.selectRow(owner.temp.firstIndex(of: tempValue) ?? 0, inComponent: 0, animated: true)
+//                owner.contentTextView.text = post.content1
+//                owner.navigationItem.title = Constants.NavigationTitle.editPost.title
+//                
+//                post.files.forEach { image in
+//                    guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + image) else { return }
+//                    KingfisherManager.shared.retrieveImage(with: url) { result in
+//                        let image = try? result.get().image
+//                        if let image = image {
+//                            owner.imageContainer.append(image)
+//                            DispatchQueue.main.async {
+//                                owner.updateSnapshot(data: owner.imageContainer)
+//                            }
+//                        }
+//                    }
+//                    
+//                }
+            }
             .disposed(by: disposeBag)
     }
     
@@ -216,7 +240,7 @@ final class CreatePostViewController: BaseViewController {
         
         imageCollectionView.showsHorizontalScrollIndicator = false
                 
-        tempTitleLabel.text = Constants.TextViewPlaceholder.createPost.rawValue
+        tempTitleLabel.text = Constants.TitleLabel.createTemp.title
         tempTitleLabel.font = .boldBody
 
         tempLabel.text = "℃"

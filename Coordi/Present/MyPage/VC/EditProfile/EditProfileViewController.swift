@@ -76,6 +76,13 @@ final class EditProfileViewController: BaseViewController {
                 owner.nickname.label.text = nick
             }
             .disposed(by: disposeBag)
+        
+        output.failureTrigger
+            .drive(with: self) { owner, text in
+                owner.showErrorToast(text)
+            }
+            .disposed(by: disposeBag)
+
     }
     
     override func configureHierarchy() {

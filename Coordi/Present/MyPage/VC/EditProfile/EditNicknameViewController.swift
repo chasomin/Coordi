@@ -44,8 +44,8 @@ final class EditNicknameViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         output.failureTrigger
-            .drive(with: self) { owner, _ in
-                owner.showErrorToast("⚠️")
+            .drive(with: self) { owner, text in
+                owner.showErrorToast(text)
             }
             .disposed(by: disposeBag)
         

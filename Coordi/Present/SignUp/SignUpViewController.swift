@@ -60,7 +60,7 @@ final class SignUpViewController: BaseViewController {
         
         output.failureTrigger
             .drive(with: self) { owner, valid in
-                owner.showErrorToast("⚠️")
+                owner.showErrorToast("계정 생성 실패")
             }
             .disposed(by: disposeBag)
 

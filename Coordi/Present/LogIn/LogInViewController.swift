@@ -90,7 +90,8 @@ final class LogInViewController: BaseViewController {
     override func configureLayout() {
         logoImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
-            make.horizontalEdges.equalTo(view).inset(15)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(180)
             make.height.equalTo(100)
         }
         

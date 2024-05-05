@@ -103,7 +103,8 @@ final class SignUpViewController: BaseViewController {
         
         logoImageView.snp.makeConstraints { make in
             make.top.equalTo(dismissButton.snp.bottom)
-            make.horizontalEdges.equalTo(view).inset(15)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(180)
             make.height.equalTo(100)
         }
         

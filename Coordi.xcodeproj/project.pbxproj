@@ -14,6 +14,9 @@
 		790040CF2BE6D88A00FA40B9 /* ShopDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */; };
 		790040D12BE6E6A700FA40B9 /* ShopDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */; };
 		790040D32BE6F33500FA40B9 /* ShopCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D22BE6F33500FA40B9 /* ShopCoordinator.swift */; };
+		790040D52BE77B8900FA40B9 /* PaymentValidQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040D42BE77B8900FA40B9 /* PaymentValidQuery.swift */; };
+		790040DD2BE77E6600FA40B9 /* PaymentValidModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040DC2BE77E6600FA40B9 /* PaymentValidModel.swift */; };
+		790040DF2BE77F1400FA40B9 /* PaymentListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */; };
 		79553B482BC9135C000B4E4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B472BC9135C000B4E4B /* AppDelegate.swift */; };
 		79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B492BC9135C000B4E4B /* SceneDelegate.swift */; };
 		79553B4F2BC9135C000B4E4B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 79553B4E2BC9135C000B4E4B /* Base */; };
@@ -136,6 +139,9 @@
 		790040CE2BE6D88A00FA40B9 /* ShopDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailViewController.swift; sourceTree = "<group>"; };
 		790040D02BE6E6A700FA40B9 /* ShopDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailViewModel.swift; sourceTree = "<group>"; };
 		790040D22BE6F33500FA40B9 /* ShopCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCoordinator.swift; sourceTree = "<group>"; };
+		790040D42BE77B8900FA40B9 /* PaymentValidQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentValidQuery.swift; sourceTree = "<group>"; };
+		790040DC2BE77E6600FA40B9 /* PaymentValidModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentValidModel.swift; sourceTree = "<group>"; };
+		790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentListModel.swift; sourceTree = "<group>"; };
 		79553B442BC9135C000B4E4B /* Coordi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coordi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79553B472BC9135C000B4E4B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		79553B492BC9135C000B4E4B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -344,6 +350,7 @@
 				79EBA4662BC9563300C3C530 /* CommentQuery.swift */,
 				79EBA4682BC9566400C3C530 /* LikeQuery.swift */,
 				79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */,
+				790040D42BE77B8900FA40B9 /* PaymentValidQuery.swift */,
 			);
 			path = Query;
 			sourceTree = "<group>";
@@ -363,6 +370,8 @@
 				79EBA47E2BCAD64D00C3C530 /* LikeModel.swift */,
 				79EBA4802BCAE63C00C3C530 /* FollowModel.swift */,
 				79EBA4822BCAE70400C3C530 /* ProfileModel.swift */,
+				790040DC2BE77E6600FA40B9 /* PaymentValidModel.swift */,
+				790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -779,6 +788,7 @@
 				79EBA47D2BCAD4EC00C3C530 /* CommentModel.swift in Sources */,
 				79553B692BC93A51000B4E4B /* LogInQuery.swift in Sources */,
 				79EBA4712BCACE2200C3C530 /* LogInModel.swift in Sources */,
+				790040DD2BE77E6600FA40B9 /* PaymentValidModel.swift in Sources */,
 				798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */,
 				798604542BD54167003E721E /* CommentTableViewCell.swift in Sources */,
 				79937AC52BE211C80063A2CE /* Coordinator.swift in Sources */,
@@ -794,6 +804,7 @@
 				79937A1E2BDA52280063A2CE /* FeedViewController.swift in Sources */,
 				79937A1C2BD94F830063A2CE /* SearchViewModel.swift in Sources */,
 				79937AC82BE212AB0063A2CE /* AppCoordinator.swift in Sources */,
+				790040DF2BE77F1400FA40B9 /* PaymentListModel.swift in Sources */,
 				79EBA4872BCAEA6400C3C530 /* TargetType.swift in Sources */,
 				79937A142BD7E0120063A2CE /* String+.swift in Sources */,
 				79937A362BDEACD20063A2CE /* FeedViewModel.swift in Sources */,
@@ -804,6 +815,7 @@
 				79937AD22BE2AC360063A2CE /* GeneralSettingViewController.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
 				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
+				790040D52BE77B8900FA40B9 /* PaymentValidQuery.swift in Sources */,
 				79937A202BDA53F50063A2CE /* FollowFeedViewModel.swift in Sources */,
 				79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */,
 				79937A2B2BDD663C0063A2CE /* CommentViewController.swift in Sources */,

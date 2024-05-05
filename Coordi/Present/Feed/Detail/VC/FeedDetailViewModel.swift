@@ -36,7 +36,7 @@ final class FeedDetailViewModel: CoordinatorViewModelType {
         let heartButtonTap: Driver<PostModel>
         let imageDoubleTap: Driver<PostModel>
         let failureTrigger: Driver<String>
-//        let postEditAction: Driver<PostModel>
+        let postEditAction: Driver<PostModel>
         let postDeleteAction: Driver<String>
         let viewDidLoadTrigger: Driver<PostModel>
         let changeComment: Driver<PostModel>
@@ -106,7 +106,6 @@ final class FeedDetailViewModel: CoordinatorViewModelType {
                 } else {
                     return NetworkManager.request(api: .like(postId: postModel.post_id, query: LikeQuery.init(like_status: true)))
                         .catch { error in
-                            let coordiError = error as! CoordiError
                             guard let error = error as? CoordiError else { return Single<LikeModel>.never() }
                             guard let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LikeModel>.never() }
                             failureTrigger.accept(errorMessage)
@@ -201,10 +200,29 @@ final class FeedDetailViewModel: CoordinatorViewModelType {
             }
             .disposed(by: disposeBag)
         
+        input.postEditAction
+            .withLatestFrom(postModel)
+            .withUnretained(self)
+            .flatMap { owner, post in
+                return NetworkManager.request(api: .fetchParticularPost(postId: post.post_id))
+                    .catch { error in
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<PostModel>.never() }
+                        failureTrigger.accept(errorMessage)
+                        return Single<PostModel>.never()
+                    }
+            }
+            .bind(with: self) { owner, post in
+//                let vm = CreatePostViewModel(postModel: post)
+//                let vc = CreatePostViewController(viewModel: vm)
+//                vm.coordinator = owner.coordinator
+//                owner.coordinator?.push(vc, animation: true)
+            }
+            .disposed(by: disposeBag)
+        
         return Output.init(heartButtonTap: heartButtonTap.asDriver(onErrorJustReturn: .dummy),
                            imageDoubleTap: imageDoubleTap.asDriver(onErrorJustReturn: .dummy),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
-//                           postEditAction: <#T##Driver<PostModel>#>,
+                           postEditAction: postEditAction.asDriver(onErrorJustReturn: .dummy),
                            postDeleteAction: postDeleteAction.asDriver(onErrorJustReturn: ""),
                            viewDidLoadTrigger: viewDidLoad.asDriver(onErrorJustReturn: .dummy), 
                            changeComment: changeComment.asDriver(onErrorJustReturn: .dummy))

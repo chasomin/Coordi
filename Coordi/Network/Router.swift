@@ -34,6 +34,8 @@ enum Router {
     case fetchUserProfile(userId: String)
     case hashtag(query: FetchPostQuery)
     case fetchImage(query: String)
+    case paymentValid(query: PaymentValidQuery)
+    case fetchPayments
 }
 
 extension Router: TargetType {
@@ -93,6 +95,10 @@ extension Router: TargetType {
             return .get
         case .fetchImage:
             return .get
+        case .paymentValid:
+            return .post
+        case .fetchPayments:
+            return .get
         }
     }
     
@@ -148,6 +154,10 @@ extension Router: TargetType {
             "/posts/hashtags"
         case .fetchImage(let query):
             "/\(query)"
+        case .paymentValid:
+            "/payments/validation"
+        case .fetchPayments:
+            "/payments/me"
         }
     }
     
@@ -164,7 +174,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue,
                 HTTPHeader.refresh.rawValue: UserDefaultsManager.refreshToken
             ]
-        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage:
+        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .paymentValid, .fetchPayments:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
@@ -250,7 +260,9 @@ extension Router: TargetType {
             return try? encoder.encode(query)
         case .like(_, let query):
             return try? encoder.encode(query)
-        case .refreshToken, .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .uploadImage, .editProfileNick, .editProfileImage:
+        case .paymentValid(let query):
+            return try? encoder.encode(query)
+        default:
             return nil
         }
     }

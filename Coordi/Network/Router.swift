@@ -25,7 +25,9 @@ enum Router {
     case editComment(postId: String, commentId: String, query: CommentQuery)
     case deleteComment(postId: String, commentId: String)
     case like(postId: String, query: LikeQuery)
+    case like2(postId: String, query: LikeQuery)
     case fetchLikePost(query: FetchPostQuery)
+    case fetchLike2Post(query: FetchPostQuery)
     case follow(userId: String)
     case deleteFollow(userId: String)
     case fetchMyProfile
@@ -75,9 +77,9 @@ extension Router: TargetType {
             return .put
         case .deleteComment:
             return .delete
-        case .like:
+        case .like, .like2:
             return .post
-        case .fetchLikePost:
+        case .fetchLikePost, .fetchLike2Post:
             return .get
         case .follow:
             return .post
@@ -99,6 +101,7 @@ extension Router: TargetType {
             return .post
         case .fetchPayments:
             return .get
+
         }
     }
     
@@ -136,6 +139,8 @@ extension Router: TargetType {
             "/posts/\(postId)/comments/\(commentId)"
         case .like(let id, _):
             "/posts/\(id)/like"
+        case .like2(let id, _):
+            "/posts/\(id)/like-2"
         case .fetchLikePost:
             "/posts/likes/me"
         case .follow(let id):
@@ -158,6 +163,8 @@ extension Router: TargetType {
             "/payments/validation"
         case .fetchPayments:
             "/payments/me"
+        case .fetchLike2Post:
+            "/posts/likes-2/me"
         }
     }
     
@@ -174,7 +181,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue,
                 HTTPHeader.refresh.rawValue: UserDefaultsManager.refreshToken
             ]
-        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .paymentValid, .fetchPayments:
+        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .fetchLike2Post, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .paymentValid, .fetchPayments:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
@@ -187,7 +194,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
             
-        case .editPost, .uploadComment, .editComment, .uploadPost, .like:
+        case .editPost, .uploadComment, .editComment, .uploadPost, .like, .like2:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,
@@ -210,7 +217,7 @@ extension Router: TargetType {
                 "limit": query.limit,
                 "product_id": query.product_id
             ]
-        case .fetchLikePost(let query):
+        case .fetchLikePost(let query), .fetchLike2Post(let query):
             [
                 "next": query.next,
                 "limit": query.limit
@@ -241,7 +248,6 @@ extension Router: TargetType {
     
     var body: Data? {
         let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
         
         switch self {
         case .logIn(let query):
@@ -258,7 +264,7 @@ extension Router: TargetType {
             return try? encoder.encode(query)
         case .editComment(_, _, let query):
             return try? encoder.encode(query)
-        case .like(_, let query):
+        case .like(_, let query), .like2(_, let query):
             return try? encoder.encode(query)
         case .paymentValid(let query):
             return try? encoder.encode(query)

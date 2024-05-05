@@ -15,8 +15,10 @@ final class ShopViewController: BaseViewController {
     
     private let reloadData = PublishRelay<Void>()
     
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-    
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    private let shoppingBagButton = UIButton()
+    private let itemCountLabel = UILabel()
+    private let searchBar = UISearchBar()
     
     init(vieWModel: ShopViewModel) {
         self.vieWModel = vieWModel
@@ -50,20 +52,55 @@ final class ShopViewController: BaseViewController {
                 cell.configureCell(item: element)
             }
             .disposed(by: disposeBag)
+        
+        output.shoppingBagItems
+            .drive(with: self) { owner, items in
+                owner.itemCountLabel.isHidden = items.count == 0 ? true : false
+                owner.itemCountLabel.text = "\(items.count)"
+            }
+            .disposed(by: disposeBag)
+        
+        output.failureTrigger
+            .drive(with: self) { owner, text in
+                owner.showErrorToast(text)
+            }
+            .disposed(by: disposeBag)
+
     }
     
     override func configureHierarchy() {
         view.addSubview(collectionView)
+        
+        shoppingBagButton.addSubview(itemCountLabel)
+        
     }
     
     override func configureLayout() {
         collectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        itemCountLabel.snp.makeConstraints { make in
+            make.trailing.bottom.equalToSuperview().offset(5)
+            make.size.equalTo(16)
+        }
+        
     }
     
     override func configureView() {
         collectionView.register(ShopCollectionViewCell.self, forCellWithReuseIdentifier: ShopCollectionViewCell.id)
+        itemCountLabel.layer.cornerRadius = 8
+        itemCountLabel.clipsToBounds = true
+        itemCountLabel.font = .caption
+        itemCountLabel.backgroundColor = .pointColor
+        itemCountLabel.textColor = .white
+        itemCountLabel.textAlignment = .center
+        let image = UIImage(systemName: "basket")?.setConfiguration(font: .systemFont(ofSize: 24))
+        shoppingBagButton.setImage(image, for: .normal)
+        
+        
+        navigationItem.titleView = searchBar
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: shoppingBagButton)
     }
     
     private func createLayout() -> UICollectionViewLayout {

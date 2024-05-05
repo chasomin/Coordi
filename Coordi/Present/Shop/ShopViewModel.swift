@@ -21,11 +21,13 @@ final class ShopViewModel: CoordinatorViewModelType {
     struct Output {
         let product: Driver<[PostModel]>
         let failureTrigger: Driver<String>
+        let shoppingBagItems: Driver<[PostModel]>
     }
     
     func transform(input: Input) -> Output {
         let products = PublishRelay<[PostModel]>()
         let failureTrigger = PublishRelay<String>()
+        let shoppingBagItems = PublishRelay<[PostModel]>()
         
         input.reloadData
             .withUnretained(self)
@@ -42,6 +44,21 @@ final class ShopViewModel: CoordinatorViewModelType {
             }
             .disposed(by: disposeBag)
         
+        input.reloadData
+            .withUnretained(self)
+            .flatMap { owner, _ in
+                NetworkManager.request(api: .fetchLike2Post(query: .init(next: "", limit: "10", product_id: Constants.productId)))
+                    .catch { error in
+                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<PostListModel>.never() }
+                        failureTrigger.accept(errorMessage)
+                        return Single<PostListModel>.never()
+                    }
+            }
+            .bind { value in
+                shoppingBagItems.accept(value.data)
+            }
+            .disposed(by: disposeBag)
+        
         input.selectItem
             .bind(with: self) { owner, product in
                 let vm = ShopDetailViewModel(product: product)
@@ -52,6 +69,7 @@ final class ShopViewModel: CoordinatorViewModelType {
             .disposed(by: disposeBag)
         
         return Output.init(product: products.asDriver(onErrorJustReturn: []),
-                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""))
+                           failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
+                           shoppingBagItems: shoppingBagItems.asDriver(onErrorJustReturn: []))
     }
 }

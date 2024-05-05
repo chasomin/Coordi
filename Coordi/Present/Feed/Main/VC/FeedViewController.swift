@@ -20,6 +20,7 @@ final class FeedViewController: TabmanViewController {
     
     private var viewControllers: [UIViewController]
     private let searchButton = UIBarButtonItem()
+    private let titleLabel = UILabel()
     
     private let weatherService = WeatherService()
     private let locationManager = CLLocationManager()
@@ -59,7 +60,16 @@ final class FeedViewController: TabmanViewController {
         
         output.tempText
             .drive(with: self) { owner, text in
-                owner.navigationItem.title = text
+                let fullText = text
+                let attributedString = NSMutableAttributedString(string: fullText)
+                        
+                let range = (fullText as NSString).range(of: "\(temp.value)℃")
+                        
+                attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.pointColor, range: range)
+                owner.titleLabel.attributedText = attributedString
+                owner.titleLabel.sizeToFit()
+
+                owner.navigationItem.titleView = owner.titleLabel
             }
             .disposed(by: disposeBag)
     }
@@ -81,6 +91,7 @@ final class FeedViewController: TabmanViewController {
         searchButton.image = UIImage(systemName: "magnifyingglass")
         navigationItem.title = "현재 기온 알 수 없음"   // 기온 모를 때는 전체 보여주기 OR 텅뷰 만들어서 위치허용 유도하기
         navigationItem.rightBarButtonItem = searchButton
+        titleLabel.font = .boldTitle
     }
 }
 

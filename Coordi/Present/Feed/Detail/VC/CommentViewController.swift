@@ -13,8 +13,6 @@ import RxCocoa
 final class CommentViewController: BaseViewController {
     
     let viewModel: CommentViewModel
-    
-    private let commentText = PublishRelay<String>()
 
     private let tableView = UITableView()
     private let bottomView = UIView()

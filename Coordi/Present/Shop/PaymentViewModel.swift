@@ -58,7 +58,7 @@ final class PaymentViewModel: CoordinatorViewModelType {
             }
             .bind(with: self, onNext: { owner, paymentValid in
                 print("📌결제 성공!")
-                owner.coordinator?.dismiss(animation: true)
+                owner.coordinator?.pop(animation: true)
             })
             .disposed(by: disposeBag)
         

@@ -16,13 +16,13 @@ enum Constants {
     enum NavigationTitle {
         case feed
         case myPage(value: Bool, nick: String)
-        case search
         case create
         case editProfile
         case editNickname
         case loginInformation
         case likeFeeds
         case editPost
+        case chat
 
         var title: String {
             switch self {
@@ -30,8 +30,6 @@ enum Constants {
                 ""
             case .myPage(let value, let nick):
                 value ? "내 피드 모아보기" : nick
-            case .search:
-                ""
             case .create:
                 "코디 올리기"
             case .editProfile:
@@ -44,6 +42,8 @@ enum Constants {
                 "좋아요한 게시글"
             case .editPost:
                 "수정하기"
+            case .chat:
+                "1:1 문의하기"
             }
         }
     }
@@ -60,7 +60,9 @@ enum Constants {
         
     }
     
-    enum TextViewPlaceholder: String {
+    enum Placeholder: String {
         case createPost = "아이템 정보와 코디에 대해 알려주세요!"
+        case feedSearch = "코디가 궁금한 기온을 검색해보세요 :)"
+        case shopSearch = "상의, 하의 등 카테고리 또는 브랜드명을 검색해보세요"
     }
 }

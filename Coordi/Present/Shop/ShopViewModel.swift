@@ -16,12 +16,13 @@ final class ShopViewModel: CoordinatorViewModelType {
     struct Input {
         let reloadData: PublishRelay<Void>
         let selectItem: PublishRelay<PostModel>
+        let keyboardDismissGesture: PublishRelay<Void>
     }
     
     struct Output {
         let product: Driver<[PostModel]>
         let failureTrigger: Driver<String>
-        let shoppingBagItems: Driver<[PostModel]>
+        let searchDone: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -70,6 +71,6 @@ final class ShopViewModel: CoordinatorViewModelType {
         
         return Output.init(product: products.asDriver(onErrorJustReturn: []),
                            failureTrigger: failureTrigger.asDriver(onErrorJustReturn: ""),
-                           shoppingBagItems: shoppingBagItems.asDriver(onErrorJustReturn: []))
+                           searchDone: input.keyboardDismissGesture.asDriver(onErrorJustReturn: ()))
     }
 }

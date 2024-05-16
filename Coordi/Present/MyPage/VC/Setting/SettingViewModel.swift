@@ -69,7 +69,10 @@ final class SettingViewModel: ViewModelType {
     enum Setting: CaseIterable {
         case setting
         case like
+        case bookmark
+        case chats
         case logOut
+        
         var title: String {
             switch self {
             case .setting:
@@ -78,6 +81,10 @@ final class SettingViewModel: ViewModelType {
                 "좋아요한 게시글"
             case .logOut:
                 "로그아웃"
+            case .bookmark:
+                "북마크한 아이템"
+            case .chats:
+                "1:1 문의 목록"
             }
         }
         
@@ -89,6 +96,10 @@ final class SettingViewModel: ViewModelType {
                 "heart"
             case .logOut:
                 "door.left.hand.open"
+            case .bookmark:
+                "bookmark"
+            case .chats:
+                "questionmark.bubble"
             }
         }
         

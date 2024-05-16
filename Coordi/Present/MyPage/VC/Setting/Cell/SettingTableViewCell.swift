@@ -24,7 +24,7 @@ final class SettingTableViewCell: BaseTableViewCell {
         }
         
         title.snp.makeConstraints { make in
-            make.leading.equalTo(icon.snp.trailing).offset(5)
+            make.leading.equalTo(icon.snp.trailing).offset(10)
             make.verticalEdges.equalToSuperview().inset(15)
         }
     }

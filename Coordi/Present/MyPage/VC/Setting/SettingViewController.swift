@@ -57,6 +57,6 @@ final class SettingViewController: BaseViewController {
     
     override func configureView() {
         tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.id)
-        tableView.rowHeight = 60
+        tableView.rowHeight = 50
     }
 }

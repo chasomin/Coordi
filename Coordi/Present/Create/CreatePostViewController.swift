@@ -82,7 +82,7 @@ final class CreatePostViewController: BaseViewController {
         
         contentTextView.rx.text.orEmpty
             .map {
-                return $0 == Constants.TextViewPlaceholder.createPost.rawValue ? "" : $0
+                return $0 == Constants.Placeholder.createPost.rawValue ? "" : $0
             }
             .bind(to: input.content)
             .disposed(by: disposeBag)
@@ -135,7 +135,7 @@ final class CreatePostViewController: BaseViewController {
         
         output.textViewPlaceholder
             .drive(with: self, onNext: { owner, text in
-                if text == Constants.TextViewPlaceholder.createPost.rawValue {
+                if text == Constants.Placeholder.createPost.rawValue {
                     owner.contentTextView.textColor = .gray
                 } else {
                     owner.contentTextView.textColor = .LabelColor
@@ -145,7 +145,7 @@ final class CreatePostViewController: BaseViewController {
         
         output.editPost
             .drive(with: self) { owner, post in
-                guard let post else { return }
+//                guard let post else { return }
 //                let tempValue = post.tempNum
 //                owner.tempPicker.selectRow(owner.temp.firstIndex(of: tempValue) ?? 0, inComponent: 0, animated: true)
 //                owner.contentTextView.text = post.content1
@@ -251,7 +251,7 @@ final class CreatePostViewController: BaseViewController {
         tempPicker.selectRow(temp.firstIndex(of: 0) ?? 0, inComponent: 0, animated: true)
         
         contentTextView.delegate = self
-        contentTextView.text = Constants.TextViewPlaceholder.createPost.rawValue
+        contentTextView.text = Constants.Placeholder.createPost.rawValue
         contentTextView.font = .body
         contentTextView.textColor = .gray
         contentTextView.layer.cornerRadius = 15

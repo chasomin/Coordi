@@ -107,7 +107,7 @@ final class CreatePostViewModel: CoordinatorViewModelType {
 
         input.textViewDidBeginEditing
             .map { text in
-                if text == Constants.TextViewPlaceholder.createPost.rawValue {
+                if text == Constants.Placeholder.createPost.rawValue {
                     return ""
                 } else {
                     return text
@@ -123,7 +123,7 @@ final class CreatePostViewModel: CoordinatorViewModelType {
         input.textViewDidEndEditing
             .map { text in
                 if text.isEmpty {
-                    return Constants.TextViewPlaceholder.createPost.rawValue
+                    return Constants.Placeholder.createPost.rawValue
                 } else {
                     return text
                 }

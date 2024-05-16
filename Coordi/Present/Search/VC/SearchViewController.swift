@@ -68,7 +68,7 @@ final class SearchViewController: BaseViewController {
     
     override func configureView() {
         navigationItem.titleView = searchBar
-        searchBar.placeholder = "코디가 궁금한 기온을 검색해보세요 :)"
+        searchBar.placeholder = Constants.Placeholder.feedSearch.rawValue
         searchBar.keyboardType = .numbersAndPunctuation
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.id)
     }

@@ -21,7 +21,7 @@ final class ShopDetailViewController: BaseViewController {
     private let purchaseStack = UIStackView()
     private let bookmarkButton = UIButton()
     private let purchaseButton = CapsuleButton(text: "구매하기", textColor: .white, backColor: .pointColor, font: .boldBody)
-    private let shoppingBagButton = CapsuleButton(text: "장바구니", textColor: .pointColor, backColor: .pointColor, font: .boldBody, isPointButton: false)
+    private let chatButton = CapsuleButton(text: "1:1 문의하기", textColor: .pointColor, backColor: .pointColor, font: .boldBody, isPointButton: false)
     
     private var dataSource: UICollectionViewDiffableDataSource<String, String>!
 
@@ -50,12 +50,12 @@ final class ShopDetailViewController: BaseViewController {
     override func bind() {
         let input = ShopDetailViewModel.Input(reloadData: reloadData, 
                                               purchaseButtonTap: .init(),
-                                              shoppingBagButtonTap: .init(),
+                                              chatButtonTap: .init(),
                                               bookmarkTap: .init())
         let output = viewModel.transform(input: input)
         
-        shoppingBagButton.rx.tap
-            .bind(to: input.shoppingBagButtonTap)
+        chatButton.rx.tap
+            .bind(to: input.chatButtonTap)
             .disposed(by: disposeBag)
         
         purchaseButton.rx.tap
@@ -100,7 +100,7 @@ final class ShopDetailViewController: BaseViewController {
         view.addSubview(productLabel)
         view.addSubview(purchaseStack)
         purchaseStack.addArrangedSubview(bookmarkButton)
-        purchaseStack.addArrangedSubview(shoppingBagButton)
+        purchaseStack.addArrangedSubview(chatButton)
         purchaseStack.addArrangedSubview(purchaseButton)
     }
     

@@ -23,7 +23,7 @@ final class ShopDetailViewModel: CoordinatorViewModelType {
     struct Input {
         let reloadData: PublishRelay<Void>
         let purchaseButtonTap: PublishRelay<Void>
-        let shoppingBagButtonTap: PublishRelay<Void>
+        let chatButtonTap: PublishRelay<Void>
         let bookmarkTap: PublishRelay<Void>
     }
     
@@ -68,18 +68,10 @@ final class ShopDetailViewModel: CoordinatorViewModelType {
             }
             .disposed(by: disposeBag)
         
-        input.shoppingBagButtonTap
-            .withUnretained(self)
-            .flatMap { owner, _ in
-                NetworkManager.request(api: .like2(postId: owner.product.post_id, query: .init(like_status: true)))
-                    .catch { error in
-                        guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LikeModel>.never() }
-                        failureTrigger.accept(errorMessage)
-                        return Single<LikeModel>.never()
-                    }
-            }
+        input.chatButtonTap
             .bind(with: self) { owner, _ in
-                putItInSuccessTrigger.accept(())
+                let vc = ChatDetailViewController() //
+                owner.coordinator?.push(vc, animation: true)
             }
             .disposed(by: disposeBag)
         
@@ -88,7 +80,7 @@ final class ShopDetailViewModel: CoordinatorViewModelType {
             .flatMap { owner, _ in
                 let likeStatus = owner.product.likes.contains(UserDefaultsManager.userId)
 
-                return NetworkManager.request(api: .like(postId: owner.product.post_id, query: .init(like_status: likeStatus ? false : true)))
+                return NetworkManager.request(api: .like2(postId: owner.product.post_id, query: .init(like_status: likeStatus ? false : true)))
                     .catch { error in
                         guard let error = error as? CoordiError, let errorMessage = owner.choiceLoginOrMessage(error: error) else { return Single<LikeModel>.never() }
                         failureTrigger.accept(errorMessage)

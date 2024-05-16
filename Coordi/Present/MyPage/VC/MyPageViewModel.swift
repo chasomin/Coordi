@@ -130,7 +130,7 @@ final class MyPageViewModel: CoordinatorViewModelType {
                 let vm = SettingViewModel()
                 vm.coordinator = owner.coordinator
                 let vc = SettingViewController(viewModel: vm)
-                vc.sheetPresentationController?.detents = [.custom(resolver: { _ in 200 })]
+                vc.sheetPresentationController?.detents = [.custom(resolver: { _ in 230 }), .medium()]
                 vc.sheetPresentationController?.prefersGrabberVisible = true
                 owner.coordinator?.present(vc)
             }

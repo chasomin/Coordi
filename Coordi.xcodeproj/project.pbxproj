@@ -83,6 +83,7 @@
 		79937AD62BE2B25C0063A2CE /* Alert+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AD52BE2B25C0063A2CE /* Alert+.swift */; };
 		79937AD82BE2B6A10063A2CE /* LikeAllFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AD72BE2B6A10063A2CE /* LikeAllFeedViewController.swift */; };
 		79937ADA2BE2B7910063A2CE /* LikeAllFeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79937AD92BE2B7910063A2CE /* LikeAllFeedViewModel.swift */; };
+		79AD253A2BF5F82300EFF0EC /* ChatDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AD25392BF5F82300EFF0EC /* ChatDetailViewController.swift */; };
 		79B043E52BCE5BA100407A1F /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E42BCE5BA100407A1F /* LogInViewController.swift */; };
 		79B043E72BCE6B8900407A1F /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E62BCE6B8900407A1F /* LogInViewModel.swift */; };
 		79B043EA2BCE8C9300407A1F /* TokenRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B043E92BCE8C9300407A1F /* TokenRefresh.swift */; };
@@ -211,6 +212,7 @@
 		79937AD52BE2B25C0063A2CE /* Alert+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+.swift"; sourceTree = "<group>"; };
 		79937AD72BE2B6A10063A2CE /* LikeAllFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeAllFeedViewController.swift; sourceTree = "<group>"; };
 		79937AD92BE2B7910063A2CE /* LikeAllFeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeAllFeedViewModel.swift; sourceTree = "<group>"; };
+		79AD25392BF5F82300EFF0EC /* ChatDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailViewController.swift; sourceTree = "<group>"; };
 		79B043E42BCE5BA100407A1F /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		79B043E62BCE6B8900407A1F /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
 		79B043E92BCE8C9300407A1F /* TokenRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresh.swift; sourceTree = "<group>"; };
@@ -504,6 +506,14 @@
 			path = APP;
 			sourceTree = "<group>";
 		};
+		79AD25382BF5F7ED00EFF0EC /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				79AD25392BF5F82300EFF0EC /* ChatDetailViewController.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
 		79B043E82BCE719E00407A1F /* Feed */ = {
 			isa = PBXGroup;
 			children = (
@@ -584,6 +594,7 @@
 				79B044152BCFF3FC00407A1F /* Create */,
 				79B043EB2BCE8F6A00407A1F /* MyPage */,
 				790040C72BE6AD1C00FA40B9 /* Shop */,
+				79AD25382BF5F7ED00EFF0EC /* Chat */,
 			);
 			path = Present;
 			sourceTree = "<group>";
@@ -775,6 +786,7 @@
 				79B043F22BCE9DB100407A1F /* MyPageViewController.swift in Sources */,
 				79EBA4E92BCD297900C3C530 /* PointButton.swift in Sources */,
 				790040D12BE6E6A700FA40B9 /* ShopDetailViewModel.swift in Sources */,
+				79AD253A2BF5F82300EFF0EC /* ChatDetailViewController.swift in Sources */,
 				79937AA12BDFA4D20063A2CE /* AllFeedViewController.swift in Sources */,
 				79937AAD2BE0112E0063A2CE /* SettingViewModel.swift in Sources */,
 				798604352BD293FA003E721E /* APIMonitor.swift in Sources */,

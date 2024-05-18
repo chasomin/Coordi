@@ -64,5 +64,6 @@ enum Constants {
         case createPost = "아이템 정보와 코디에 대해 알려주세요!"
         case feedSearch = "코디가 궁금한 기온을 검색해보세요 :)"
         case shopSearch = "상의, 하의 등 카테고리 또는 브랜드명을 검색해보세요"
+        case chat = "문의 내용을 입력해주세요"
     }
 }

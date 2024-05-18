@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class MyChatDetailTableViewCell: BaseTableViewCell {
+final class MyChatDetailTableViewCell: BaseTableViewCell {
     let contentBubble = ChatBubble(isMyBubble: true)
     let date = UILabel()
     

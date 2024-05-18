@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ChatDetailViewController: BaseViewController {
+final class ChatDetailViewController: BaseViewController {
     let tableView = UITableView()
     let sendStack = UIStackView()
     let textField = RoundedTextFieldView()
@@ -59,12 +59,14 @@ class ChatDetailViewController: BaseViewController {
         navigationItem.title = Constants.NavigationTitle.chat.title
         
         tableView.separatorStyle = .none
+        
         sendStack.axis = .horizontal
         sendStack.spacing = 10
         sendStack.distribution = .fill
         
         let image = UIImage(systemName: "arrow.up.circle.fill")?.setConfiguration(font: .boldSystemFont(ofSize: 30))
         sendButton.setImage(image, for: .normal)
+        
         textField.textField.placeholder = Constants.Placeholder.chat.rawValue
     }
 

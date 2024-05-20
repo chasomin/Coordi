@@ -33,6 +33,10 @@
 		79553B692BC93A51000B4E4B /* LogInQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B682BC93A51000B4E4B /* LogInQuery.swift */; };
 		79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B6A2BC93AA7000B4E4B /* ImageUploadQuery.swift */; };
 		79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79553B6C2BC93B27000B4E4B /* PostQuery.swift */; };
+		795C5EBE2BFB9490009ACE44 /* RealmChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795C5EBD2BFB9490009ACE44 /* RealmChatModel.swift */; };
+		795C5EC12BFB94E9009ACE44 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 795C5EC02BFB94E9009ACE44 /* Realm */; };
+		795C5EC32BFB94E9009ACE44 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 795C5EC22BFB94E9009ACE44 /* RealmSwift */; };
+		795C5EC52BFB966B009ACE44 /* RealmRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795C5EC42BFB966B009ACE44 /* RealmRepository.swift */; };
 		798604052BD10EB0003E721E /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604042BD10EB0003E721E /* EditProfileViewModel.swift */; };
 		798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604072BD12AA6003E721E /* CoordiUserDefaults.swift */; };
 		7986040A2BD12AB5003E721E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604092BD12AB5003E721E /* UserDefaultsManager.swift */; };
@@ -166,6 +170,8 @@
 		79553B682BC93A51000B4E4B /* LogInQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInQuery.swift; sourceTree = "<group>"; };
 		79553B6A2BC93AA7000B4E4B /* ImageUploadQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadQuery.swift; sourceTree = "<group>"; };
 		79553B6C2BC93B27000B4E4B /* PostQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostQuery.swift; sourceTree = "<group>"; };
+		795C5EBD2BFB9490009ACE44 /* RealmChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmChatModel.swift; sourceTree = "<group>"; };
+		795C5EC42BFB966B009ACE44 /* RealmRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRepository.swift; sourceTree = "<group>"; };
 		798604042BD10EB0003E721E /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		798604072BD12AA6003E721E /* CoordiUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordiUserDefaults.swift; sourceTree = "<group>"; };
 		798604092BD12AB5003E721E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
@@ -273,9 +279,11 @@
 				79EBA4D52BCD16B900C3C530 /* RxCocoa in Frameworks */,
 				79937A302BDEA7290063A2CE /* Tabman in Frameworks */,
 				79EBA48A2BCAEA7B00C3C530 /* Alamofire in Frameworks */,
+				795C5EC12BFB94E9009ACE44 /* Realm in Frameworks */,
 				7986040D2BD134DA003E721E /* Kingfisher in Frameworks */,
 				79EBA4D72BCD16B900C3C530 /* RxSwift in Frameworks */,
 				79EBA4F02BCD5A8000C3C530 /* Toast in Frameworks */,
+				795C5EC32BFB94E9009ACE44 /* RealmSwift in Frameworks */,
 				79EBA4D22BCD16A300C3C530 /* SnapKit in Frameworks */,
 				79EBA4F32BCD8BC800C3C530 /* IQKeyboardManagerSwift in Frameworks */,
 			);
@@ -327,6 +335,7 @@
 				79EBA4E32BCD284D00C3C530 /* Custom */,
 				79EBA4C92BCD15F300C3C530 /* Present */,
 				798604062BD11206003E721E /* UserDefaults */,
+				795C5EBC2BFB945C009ACE44 /* DB */,
 				79553B612BC9394D000B4E4B /* Network */,
 				79553B4D2BC9135C000B4E4B /* Main.storyboard */,
 				79553B502BC9135E000B4E4B /* Assets.xcassets */,
@@ -390,6 +399,15 @@
 				790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		795C5EBC2BFB945C009ACE44 /* DB */ = {
+			isa = PBXGroup;
+			children = (
+				795C5EBD2BFB9490009ACE44 /* RealmChatModel.swift */,
+				795C5EC42BFB966B009ACE44 /* RealmRepository.swift */,
+			);
+			path = DB;
 			sourceTree = "<group>";
 		};
 		798604062BD11206003E721E /* UserDefaults */ = {
@@ -703,6 +721,8 @@
 				7986040C2BD134DA003E721E /* Kingfisher */,
 				79937A2F2BDEA7290063A2CE /* Tabman */,
 				790040E12BE7842B00FA40B9 /* iamport-ios */,
+				795C5EC02BFB94E9009ACE44 /* Realm */,
+				795C5EC22BFB94E9009ACE44 /* RealmSwift */,
 			);
 			productName = Coordi;
 			productReference = 79553B442BC9135C000B4E4B /* Coordi.app */;
@@ -741,6 +761,7 @@
 				7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				79937A2E2BDEA7290063A2CE /* XCRemoteSwiftPackageReference "Tabman" */,
 				790040E02BE7842B00FA40B9 /* XCRemoteSwiftPackageReference "iamport-ios" */,
+				795C5EBF2BFB94E8009ACE44 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 79553B452BC9135C000B4E4B /* Products */;
 			projectDirPath = "";
@@ -811,6 +832,7 @@
 				79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */,
 				79937AAB2BE0108D0063A2CE /* SettingViewController.swift in Sources */,
 				79B043F82BCEA32800407A1F /* CirCleImageView.swift in Sources */,
+				795C5EBE2BFB9490009ACE44 /* RealmChatModel.swift in Sources */,
 				79B043FA2BCECD8D00407A1F /* FeedCollectionViewCell.swift in Sources */,
 				79937A292BDBC5560063A2CE /* FollowingFeedCollectionViewCell.swift in Sources */,
 				798604052BD10EB0003E721E /* EditProfileViewModel.swift in Sources */,
@@ -870,6 +892,7 @@
 				790040C62BE4B00E00FA40B9 /* CircleButton.swift in Sources */,
 				7986040F2BD15016003E721E /* UIImageView+.swift in Sources */,
 				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
+				795C5EC52BFB966B009ACE44 /* RealmRepository.swift in Sources */,
 				79B043F62BCEA1F100407A1F /* CapsuleButton.swift in Sources */,
 				79EBA46B2BCACA7600C3C530 /* ProfileQuery.swift in Sources */,
 				79EBA4DD2BCD19A700C3C530 /* UIColor+.swift in Sources */,
@@ -1132,6 +1155,14 @@
 				minimumVersion = 1.4.1;
 			};
 		};
+		795C5EBF2BFB94E8009ACE44 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 10.50.0;
+			};
+		};
 		7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -1195,6 +1226,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 790040E02BE7842B00FA40B9 /* XCRemoteSwiftPackageReference "iamport-ios" */;
 			productName = "iamport-ios";
+		};
+		795C5EC02BFB94E9009ACE44 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 795C5EBF2BFB94E8009ACE44 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		795C5EC22BFB94E9009ACE44 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 795C5EBF2BFB94E8009ACE44 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		7986040C2BD134DA003E721E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

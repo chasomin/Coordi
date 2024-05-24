@@ -140,6 +140,10 @@
 		79EBA4ED2BCD54A000C3C530 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EBA4EC2BCD54A000C3C530 /* NetworkManager.swift */; };
 		79EBA4F02BCD5A8000C3C530 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 79EBA4EF2BCD5A8000C3C530 /* Toast */; };
 		79EBA4F32BCD8BC800C3C530 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79EBA4F22BCD8BC800C3C530 /* IQKeyboardManagerSwift */; };
+		79F633CD2C00F83A00C3701E /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F633CC2C00F83A00C3701E /* ChatModel.swift */; };
+		79F633CF2C00FBCE00C3701E /* ChatDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F633CE2C00FBCE00C3701E /* ChatDetailModel.swift */; };
+		79F633D12C00FBE900C3701E /* ChatRoomListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F633D02C00FBE900C3701E /* ChatRoomListModel.swift */; };
+		79F633D32C00FC0000C3701E /* ChatHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F633D22C00FC0000C3701E /* ChatHistoryModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -268,6 +272,10 @@
 		79EBA4E82BCD297900C3C530 /* PointButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointButton.swift; sourceTree = "<group>"; };
 		79EBA4EA2BCD310000C3C530 /* UIFont+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+.swift"; sourceTree = "<group>"; };
 		79EBA4EC2BCD54A000C3C530 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		79F633CC2C00F83A00C3701E /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
+		79F633CE2C00FBCE00C3701E /* ChatDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailModel.swift; sourceTree = "<group>"; };
+		79F633D02C00FBE900C3701E /* ChatRoomListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListModel.swift; sourceTree = "<group>"; };
+		79F633D22C00FC0000C3701E /* ChatHistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHistoryModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +405,10 @@
 				79EBA4822BCAE70400C3C530 /* ProfileModel.swift */,
 				790040DC2BE77E6600FA40B9 /* PaymentValidModel.swift */,
 				790040DE2BE77F1400FA40B9 /* PaymentListModel.swift */,
+				79F633CC2C00F83A00C3701E /* ChatModel.swift */,
+				79F633D02C00FBE900C3701E /* ChatRoomListModel.swift */,
+				79F633CE2C00FBCE00C3701E /* ChatDetailModel.swift */,
+				79F633D22C00FC0000C3701E /* ChatHistoryModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -809,6 +821,7 @@
 				79EBA48E2BCC27BE00C3C530 /* FetchPostQuery.swift in Sources */,
 				7986043A2BD2BCF3003E721E /* Toast+.swift in Sources */,
 				79937AD62BE2B25C0063A2CE /* Alert+.swift in Sources */,
+				79F633D32C00FC0000C3701E /* ChatHistoryModel.swift in Sources */,
 				7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */,
 				79937ACA2BE2178A0063A2CE /* LoginCoordinator.swift in Sources */,
 				79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */,
@@ -829,6 +842,7 @@
 				79B043F02BCE991800407A1F /* UnderlineLabel.swift in Sources */,
 				79B043FC2BCECDB300407A1F /* BaseCollectionViewCell.swift in Sources */,
 				79937AA82BDFCB070063A2CE /* UITabBarController.swift in Sources */,
+				79F633CD2C00F83A00C3701E /* ChatModel.swift in Sources */,
 				79553B6D2BC93B27000B4E4B /* PostQuery.swift in Sources */,
 				79937AAB2BE0108D0063A2CE /* SettingViewController.swift in Sources */,
 				79B043F82BCEA32800407A1F /* CirCleImageView.swift in Sources */,
@@ -881,6 +895,7 @@
 				79553B672BC93A25000B4E4B /* EmailValidationQuery.swift in Sources */,
 				79B043EE2BCE8FC800407A1F /* EditProfileViewController.swift in Sources */,
 				79937AB22BE0145C0063A2CE /* SettingTableViewCell.swift in Sources */,
+				79F633D12C00FBE900C3701E /* ChatRoomListModel.swift in Sources */,
 				7986040A2BD12AB5003E721E /* UserDefaultsManager.swift in Sources */,
 				79EBA4852BCAEA3100C3C530 /* HTTPHeader.swift in Sources */,
 				79553B5E2BC935A8000B4E4B /* APIKey.swift in Sources */,
@@ -890,6 +905,7 @@
 				79553B6B2BC93AA7000B4E4B /* ImageUploadQuery.swift in Sources */,
 				79B0441E2BCFF7A300407A1F /* MyPageViewModel.swift in Sources */,
 				790040C62BE4B00E00FA40B9 /* CircleButton.swift in Sources */,
+				79F633CF2C00FBCE00C3701E /* ChatDetailModel.swift in Sources */,
 				7986040F2BD15016003E721E /* UIImageView+.swift in Sources */,
 				79EBA46F2BCACDE600C3C530 /* EmailValidationModel.swift in Sources */,
 				795C5EC52BFB966B009ACE44 /* RealmRepository.swift in Sources */,
@@ -1160,7 +1176,7 @@
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = 10.50.0;
+				version = 10.48.0;
 			};
 		};
 		7986040B2BD134D9003E721E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {

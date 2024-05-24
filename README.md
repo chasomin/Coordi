@@ -4,7 +4,9 @@
 
 현재 기온에 맞는 옷 스타일을 공유하고 아이템을 구매할 수 있는 앱
 
-### **iOS 1인 개발**
+### iOS 1인 개발 
+(서버 개발자 협업)
+
 
 ### **기간**
 
@@ -20,8 +22,6 @@ iOS 16.0
 ### **스크린샷**
 
 <img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcc0ffd51-4ef9-4d9a-93db-32e97a65a422%2F30cb5913-e1a2-4fe9-8023-5a54b4932fa9%2F%25E1%2584%2586%25E1%2585%25AE%25E1%2584%258C%25E1%2585%25A6_8.001.png?table=block&id=80909fbe-80b0-426c-b514-4cd35f13e810&spaceId=cc0ffd51-4ef9-4d9a-93db-32e97a65a422&width=2000&userId=b94327c2-0d8a-417c-b55a-6222a7f4ecb6&cache=v2" >
-<br>
-
 <img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcc0ffd51-4ef9-4d9a-93db-32e97a65a422%2F1c9c328f-f797-4452-b53e-b4c8c4f6af74%2F4.001.png?table=block&id=0c935845-f583-450b-a3ca-7e7bb01d6579&spaceId=cc0ffd51-4ef9-4d9a-93db-32e97a65a422&width=2000&userId=b94327c2-0d8a-417c-b55a-6222a7f4ecb6&cache=v2">
 <br>
 
@@ -35,11 +35,24 @@ iOS 16.0
 
 ## **기술**
 
-`UIKit` `MVVM-C` `RxSwift` `DI` `WeatherKit` `CoreLocation` `Alamofire` `Codable` `Router` `URLRequestConvertible` `interceptor` `EventMonitor` `CodeBaseUI` `SnapKit` `CompositionalLayout` `DiffableDataSource` `UserDefaults` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
+`UIKit` `MVVM-C` `RxSwift` `DependencyInjection` `WeatherKit` `CoreLocation` `Alamofire` `Codable` `Router` `URLRequestConvertible` `interceptor` `EventMonitor` `CodeBaseUI` `SnapKit` `CompositionalLayout` `DiffableDataSource` `UserDefaults` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
+
+## **기술 고려 사항**
+ 네비게이션 로직을 분리하여 코드의 모듈화와 유지보수성을 높이기 위해 Coordinator 패턴 적용
+ 
+ 반응형 프로그래밍을 하기 위해 RxSwif 사용
+ 
+ 객체 간의 결합도를 낮추고 유연성을 높이기 위해 Dependency Injection 구현
 
 ## **기술 설명**
+ 
+ **URLRequestConvertible** protocol을 채택한 **Router**를 구현하여 API 요청 로직을 캡슐화
 
-**Coordinator** **패턴**을 사용하여 단일 책임 원칙을 준수하고 각 컴포넌트 간의 의존성 감소
+ Alamofire **interceptor**를 통해 토큰 갱신 자동화
+
+ Alamofire **EventMonitor**를 사용한 디버깅으로 네트워크 문제를 해결
+
+ **Coordinator** **패턴**을 사용하여 단일 책임 원칙을 준수하고 각 컴포넌트 간의 의존성 감소
 
  **Dependency Injection** 을 통해 Testable 한 코드 작성, 각 컴포넌트 간의 의존성 감소
 
@@ -105,9 +118,5 @@ extension UIImageView {
     }
 }
 ```
-<img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcc0ffd51-4ef9-4d9a-93db-32e97a65a422%2F65ddcb32-b192-4b4e-b441-a768538a3038%2Fe0ba0953-3fdd-442b-ae3c-3ccd14b331af.png?table=block&id=04ca7ac1-7493-4c73-bdda-e6a4f120c351&spaceId=cc0ffd51-4ef9-4d9a-93db-32e97a65a422&width=800&userId=b94327c2-0d8a-417c-b55a-6222a7f4ecb6&cache=v2" width = 500 >
-리사이징 전, 1000MB 메모리 차지
-<br>
+<img src="https://github.com/chasomin/Coordi/assets/114223423/6cd13ae9-57f2-4d69-a808-dc404c1f1313" >
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcc0ffd51-4ef9-4d9a-93db-32e97a65a422%2F6ff712ba-6b7c-4d35-b978-b439bae5e510%2F9f79c760-9640-41b2-bb2f-65b7d3620e67.png?table=block&id=c1fa7f05-dbc3-4177-b20d-4beda730cff5&spaceId=cc0ffd51-4ef9-4d9a-93db-32e97a65a422&width=790&userId=b94327c2-0d8a-417c-b55a-6222a7f4ecb6&cache=v2" width = 500 >
-리사이징 후, 90MB 메모리 차지

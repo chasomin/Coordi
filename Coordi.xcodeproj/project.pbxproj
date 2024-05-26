@@ -428,6 +428,15 @@
 			path = DB;
 			sourceTree = "<group>";
 		};
+		7982552B2C0386540056D57E /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				79AD25672BFA5A4200EFF0EC /* MyChatDetailTableViewCell.swift */,
+				79AD25692BFA5AA700EFF0EC /* AnotherUserChatDetailTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		798604062BD11206003E721E /* UserDefaults */ = {
 			isa = PBXGroup;
 			children = (
@@ -552,8 +561,7 @@
 			isa = PBXGroup;
 			children = (
 				79AD25392BF5F82300EFF0EC /* ChatDetailViewController.swift */,
-				79AD25672BFA5A4200EFF0EC /* MyChatDetailTableViewCell.swift */,
-				79AD25692BFA5AA700EFF0EC /* AnotherUserChatDetailTableViewCell.swift */,
+				7982552B2C0386540056D57E /* Cell */,
 			);
 			path = Chat;
 			sourceTree = "<group>";

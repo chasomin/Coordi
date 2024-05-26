@@ -38,6 +38,10 @@ enum Router {
     case fetchImage(query: String)
     case paymentValid(query: PaymentValidQuery)
     case fetchPayments
+    case createChat(quert: ChatCreateQuery)
+    case fetchChatList
+    case fetchChatHistory(roomId: String, cursorDate: String)
+    case sendChat(roomId: String, query: ChatSendQuery)
 }
 
 extension Router: TargetType {
@@ -101,7 +105,14 @@ extension Router: TargetType {
             return .post
         case .fetchPayments:
             return .get
-
+        case .createChat:
+            return .post
+        case .fetchChatList:
+            return .get
+        case .fetchChatHistory:
+            return .get
+        case .sendChat:
+            return .post
         }
     }
     
@@ -165,6 +176,14 @@ extension Router: TargetType {
             "/payments/me"
         case .fetchLike2Post:
             "/posts/likes-2/me"
+        case .createChat:
+            "/chats"
+        case .fetchChatList:
+            "/chats"
+        case .fetchChatHistory(let roomId, _):
+            "/chats/\(roomId)"
+        case .sendChat(let roomId):
+            "/chats/\(roomId)"
         }
     }
     
@@ -181,7 +200,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue,
                 HTTPHeader.refresh.rawValue: UserDefaultsManager.refreshToken
             ]
-        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .fetchLike2Post, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .fetchPayments:
+        case .withdraw, .fetchPost, .fetchParticularPost, .deletePost, .fetchPostByUser, .deleteComment, .fetchLikePost, .fetchLike2Post, .follow, .deleteFollow, .fetchMyProfile, .fetchUserProfile, .hashtag, .fetchImage, .fetchPayments, .fetchChatList, .fetchChatHistory:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
@@ -194,7 +213,7 @@ extension Router: TargetType {
                 HTTPHeader.sesacKey.rawValue: APIKey.key.rawValue
             ]
             
-        case .editPost, .uploadComment, .editComment, .uploadPost, .like, .like2, .paymentValid:
+        case .editPost, .uploadComment, .editComment, .uploadPost, .like, .like2, .paymentValid, .createChat, .sendChat:
             return [
                 HTTPHeader.authorization.rawValue: UserDefaultsManager.accessToken,
                 HTTPHeader.contentType.rawValue: HTTPHeader.json.rawValue,
@@ -239,7 +258,11 @@ extension Router: TargetType {
             ]
         case .uploadImage(let query):
             [
-                "files":query.files
+                "files": query.files
+            ]
+        case .fetchChatHistory(_, let cursorDate):
+            [
+                "cursor_date": cursorDate
             ]
         default:
             nil
@@ -267,6 +290,10 @@ extension Router: TargetType {
         case .like(_, let query), .like2(_, let query):
             return try? encoder.encode(query)
         case .paymentValid(let query):
+            return try? encoder.encode(query)
+        case .createChat(let query):
+            return try? encoder.encode(query)
+        case .sendChat(_, let query):
             return try? encoder.encode(query)
         default:
             return nil

@@ -37,6 +37,8 @@
 		795C5EC12BFB94E9009ACE44 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 795C5EC02BFB94E9009ACE44 /* Realm */; };
 		795C5EC32BFB94E9009ACE44 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 795C5EC22BFB94E9009ACE44 /* RealmSwift */; };
 		795C5EC52BFB966B009ACE44 /* RealmRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795C5EC42BFB966B009ACE44 /* RealmRepository.swift */; };
+		798255282C037D890056D57E /* ChatCreateQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798255272C037D890056D57E /* ChatCreateQuery.swift */; };
+		7982552A2C037DAD0056D57E /* ChatSendQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798255292C037DAD0056D57E /* ChatSendQuery.swift */; };
 		798604052BD10EB0003E721E /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604042BD10EB0003E721E /* EditProfileViewModel.swift */; };
 		798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604072BD12AA6003E721E /* CoordiUserDefaults.swift */; };
 		7986040A2BD12AB5003E721E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604092BD12AB5003E721E /* UserDefaultsManager.swift */; };
@@ -176,6 +178,8 @@
 		79553B6C2BC93B27000B4E4B /* PostQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostQuery.swift; sourceTree = "<group>"; };
 		795C5EBD2BFB9490009ACE44 /* RealmChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmChatModel.swift; sourceTree = "<group>"; };
 		795C5EC42BFB966B009ACE44 /* RealmRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRepository.swift; sourceTree = "<group>"; };
+		798255272C037D890056D57E /* ChatCreateQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreateQuery.swift; sourceTree = "<group>"; };
+		798255292C037DAD0056D57E /* ChatSendQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSendQuery.swift; sourceTree = "<group>"; };
 		798604042BD10EB0003E721E /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		798604072BD12AA6003E721E /* CoordiUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordiUserDefaults.swift; sourceTree = "<group>"; };
 		798604092BD12AB5003E721E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
@@ -384,6 +388,8 @@
 				79EBA4682BC9566400C3C530 /* LikeQuery.swift */,
 				79EBA46A2BCACA7600C3C530 /* ProfileQuery.swift */,
 				790040D42BE77B8900FA40B9 /* PaymentValidQuery.swift */,
+				798255272C037D890056D57E /* ChatCreateQuery.swift */,
+				798255292C037DAD0056D57E /* ChatSendQuery.swift */,
 			);
 			path = Query;
 			sourceTree = "<group>";
@@ -885,6 +891,7 @@
 				79937AD22BE2AC360063A2CE /* GeneralSettingViewController.swift in Sources */,
 				79553B602BC935B6000B4E4B /* BaseURL.swift in Sources */,
 				790040E62BE7893B00FA40B9 /* PaymentViewModel.swift in Sources */,
+				7982552A2C037DAD0056D57E /* ChatSendQuery.swift in Sources */,
 				79EBA47F2BCAD64D00C3C530 /* LikeModel.swift in Sources */,
 				790040D52BE77B8900FA40B9 /* PaymentValidQuery.swift in Sources */,
 				79937A202BDA53F50063A2CE /* FollowFeedViewModel.swift in Sources */,
@@ -918,6 +925,7 @@
 				79EBA48C2BCAEBAF00C3C530 /* Router.swift in Sources */,
 				79937ACE2BE230A20063A2CE /* MyPageCoordinator.swift in Sources */,
 				79553B4A2BC9135C000B4E4B /* SceneDelegate.swift in Sources */,
+				798255282C037D890056D57E /* ChatCreateQuery.swift in Sources */,
 				79937AAF2BE0140E0063A2CE /* BaseTableViewCell.swift in Sources */,
 				79EBA4732BCACF6500C3C530 /* AccessTokenModel.swift in Sources */,
 				798604332BD26041003E721E /* UIImage+.swift in Sources */,

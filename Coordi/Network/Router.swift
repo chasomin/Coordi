@@ -182,7 +182,7 @@ extension Router: TargetType {
             "/chats"
         case .fetchChatHistory(let roomId, _):
             "/chats/\(roomId)"
-        case .sendChat(let roomId):
+        case .sendChat(let roomId, _):
             "/chats/\(roomId)"
         }
     }

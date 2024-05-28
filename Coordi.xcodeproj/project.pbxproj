@@ -39,6 +39,7 @@
 		795C5EC52BFB966B009ACE44 /* RealmRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795C5EC42BFB966B009ACE44 /* RealmRepository.swift */; };
 		798255282C037D890056D57E /* ChatCreateQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798255272C037D890056D57E /* ChatCreateQuery.swift */; };
 		7982552A2C037DAD0056D57E /* ChatSendQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798255292C037DAD0056D57E /* ChatSendQuery.swift */; };
+		7982552D2C0386970056D57E /* ChatDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7982552C2C0386970056D57E /* ChatDetailViewModel.swift */; };
 		798604052BD10EB0003E721E /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604042BD10EB0003E721E /* EditProfileViewModel.swift */; };
 		798604082BD12AA6003E721E /* CoordiUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604072BD12AA6003E721E /* CoordiUserDefaults.swift */; };
 		7986040A2BD12AB5003E721E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798604092BD12AB5003E721E /* UserDefaultsManager.swift */; };
@@ -180,6 +181,7 @@
 		795C5EC42BFB966B009ACE44 /* RealmRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRepository.swift; sourceTree = "<group>"; };
 		798255272C037D890056D57E /* ChatCreateQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreateQuery.swift; sourceTree = "<group>"; };
 		798255292C037DAD0056D57E /* ChatSendQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSendQuery.swift; sourceTree = "<group>"; };
+		7982552C2C0386970056D57E /* ChatDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailViewModel.swift; sourceTree = "<group>"; };
 		798604042BD10EB0003E721E /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		798604072BD12AA6003E721E /* CoordiUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordiUserDefaults.swift; sourceTree = "<group>"; };
 		798604092BD12AB5003E721E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
@@ -561,6 +563,7 @@
 			isa = PBXGroup;
 			children = (
 				79AD25392BF5F82300EFF0EC /* ChatDetailViewController.swift */,
+				7982552C2C0386970056D57E /* ChatDetailViewModel.swift */,
 				7982552B2C0386540056D57E /* Cell */,
 			);
 			path = Chat;
@@ -839,6 +842,7 @@
 				7986043E2BD42EBC003E721E /* EditNicknameViewController.swift in Sources */,
 				79937ACA2BE2178A0063A2CE /* LoginCoordinator.swift in Sources */,
 				79937A1A2BD94D660063A2CE /* SearchViewController.swift in Sources */,
+				7982552D2C0386970056D57E /* ChatDetailViewModel.swift in Sources */,
 				790040CD2BE6C4BB00FA40B9 /* ShopViewModel.swift in Sources */,
 				79B043F22BCE9DB100407A1F /* MyPageViewController.swift in Sources */,
 				79EBA4E92BCD297900C3C530 /* PointButton.swift in Sources */,

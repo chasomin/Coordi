@@ -79,6 +79,7 @@ iOS 16.0
 ## 트러블슈팅
 
 1️⃣ 이미지로 인한 메모리 부족으로 앱이 강제 종료되는 문제
+
 width를 받아 비율로 이미지를 resize하는 메서드를 구현하고, kingfisher로 setImage를 할 때, resize 메서드를 호출하여 메모리 문제를 해결
 
 ```swift
@@ -120,3 +121,57 @@ extension UIImageView {
 ```
 <img src="https://github.com/chasomin/Coordi/assets/114223423/6cd13ae9-57f2-4d69-a808-dc404c1f1313" >
 
+
+<br>
+<br>
+<br>
+
+
+2️⃣ EventMonitor를 사용한 디버깅
+
+EventMonitor protocol을 사용하여 네트워크 통신 상태를 확인 (요청 URL, Method, Body, Header, 상태코드 등) → 문제점을 빠르게 파악하고 해결
+
+```swift
+final class APIMonitor: EventMonitor {
+    
+    static let shared = APIMonitor()
+    private init() { }
+    
+    // 요청 시작
+    func requestDidResume(_ request: Request) {
+        guard let request = request.request?.urlRequest else { return }
+        var body: String = "body 없음"
+        if let httpBody = request.httpBody {
+            body = toPrettyJsonString(data: httpBody)
+        }
+        
+        let message =  """
+✅ 요청시작
+
+[📍요청 URL]
+\(request.url?.absoluteString ?? "URL 확인 불가")
+
+[📍요청 메서드]
+\(request.method?.rawValue ?? "HTTP 메서드 확인 불가")
+
+[📍요청 헤더]
+\(request.headers.dictionary.description)
+
+[📍요청 바디]
+\(body)
+
+---
+"""
+        print(message)
+    }
+...
+```
+```swift
+final class API {
+    static let session: Session = {
+        let configuration = URLSessionConfiguration.af.default
+        let apiLogger = APIMonitor.shared
+        return Session(configuration: configuration, eventMonitors: [apiLogger])
+    }()
+}
+```

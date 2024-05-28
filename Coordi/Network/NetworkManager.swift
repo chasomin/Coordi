@@ -9,10 +9,10 @@ import Foundation
 import Alamofire
 import RxSwift
 
-class API {
+final class API {
     static let session: Session = {
         let configuration = URLSessionConfiguration.af.default
-        let apiLogger = APIMonitor()
+        let apiLogger = APIMonitor.shared
         return Session(configuration: configuration, eventMonitors: [apiLogger])
     }()
 }

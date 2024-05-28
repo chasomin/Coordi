@@ -10,9 +10,9 @@ import Foundation
 final class APIMonitor: EventMonitor {
     
     static let shared = APIMonitor()
-//    private init() { }
+    private init() { }
     
-    // 요청이 시작될 때
+    // 요청 시작
     func requestDidResume(_ request: Request) {
         guard let request = request.request?.urlRequest else { return }
         var body: String = "body 없음"
@@ -21,18 +21,18 @@ final class APIMonitor: EventMonitor {
         }
         
         let message =  """
-{요청시작}
+✅ 요청시작
 
-[요청 URL]
+[📍요청 URL]
 \(request.url?.absoluteString ?? "URL 확인 불가")
 
-[요청 메서드]
+[📍요청 메서드]
 \(request.method?.rawValue ?? "HTTP 메서드 확인 불가")
 
-[요청 헤더]
+[📍요청 헤더]
 \(request.headers.dictionary.description)
 
-[요청 바디]
+[📍요청 바디]
 \(body)
 
 ---
@@ -58,12 +58,12 @@ final class APIMonitor: EventMonitor {
         }
         
         let message = """
-{응답 완료}
+✅ 응답 완료
 
-[상태코드]
+[📍상태코드]
 \(httpResponse.statusCode)
 
-[헤더정보]
+[📍헤더정보]
 \(httpResponse.headers.description)
 
 ---
@@ -76,11 +76,11 @@ final class APIMonitor: EventMonitor {
         guard let error = response.error, let data = response.data else { return }
         
         let message = """
-{파싱 에러}
-[에러 메세지]
+⚠️ 파싱 에러
+[📍에러 메세지]
 \(error)
 
-[응답 Json]
+[📍응답 Json]
 \(toPrettyJsonString(data: data))
 """
         print(message)

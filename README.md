@@ -27,15 +27,16 @@ iOS 16.0
 
 ## 기능 소개
 
+- 회원가입 / 로그인
 - 현재 기온에 맞는 팔로잉 / 전체 사용자의 스타일 피드를 추천
-- 코디 참고하고 싶은 날씨 기온 검색 기능
-- 나의 스타일 공유 기능
-- 댓글 좋아요 기능
-- 스타일 아이템 장바구니, 구매 기능
+- 나의 스타일을 해당 날의 기온과 함께 공유
+- 마음에 드는 사용자 팔로우
+- 코디 스타일 피드 기반 검색 / 댓글 / 좋아요 / 구매 기능 구현
 
 ## **기술**
 
-`UIKit` `MVVM-C` `RxSwift` `DependencyInjection` `WeatherKit` `CoreLocation` `Alamofire` `Codable` `Router` `URLRequestConvertible` `interceptor` `EventMonitor` `CodeBaseUI` `SnapKit` `CompositionalLayout` `DiffableDataSource` `UserDefaults` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
+`UIKit` `MVVM-C` `RxSwift` `DI` `WeatherKit` `CoreLocation` `Alamofire` `Codable` `Router` `URLRequestConvertible` `interceptor` `EventMonitor` `CodeBaseUI` `SnapKit` `CompositionalLayout` `DiffableDataSource` `UserDefaults` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
+
 
 ## **기술 고려 사항**
  네비게이션 로직을 분리하여 코드의 모듈화와 유지보수성을 높이기 위해 Coordinator 패턴 적용
@@ -45,36 +46,45 @@ iOS 16.0
  객체 간의 결합도를 낮추고 유연성을 높이기 위해 Dependency Injection 구현
 
 ## **기술 설명**
- 
+
+ **MVVM Input-Output 패턴**을 사용한 비즈니스 로직 분리로 데이터의 흐름 명확화
+
+ **Coordinator** **패턴**으로 네비게이션 로직을 분리하여 단일 책임 원칙 준수
+
+ **Dependency Injection**을 통해 Testable 한 코드 작성, 각 컴포넌트 간의 의존성 감소
+
+ **Final** 키워드와 **접근제어자**를 사용하여 컴파일 최적화 달성하기 위해 노력
+
+ protocol 생성 시 **AnyObject** 채택을 통해 해당 protocol을 채택할 수 있는 객체의 타입을 제한하여 메모리 누수 방지
+
+ enum **NameSpace**를 통해 literal 값을 캡슐화하여 유지보수에 용이한 코드 구현
+
+ **weak self** 키워드를 사용하여 메모리 누수 방지
+
+ **StatusCode** 관리로 에러 상황 별 다른 에러 처리
+
+ **PropertyWrapper**를 사용하여 반복되는 코드 개선
+
  **URLRequestConvertible** protocol을 채택한 **Router**를 구현하여 API 요청 로직을 캡슐화
 
  Alamofire **interceptor**를 통해 토큰 갱신 자동화
 
- Alamofire **EventMonitor**를 사용한 디버깅으로 네트워크 문제를 해결
+ **PG** 연동을 통한 상품 카드결제 지원 및 영수증 검증 로직 구현
 
- **Coordinator** **패턴**을 사용하여 단일 책임 원칙을 준수하고 각 컴포넌트 간의 의존성 감소
-
- **Dependency Injection** 을 통해 Testable 한 코드 작성, 각 컴포넌트 간의 의존성 감소
-
- **MVVM Input-Output 패턴**을 사용하여 비즈니스 로직 분리
+ **BaseView**를 통해 일관된 ViewController 구조 형성
 
  **Compositional Layout**을 통해 Section 별 다양한 Cell을 구성
 
  **DiffableDataSource**를 사용하여 snapshot을 관리하고 이를 통해 효율적인 뷰 구성
 
- **BaseView**를 통해 일관된 ViewController 구조 형성
 
- **StatusCode** 관리로 에러 상황 별 다른 에러 처리
 
- **PropertyWrapper** 를 사용하여 반복되는 코드 개선
+ 
 
- **Final** 키워드와 **접근제어자**를 사용하여 컴파일 최적화 달성하기 위해 노력
+ 
 
- **weak self** 키워드를 사용하여 메모리 누수 방지
 
- protocol 생성 시 **AnyObject** 채택을 통해 해당 protocol을 채택할 수 있는 객체의 타입을 제한하여 메모리 누수 방지
 
- num **NameSpace**를 통해 literal 값을 캡슐화하여 유지보수에 용이한 코드 구현
 
 ## 트러블슈팅
 

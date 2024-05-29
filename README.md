@@ -22,8 +22,9 @@ iOS 16.0
 ### **스크린샷**
 
 <img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcc0ffd51-4ef9-4d9a-93db-32e97a65a422%2F30cb5913-e1a2-4fe9-8023-5a54b4932fa9%2F%25E1%2584%2586%25E1%2585%25AE%25E1%2584%258C%25E1%2585%25A6_8.001.png?table=block&id=80909fbe-80b0-426c-b514-4cd35f13e810&spaceId=cc0ffd51-4ef9-4d9a-93db-32e97a65a422&width=2000&userId=b94327c2-0d8a-417c-b55a-6222a7f4ecb6&cache=v2" >
-<img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fcc0ffd51-4ef9-4d9a-93db-32e97a65a422%2F1c9c328f-f797-4452-b53e-b4c8c4f6af74%2F4.001.png?table=block&id=0c935845-f583-450b-a3ca-7e7bb01d6579&spaceId=cc0ffd51-4ef9-4d9a-93db-32e97a65a422&width=2000&userId=b94327c2-0d8a-417c-b55a-6222a7f4ecb6&cache=v2">
+<img src="https://github.com/chasomin/Coordi/assets/114223423/7ad13fcd-ca48-4eae-b278-da9688852b8f">
 <br>
+
 
 ## 기능 소개
 

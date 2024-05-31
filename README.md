@@ -130,7 +130,7 @@ extension UIImageView {
     }
 }
 ```
-<img src="https://github.com/chasomin/Coordi/assets/114223423/6cd13ae9-57f2-4d69-a808-dc404c1f1313" >
+<img src="https://github.com/chasomin/Coordi/assets/114223423/85318ae4-510b-4e58-99b1-3561ff3aaa30" >
 
 
 <br>

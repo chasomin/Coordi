@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 extension UIImageView {
-    func loadImage(from path: String, placeHolderImage: UIImage? = .emptyProfile) {
+    func loadImage(from path: String, placeholderImage: UIImage? = .emptyProfile) {
         guard let url = URL(string: BaseURL.baseURL.rawValue + BaseURL.version.rawValue + "/" + path) else { return }
         let modifier = AnyModifier { request in
             var request = request
@@ -17,7 +17,7 @@ extension UIImageView {
             request.setValue(APIKey.key.rawValue, forHTTPHeaderField: HTTPHeader.sesacKey.rawValue)
             return request
         }
-        self.kf.setImage(with: url, placeholder: placeHolderImage, options: [.requestModifier(modifier)]) { result in
+        self.kf.setImage(with: url, placeholder: placeholderImage, options: [.requestModifier(modifier)]) { result in
             switch result {
             case .success(let imageResult):
                 let resizedImage = imageResult.image.resize(newWidth: 150)

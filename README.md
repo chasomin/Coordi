@@ -72,6 +72,8 @@ iOS 16.0
 
  **PG** 연동을 통한 상품 카드결제 지원 및 영수증 검증 로직 구현
 
+ **커서 기반 페이지네이션**을 사용하여 안정적인 데이터 페이징
+
  **BaseView**를 통해 일관된 ViewController 구조 형성
 
  **Compositional Layout**을 통해 Section 별 다양한 Cell을 구성
@@ -130,7 +132,7 @@ extension UIImageView {
     }
 }
 ```
-<img src="https://github.com/chasomin/Coordi/assets/114223423/6cd13ae9-57f2-4d69-a808-dc404c1f1313" >
+<img src="https://github.com/chasomin/Coordi/assets/114223423/85318ae4-510b-4e58-99b1-3561ff3aaa30" >
 
 
 <br>

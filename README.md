@@ -36,7 +36,7 @@ iOS 16.0
 
 ## **기술**
 
-`UIKit` `MVVM-C` `RxSwift` `DI` `WeatherKit` `CoreLocation` `Alamofire` `Codable` `Router` `URLRequestConvertible` `interceptor` `EventMonitor` `CodeBaseUI` `SnapKit` `CompositionalLayout` `DiffableDataSource` `UserDefaults` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
+`UIKit` `MVVM-C` `DI` `Router` `CoreLocation` `UserDefaults` `WeatherKit` `HealthKit` `WidgetKit` `Codable` `CodeBaseUI` `CompositionalLayout` `DiffableDataSource` `SPM` `Alamofire` `URLRequestConvertible` `interceptor` `EventMonitor` `RxSwift` `SnapKit` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
 
 
 ## **기술 고려 사항**
@@ -54,7 +54,7 @@ iOS 16.0
 
  **Dependency Injection**을 통해 Testable 한 코드 작성, 각 컴포넌트 간의 의존성 감소
 
- **Final** 키워드와 **접근제어자**를 사용하여 컴파일 최적화 달성하기 위해 노력
+ **final** 키워드와 **접근제어자**를 사용하여 컴파일 최적화
 
  protocol 생성 시 **AnyObject** 채택을 통해 해당 protocol을 채택할 수 있는 객체의 타입을 제한하여 메모리 누수 방지
 
@@ -62,9 +62,9 @@ iOS 16.0
 
  **weak self** 키워드를 사용하여 메모리 누수 방지
 
- **StatusCode** 관리로 에러 상황 별 다른 에러 처리
+ **statusCode** 관리로 에러 상황 별 다른 에러 처리
 
- **PropertyWrapper**를 사용하여 반복되는 코드 개선
+ **propertyWrapper**를 통한 UserDefaults 관리
 
  **URLRequestConvertible** protocol을 채택한 **Router**를 구현하여 API 요청 로직을 캡슐화
 

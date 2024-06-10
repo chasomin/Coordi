@@ -36,7 +36,7 @@ iOS 16.0
 
 ## **기술**
 
-`UIKit` `MVVM-C` `DI` `Router` `CoreLocation` `UserDefaults` `WeatherKit` `HealthKit` `WidgetKit` `Codable` `CodeBaseUI` `CompositionalLayout` `DiffableDataSource` `SPM` `Alamofire` `URLRequestConvertible` `interceptor` `EventMonitor` `RxSwift` `SnapKit` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
+`UIKit` `MVVM-C` `DI` `Router` `CoreLocation` `UserDefaults` `WeatherKit` `WidgetKit` `Codable` `CodeBaseUI` `CompositionalLayout` `DiffableDataSource` `SPM` `Alamofire` `URLRequestConvertible` `interceptor` `EventMonitor` `RxSwift` `SnapKit` `Toast` `IQKeyboardManager` `Kingfisher` `Tabman`
 
 
 ## **기술 고려 사항**
